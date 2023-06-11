@@ -1,15 +1,9 @@
-name: "Push Archery dependencies to Cachix"
+name: "Push to Cachix"
 on:
   schedule:
     - cron: "0 2 * * *"
   pull_request:
-    paths:
-      - .github/workflows/archery.yml
-      - haskell/archery**
   push:
-    paths:
-      - .github/workflows/archery.yml
-      - haskell/archery**
   workflow_dispatch:
 jobs:
   push-to-cachix:
@@ -24,6 +18,5 @@ jobs:
         name: dandart
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: |
-        cd haskell/archery
         nix-build
         nix-store -qR --include-outputs $(nix-instantiate shell.nix --add-root result/shell --indirect) | cachix push dandart
