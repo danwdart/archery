@@ -78,32 +78,39 @@ instance (Numeric cat, Cocartesian cat, {- Cochoice cat,-} Choice cat, Cartesian
 
 instance (forall a b. ToJSON (k a b)) ⇒ ToJSON (FreeFunc k x y) where
     toJSON Id = String "Id"
-    toJSON (Compose f g) = object [ "type" .= String "Compose", "args" .= Array [ toJSON f, toJSON g ] ]
+    toJSON (Compose f g) = Array [ String "Compose", Array [ toJSON f, toJSON g ] ]
     toJSON Copy = String "Copy"
     toJSON Consume = String "Consume"
-    toJSON (First f) = object [ "type" .= String "First", "args" .= Array [ toJSON f ] ]
-    toJSON (Second f) = object [ "type" .= String "Second", "args" .= Array [ toJSON f ] ]
-    {- toJSON (Unfirst f) = object [ "type" .= String "Unfirst", "args" .= Array [ toJSON f ] ] -}
+    toJSON (First f) = Array [ String "First", Array [ toJSON f ] ]
+    toJSON (Second f) = Array [ String "Second", Array [ toJSON f ] ]
+    {- toJSON (Unfirst f) = Array [ String "Unfirst", Array [ toJSON f ] ] -}
     toJSON Fst = String "Fst"
     toJSON Snd = String "Snd"
     toJSON InjectL = String "InjectL"
     toJSON InjectR = String "InjectR"
-    toJSON (Left' f) = object [ "type" .= String "Left'", "args" .= Array [ toJSON f ] ]
-    toJSON (Right' f) = object [ "type" .= String "Right'", "args" .= Array [ toJSON f ] ]
-    {- toJSON (Unleft f) = object [ "type" .= String "Unleft'", "args" .= Array [ toJSON f ] ] -}
+    toJSON (Left' f) = Array [ String "Left'", Array [ toJSON f ] ]
+    toJSON (Right' f) = Array [ String "Right'", Array [ toJSON f ] ]
+    {- toJSON (Unleft f) = Array [ String "Unleft'", Array [ toJSON f ] ] -}
     toJSON Unify = String "Unify"
     toJSON Tag = String "Tag"
-    toJSON (Num n) = object [ "type" .= String "Num", "args" .= Array [ toJSON n ] ]
+    toJSON (Num n) = Array [ String "Num", Array [ toJSON n ] ]
     toJSON Negate = String "Negate"
     toJSON Add = String "Add"
     toJSON Mult = String "Add"
     toJSON Div = String "Div"
     toJSON Mod = String "Mod"
-    toJSON (Lift f) = object [ "type" .= String "Lift", "args" .= Array [ toJSON f ] ]
+    toJSON (Lift f) = Array [ "Lift", Array [ toJSON f ] ]
 
 instance FromJSON (FreeFunc p a a) where
     parseJSON (String "Id") = pure Id
-    parseJSON _             = fail "TypeError: expecting a -> a"
+    parseJSON a             = fail $ "TypeError: got " <> show a <> ", expecting a -> a"
+
+instance FromJSON (FreeFunc p a (a, a)) where
+    parseJSON (String "Copy") = pure Copy
+    parseJSON _ = fail "TypeError: expecting a -> (a, a)"
+
+-- instance (FromJSON (p a b)) => FromJSON (FreeFunc p a b) where
+--     parseJSON (Array [ String "Lift", x ] ) = pure $ Lift (parseJSON x)
 
 instance Category (FreeFunc p) where
     id = Id

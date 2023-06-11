@@ -27,17 +27,17 @@ myTuple = ("Dan", 32)
 
 spec ∷ Spec
 spec = do
-    describe "greetData" $ do
+    xdescribe "greetData" $ do
         describe "HSFunc" $ do
-            xit "is correct" $
+            it "is correct" $
                 executeViaGHCi (greetData :: HSFunc Person String) myPerson `shouldReturn` (greetData myPerson)
         describe "HSLamb" $ do
-            xit "is correct"$ do
+            it "is correct"$ do
                 executeViaGHCi (greetData :: HSLamb Person String) myPerson `shouldReturn` (greetData myPerson)
         describe "JSLamb" $ do
-            xit "is correct" $ do
+            it "is correct" $ do
                 executeViaJSON (greetData :: JSLamb Person String) myPerson `shouldReturn` (greetData myPerson)
-        xdescribe "PHPLamb" $ do
+        describe "PHPLamb" $ do
             it "is correct" $ do
                 executeViaJSON (greetData :: PHPLamb Person String) myPerson `shouldReturn` (greetData myPerson)
     describe "greetTuple" $ do

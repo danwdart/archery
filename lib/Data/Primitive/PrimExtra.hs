@@ -13,7 +13,7 @@ instance PrimitiveExtra (FreeFunc PrimExtra) where
 instance ToJSON (PrimExtra a b) where
     toJSON IntToString = String "IntToString"
     toJSON ConcatString = String "ConcatString"
-    toJSON (ConstString s) = object [ "type" .= ("ConstString" :: T.Text), "args" .= Array [ String (T.pack s) ] ]
+    toJSON (ConstString s) = Array [ String "ConstString", String (T.pack s) ]
 
 instance FromJSON (PrimExtra Int String) where
     parseJSON (String "IntToString") = pure IntToString
@@ -24,11 +24,7 @@ instance FromJSON (PrimExtra (String, String) String) where
     parseJSON _ = fail "TypeError: expecting (String, String) -> String"
 
 instance FromJSON (PrimExtra () String) where
-    parseJSON = withObject "PrimExtra" $ \obj -> do
-        t <- obj .: "type"
-        if t == ("ConstString" :: T.Text) then do
-            Array [ String s ] <- obj .: "args"
-            pure $ ConstString (T.unpack s)
-        else fail "TypeError: expected () -> String"
+    parseJSON (Array [ String "ConstString", s ] ) = pure $ ConstString (T.unpack s)
+    parseJSON _ = fail "TypeError: expecting ConstString"
 
 -- instance Interpret PrimExtra ()
