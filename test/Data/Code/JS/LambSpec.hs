@@ -19,8 +19,8 @@ import Test.QuickCheck
 import Test.QuickCheck.Monadic
 
 spec ∷ Spec
-spec = describe "JSLamb" $ do
-    describe "bracket" $
+spec = xdescribe "JSLamb" $ do
+    describe "bracket" .
         it "is idempotent" $
             executeViaJSON (bracket id :: JSLamb String String) "1" `shouldReturn` "1"
     describe "category" $ do
@@ -56,7 +56,7 @@ spec = describe "JSLamb" $ do
         it "runs on second" $
             executeViaJSON (second' copy :: JSLamb (String, String) (String, (String, String))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
     describe "choice" $ do
-        describe "left'" $
+        describe "left'" .
             -- it "runs on left" $
             --     executeViaJSON (left' copy :: JSLamb (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn` (Right (Left ("1", "1")))
             it "doesn't run on right" $

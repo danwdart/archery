@@ -20,6 +20,4 @@ main = readToOp (\bs ->
     compileHS =<<
     (pure . render :: HSFunc () () -> IO BSL.ByteString) =<<
     (pure . interpret :: FreeFunc Prims () () -> IO (HSFunc () ())) =<<
-    (Y.decodeThrow . BSL.toStrict :: BSL.ByteString -> IO (FreeFunc Prims () ())) =<<
-    pure bs
-    )
+    (Y.decodeThrow . BSL.toStrict :: BSL.ByteString -> IO (FreeFunc Prims () ())) bs)

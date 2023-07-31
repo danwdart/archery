@@ -106,13 +106,13 @@ instance FromJSON (FreeFunc p a a) where
     parseJSON (String "Id") = pure Id
     parseJSON a             = fail $ "TypeError: got " <> show a <> ", expecting a -> a"
 
-instance (FromJSON (FreeFunc p a b), FromJSON (FreeFunc p b c)) => FromJSON (FreeFunc p a c) where
-    parseJSON [String "Compose", Array [a, b]] = pure $ Compose (parseJSON a) (parseJSON b)
-    parseJSON a             = fail $  "TypeError: got " <> show a <> ", expecting (b -> c) -> (a -> b) -> a -> c"
+-- instance (FromJSON (FreeFunc p a b), FromJSON (FreeFunc p b c)) => FromJSON (FreeFunc p a c) where
+--     parseJSON [String "Compose", Array [a, b]] = pure $ Compose (parseJSON a) (parseJSON b)
+--     parseJSON a             = fail $  "TypeError: got " <> show a <> ", expecting (b -> c) -> (a -> b) -> a -> c"
 
 instance FromJSON (FreeFunc p a (a, a)) where
     parseJSON (String "Copy") = pure Copy
-    parseJSON a = fail "TypeError: got " <> show a <> ", expecting a -> (a, a)"
+    parseJSON a = fail $ "TypeError: got " <> show a <> ", expecting a -> (a, a)"
 
 -- instance (FromJSON (p a b)) => FromJSON (FreeFunc p a b) where
 --     parseJSON (Array [ String "Lift", x ] ) = pure $ Lift (parseJSON x)

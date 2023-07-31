@@ -4,7 +4,7 @@
     nixpkgs = nixpkgs;
     compiler = compiler;
   },
-  compiler ? "ghc92"
+  compiler ? "ghc96"
 }:
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
@@ -12,8 +12,7 @@ let
   lib = nixpkgs.pkgs.haskell.lib;
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: rec {
-      archery = lib.doBenchmark (lib.doCheck (lib.dontHaddock (self.callCabal2nix "archery" (gitignore ./.) {})));
-    };
+      archery = lib.doBenchmark (lib.doCheck (lib.dontHaddock (self.callCabal2nix "archery" (gitignore ./.) {})));    };
   };
   shell = myHaskellPackages.shellFor {
     packages = p: [

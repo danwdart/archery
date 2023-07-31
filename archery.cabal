@@ -134,7 +134,7 @@ library
     Data.Render
     System.Executable
 
-executable jcat2hsf
+Çexecutable jcat2hsf
   import: shared-properties-unsafe
   main-is:             jcat2hsf.hs
   build-depends:       base >= 4.18.0.0 && < 5, aeson, archery, bytestring

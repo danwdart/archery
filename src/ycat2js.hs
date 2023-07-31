@@ -19,6 +19,4 @@ main ∷ IO ()
 main = readToWrite (\bs ->
     (pure . render :: JSLamb () () -> IO BSL.ByteString) =<<
     (pure . interpret :: FreeFunc Prims () () -> IO (JSLamb () ())) =<<
-    (Y.decodeThrow . BSL.toStrict :: BSL.ByteString -> IO (FreeFunc Prims () ())) =<<
-    pure bs
-    )
+    (Y.decodeThrow . BSL.toStrict :: BSL.ByteString -> IO (FreeFunc Prims () ())) bs)

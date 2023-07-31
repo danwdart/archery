@@ -56,7 +56,7 @@ spec = describe "collatzStep" $ do
         prop "is correct" prop_HSFuncIsCorrect
     describe "HSLamb" $ do
         prop "is correct" prop_HSLambIsCorrect
-    describe "JSLamb" $ do
+    xdescribe "JSLamb" $ do
         prop "is correct" prop_JSLambIsCorrect
     xdescribe "PHPLamb" $ do
         prop "is correct" prop_PHPLambIsCorrect

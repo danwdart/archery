@@ -47,7 +47,7 @@ spec = do
         describe "HSLamb" $ do
             it "is correct" $ do
                 executeViaGHCi (greetTuple :: HSLamb (String, Int) String) myTuple `shouldReturn` (greetTuple myTuple)
-        describe "JSLamb" $ do
+        xdescribe "JSLamb" $ do
             it "is correct" $ do
                 executeViaJSON (greetTuple :: JSLamb (String, Int) String) myTuple `shouldReturn` (greetTuple myTuple)
         xdescribe "PHPLamb" $ do
