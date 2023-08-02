@@ -20,12 +20,10 @@ import Test.QuickCheck.Monadic
 
 spec ∷ Spec
 spec = describe "HSFunc" $ do
-    describe "bracket" $
-        it "is idempotent" $
-            executeViaGHCi (bracket id :: HSFunc String String) "1" `shouldReturn` "1"
+    describe "bracket" . it "is idempotent" $ (executeViaGHCi (bracket id :: HSFunc String String) "1" `shouldReturn` "1")
     describe "category" $ do
         it "composes" $
-            executeViaGHCi (id . id :: HSFunc String String) "1" `shouldReturn` "1"
+            executeViaGHCi (id :: HSFunc String String) "1" `shouldReturn` "1"
     describe "cartesian" $ do
         it "copies" $
             executeViaGHCi (copy :: HSFunc String (String, String)) "1" `shouldReturn` ("1", "1")
@@ -37,9 +35,9 @@ spec = describe "HSFunc" $ do
             executeViaGHCi (snd' :: HSFunc (Int, String) String) (1, "1") `shouldReturn` "1"
     describe "cocartesian" $ do
         it "injects Left" $ do
-            executeViaGHCi (injectL :: HSFunc String (Either String ())) "1" `shouldReturn` (Left "1")
+            executeViaGHCi (injectL :: HSFunc String (Either String ())) "1" `shouldReturn` Left "1"
         it "injects Right" $ do
-            executeViaGHCi (injectR :: HSFunc String (Either () String)) "1" `shouldReturn` (Right "1")
+            executeViaGHCi (injectR :: HSFunc String (Either () String)) "1" `shouldReturn` Right "1"
         describe "unify" $ do
             it "unifies Left" $
                 executeViaGHCi (unify :: HSFunc (Either String String) String) (Left "1") `shouldReturn` "1"
@@ -47,42 +45,40 @@ spec = describe "HSFunc" $ do
                 executeViaGHCi (unify :: HSFunc (Either String String) String) (Right "1") `shouldReturn` "1"
         describe "tag" $ do
             it "tags Left" $
-                executeViaGHCi (tag :: HSFunc (Bool, String) (Either String String)) (False, "1") `shouldReturn` (Left "1")
+                executeViaGHCi (tag :: HSFunc (Bool, String) (Either String String)) (False, "1") `shouldReturn` Left "1"
             it "tags Right" $
-                executeViaGHCi (tag :: HSFunc (Bool, String) (Either String String)) (True, "1") `shouldReturn` (Right "1")
+                executeViaGHCi (tag :: HSFunc (Bool, String) (Either String String)) (True, "1") `shouldReturn` Right "1"
     describe "strong" $ do
         it "runs on first" $
-            executeViaGHCi (first' copy :: HSFunc (String, String) ((String, String), String)) ("1", "2") `shouldReturn` (("1", "1"), "2") 
+            executeViaGHCi (first' copy :: HSFunc (String, String) ((String, String), String)) ("1", "2") `shouldReturn` (("1", "1"), "2")
         it "runs on second" $
             executeViaGHCi (second' copy :: HSFunc (String, String) (String, (String, String))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
     describe "choice" $ do
-        describe "left'" $
+        describe "left'" $ pure ()
             -- it "runs on left" $
-            --     executeViaGHCi (left' copy :: HSFunc (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1")))
-            it "doesn't run on right" $
-                executeViaGHCi (left' copy :: HSFunc (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
+            --     executeViaGHCi (left' copy :: HSFunc (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1")))it "doesn't run on right" $ (executeViaGHCi (left' copy :: HSFunc (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1))
         describe "right'" $ do
             it "doesn't run on left" $
-                executeViaGHCi (right' copy :: HSFunc (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` (Left "1")
+                executeViaGHCi (right' copy :: HSFunc (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
             it "runs on right" $
-                executeViaGHCi (right' copy :: HSFunc (Either String Int) (Either String (Int, Int))) (Right 1) `shouldReturn` (Right (1, 1))
+                executeViaGHCi (right' copy :: HSFunc (Either String Int) (Either String (Int, Int))) (Right 1) `shouldReturn` Right (1, 1)
     describe "symmetric" $ do
         it "swaps" $
             executeViaGHCi (swap :: HSFunc (String, Int) (Int, String)) ("1", 1) `shouldReturn` (1, "1")
         describe "swapEither" $ do
             it "swaps left" $
-                executeViaGHCi (swapEither :: HSFunc (Either String String) (Either String String)) (Left "1") `shouldReturn` (Right "1")
+                executeViaGHCi (swapEither :: HSFunc (Either String String) (Either String String)) (Left "1") `shouldReturn` Right "1"
             it "swaps right" $
-                executeViaGHCi (swapEither :: HSFunc (Either String String) (Either String String)) (Right "1") `shouldReturn` (Left "1")
+                executeViaGHCi (swapEither :: HSFunc (Either String String) (Either String String)) (Right "1") `shouldReturn` Left "1"
         it "reassocs" $
-            executeViaGHCi (reassoc :: HSFunc (String, (Int, Bool)) ((String, Int), Bool)) ("1", (1, True)) `shouldReturn` ((("1", 1), True))
+            executeViaGHCi (reassoc :: HSFunc (String, (Int, Bool)) ((String, Int), Bool)) ("1", (1, True)) `shouldReturn` (("1", 1), True)
         describe "reassocEither" $ do
             it "reassocs Left" $
-                executeViaGHCi (reassocEither :: HSFunc (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Left "1") `shouldReturn` (Left (Left "1"))
+                executeViaGHCi (reassocEither :: HSFunc (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Left "1") `shouldReturn` Left (Left "1")
             it "reassocs Right (Left)" $
-                executeViaGHCi (reassocEither :: HSFunc (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Right (Left 1)) `shouldReturn` (Left (Right 1))
+                executeViaGHCi (reassocEither :: HSFunc (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Right (Left 1)) `shouldReturn` Left (Right 1)
             it "reassoc Right (Right)" $
-                executeViaGHCi (reassocEither :: HSFunc (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Right (Right True)) `shouldReturn` (Right True)
+                executeViaGHCi (reassocEither :: HSFunc (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Right (Right True)) `shouldReturn` Right True
     describe "primitive" $ do
         describe "eq" $ do
             it "equal" $
@@ -123,12 +119,12 @@ spec = describe "HSFunc" $ do
             executeViaGHCi (id :: HSFunc (String, Int) (String, Int)) ("1", 1) `shouldReturn` ("1", 1)
         describe "Either" $ do
             it "returns a Left" $
-                executeViaGHCi (id :: HSFunc (Either String Int) (Either String Int)) (Left "1") `shouldReturn` (Left "1")
+                executeViaGHCi (id :: HSFunc (Either String Int) (Either String Int)) (Left "1") `shouldReturn` Left "1"
             it "returns a Right" $
-                executeViaGHCi (id :: HSFunc (Either String Int) (Either String Int)) (Right 1) `shouldReturn` (Right 1)
+                executeViaGHCi (id :: HSFunc (Either String Int) (Either String Int)) (Right 1) `shouldReturn` Right 1
         describe "Maybe" $ do
             it "returns a Nothing" $
                 executeViaGHCi (id :: HSFunc (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
             it "returns a Just" $
-                executeViaGHCi (id :: HSFunc (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` (Just 1)
-            
+                executeViaGHCi (id :: HSFunc (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
+

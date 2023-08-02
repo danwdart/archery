@@ -1,8 +1,8 @@
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE OverloadedLists       #-}
 {-# LANGUAGE OverloadedStrings     #-}
-{-# LANGUAGE UndecidableInstances  #-}
 {-# LANGUAGE QuantifiedConstraints #-}
+{-# LANGUAGE UndecidableInstances  #-}
 {-# LANGUAGE Unsafe                #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 

@@ -11,8 +11,8 @@ instance PrimitiveExtra (FreeFunc PrimExtra) where
     constString s = Lift (ConstString s)
 
 instance ToJSON (PrimExtra a b) where
-    toJSON IntToString = String "IntToString"
-    toJSON ConcatString = String "ConcatString"
+    toJSON IntToString     = String "IntToString"
+    toJSON ConcatString    = String "ConcatString"
     toJSON (ConstString s) = Array [ String "ConstString", String (T.pack s) ]
 
 instance FromJSON (PrimExtra Int String) where

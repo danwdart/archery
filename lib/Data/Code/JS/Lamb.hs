@@ -18,11 +18,10 @@ import Control.Category.Primitive.Console
 import Control.Category.Primitive.Extra
 import Control.Category.Strong
 import Control.Category.Symmetric
+import Control.Exception                   hiding (bracket)
 import Control.Monad.IO.Class
-import Control.Exception hiding (bracket)
 import Data.Aeson
 import Data.ByteString.Lazy.Char8          qualified as BSL
-import Data.List (intersperse)
 import Data.Render
 import Data.String
 import GHC.IO.Exception
@@ -102,22 +101,22 @@ instance Numeric JSLamb where
 -- @TODO escape shell - Text.ShellEscape?
 instance ExecuteJSON JSLamb where
     executeViaJSON cat param = do
-        let params :: [String]
+        let params ∷ [String]
             params = ["-e", "console.log(JSON.stringify(" <> BSL.unpack (render cat) <> "(" <> BSL.unpack (encode param) <> ")))"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params "")
         case exitCode of
-            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run node with params: " <> concat (intersperse " " params) <> " Output: " <> stderr 
+            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> case eitherDecode (BSL.pack stdout) of
                 Left err -> liftIO . throwIO . userError $ "Can't parse response: " <> err
                 Right ret -> pure ret
 
 instance ExecuteStdio JSLamb where
     executeViaStdio cat stdin = do
-        let params :: [String]
+        let params ∷ [String]
             params = ["-e", BSL.unpack (render cat) <> "()"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params (show stdin))
         case exitCode of
-            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run node with params: " <> concat (intersperse " " params) <> " Output: " <> stderr 
+            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> case readEither stdout of
                 Left err -> liftIO . throwIO . userError $ "Can't parse response: " <> err
                 Right ret -> pure ret

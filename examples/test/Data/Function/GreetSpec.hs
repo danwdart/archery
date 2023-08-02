@@ -30,26 +30,26 @@ spec = do
     xdescribe "greetData" $ do
         describe "HSFunc" $ do
             it "is correct" $
-                executeViaGHCi (greetData :: HSFunc Person String) myPerson `shouldReturn` (greetData myPerson)
+                executeViaGHCi (greetData :: HSFunc Person String) myPerson `shouldReturn` greetData myPerson
         describe "HSLamb" $ do
             it "is correct"$ do
-                executeViaGHCi (greetData :: HSLamb Person String) myPerson `shouldReturn` (greetData myPerson)
+                executeViaGHCi (greetData :: HSLamb Person String) myPerson `shouldReturn` greetData myPerson
         describe "JSLamb" $ do
             it "is correct" $ do
-                executeViaJSON (greetData :: JSLamb Person String) myPerson `shouldReturn` (greetData myPerson)
+                executeViaJSON (greetData :: JSLamb Person String) myPerson `shouldReturn` greetData myPerson
         describe "PHPLamb" $ do
             it "is correct" $ do
-                executeViaJSON (greetData :: PHPLamb Person String) myPerson `shouldReturn` (greetData myPerson)
+                executeViaJSON (greetData :: PHPLamb Person String) myPerson `shouldReturn` greetData myPerson
     describe "greetTuple" $ do
         describe "HSFunc" $ do
             it "is correct" $ do
-                executeViaGHCi (greetTuple :: HSFunc (String, Int) String) myTuple `shouldReturn` (greetTuple myTuple)
+                executeViaGHCi (greetTuple :: HSFunc (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
         describe "HSLamb" $ do
             it "is correct" $ do
-                executeViaGHCi (greetTuple :: HSLamb (String, Int) String) myTuple `shouldReturn` (greetTuple myTuple)
+                executeViaGHCi (greetTuple :: HSLamb (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
         xdescribe "JSLamb" $ do
             it "is correct" $ do
-                executeViaJSON (greetTuple :: JSLamb (String, Int) String) myTuple `shouldReturn` (greetTuple myTuple)
+                executeViaJSON (greetTuple :: JSLamb (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
         xdescribe "PHPLamb" $ do
             it "is correct" $ do
-                executeViaJSON (greetTuple :: PHPLamb (String, Int) String) myTuple `shouldReturn` (greetTuple myTuple)
+                executeViaJSON (greetTuple :: PHPLamb (String, Int) String) myTuple `shouldReturn` greetTuple myTuple

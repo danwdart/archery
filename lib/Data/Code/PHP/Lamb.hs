@@ -18,11 +18,10 @@ import Control.Category.Primitive.Console
 import Control.Category.Primitive.Extra
 import Control.Category.Strong
 import Control.Category.Symmetric
-import Control.Exception hiding (bracket)
+import Control.Exception                   hiding (bracket)
 import Control.Monad.IO.Class
 import Data.Aeson
 import Data.ByteString.Lazy.Char8          qualified as BSL
-import Data.List (intersperse)
 import Data.Render
 import Data.String
 import GHC.IO.Exception
@@ -102,11 +101,11 @@ instance Numeric PHPLamb where
 -- @TODO escape shell - Text.ShellEscape?
 instance ExecuteJSON PHPLamb where
     executeViaJSON cat param = do
-        let params :: [String]
+        let params ∷ [String]
             params = ["-r", "\"print(json_encode((" <> BSL.unpack (render cat) <> ")(" <> BSL.unpack (encode param) <> ")));\""]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "php" params [])
         case exitCode of
-            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run php with params: " <> concat (intersperse " " params) <> " Output: " <> stderr 
+            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run php with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> case eitherDecode (BSL.pack stdout) of
                 Left err -> liftIO . throwIO . userError $ "Can't parse response: " <> err
                 Right ret -> pure ret
@@ -114,11 +113,11 @@ instance ExecuteJSON PHPLamb where
 instance ExecuteStdio PHPLamb where
     -- @TODO figure out why we have to have something here for argument - for now using null...
     executeViaStdio cat stdin = do
-        let params :: [String]
+        let params ∷ [String]
             params = ["-r", "(" <> BSL.unpack (render cat) <> ")(null);"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "php" params (show stdin))
         case exitCode of
-            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run php with params: " <> concat (intersperse " " params) <> " Output: " <> stderr 
+            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run php with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> case readEither stdout of
                 Left err -> liftIO . throwIO . userError $ "Can't parse response: " <> err
                 Right ret -> pure ret

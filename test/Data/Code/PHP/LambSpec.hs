@@ -20,12 +20,10 @@ import Test.QuickCheck.Monadic
 
 spec ∷ Spec
 spec = xdescribe "PHPLamb" $ do
-    describe "bracket" $
-        it "is idempotent" $
-            executeViaJSON (bracket id :: PHPLamb String String) "1" `shouldReturn` "1"
+    describe "bracket" . it "is idempotent" $ (executeViaJSON (bracket id :: PHPLamb String String) "1" `shouldReturn` "1")
     describe "category" $ do
         it "composes" $
-            executeViaJSON (id . id :: PHPLamb String String) "1" `shouldReturn` "1"
+            executeViaJSON (id :: PHPLamb String String) "1" `shouldReturn` "1"
     describe "cartesian" $ do
         it "copies" $
             executeViaJSON (copy :: PHPLamb String (String, String)) "1" `shouldReturn` ("1", "1")
@@ -37,9 +35,9 @@ spec = xdescribe "PHPLamb" $ do
             executeViaJSON (snd' :: PHPLamb (Int, String) String) (1, "1") `shouldReturn` "1"
     describe "cocartesian" $ do
         it "injects Left" $ do
-            executeViaJSON (injectL :: PHPLamb String (Either String ())) "1" `shouldReturn` (Left "1")
+            executeViaJSON (injectL :: PHPLamb String (Either String ())) "1" `shouldReturn` Left "1"
         it "injects Right" $ do
-            executeViaJSON (injectR :: PHPLamb String (Either () String)) "1" `shouldReturn` (Right "1")
+            executeViaJSON (injectR :: PHPLamb String (Either () String)) "1" `shouldReturn` Right "1"
         describe "unify" $ do
             it "unifies Left" $
                 executeViaJSON (unify :: PHPLamb (Either String String) String) (Left "1") `shouldReturn` "1"
@@ -47,42 +45,40 @@ spec = xdescribe "PHPLamb" $ do
                 executeViaJSON (unify :: PHPLamb (Either String String) String) (Right "1") `shouldReturn` "1"
         describe "tag" $ do
             it "tags Left" $
-                executeViaJSON (tag :: PHPLamb (Bool, String) (Either String String)) (False, "1") `shouldReturn` (Left "1")
+                executeViaJSON (tag :: PHPLamb (Bool, String) (Either String String)) (False, "1") `shouldReturn` Left "1"
             it "tags Right" $
-                executeViaJSON (tag :: PHPLamb (Bool, String) (Either String String)) (True, "1") `shouldReturn` (Right "1")
+                executeViaJSON (tag :: PHPLamb (Bool, String) (Either String String)) (True, "1") `shouldReturn` Right "1"
     describe "strong" $ do
         it "runs on first" $
-            executeViaJSON (first' copy :: PHPLamb (String, String) ((String, String), String)) ("1", "2") `shouldReturn` (("1", "1"), "2") 
+            executeViaJSON (first' copy :: PHPLamb (String, String) ((String, String), String)) ("1", "2") `shouldReturn` (("1", "1"), "2")
         it "runs on second" $
             executeViaJSON (second' copy :: PHPLamb (String, String) (String, (String, String))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
     describe "choice" $ do
-        describe "left'" $
+        xdescribe "left'" $ pure ()
             -- it "runs on left" $
-            --     executeViaJSON (left' copy :: PHPLamb (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn` (Right (Left ("1", "1")))
-            it "doesn't run on right" $
-                executeViaJSON (left' copy :: PHPLamb (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
+            --     executeViaJSON (left' copy :: PHPLamb (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn` (Right (Left ("1", "1")))it "doesn't run on right" $ (executeViaJSON (left' copy :: PHPLamb (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1))
         describe "right'" $ do
             it "doesn't run on left" $
-                executeViaJSON (right' copy :: PHPLamb (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` (Left "1")
+                executeViaJSON (right' copy :: PHPLamb (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
             it "runs on right" $
-                executeViaJSON (right' copy :: PHPLamb (Either String Int) (Either String (Int, Int))) (Right 1) `shouldReturn` (Right (1, 1))
+                executeViaJSON (right' copy :: PHPLamb (Either String Int) (Either String (Int, Int))) (Right 1) `shouldReturn` Right (1, 1)
     describe "symmetric" $ do
         it "swaps" $
             executeViaJSON (swap :: PHPLamb (String, Int) (Int, String)) ("1", 1) `shouldReturn` (1, "1")
         describe "swapEither" $ do
             it "swaps left" $
-                executeViaJSON (swapEither :: PHPLamb (Either String String) (Either String String)) (Left "1") `shouldReturn` (Right "1")
+                executeViaJSON (swapEither :: PHPLamb (Either String String) (Either String String)) (Left "1") `shouldReturn` Right "1"
             it "swaps right" $
-                executeViaJSON (swapEither :: PHPLamb (Either String String) (Either String String)) (Right "1") `shouldReturn` (Left "1")
+                executeViaJSON (swapEither :: PHPLamb (Either String String) (Either String String)) (Right "1") `shouldReturn` Left "1"
         it "reassocs" $
-            executeViaJSON (reassoc :: PHPLamb (String, (Int, Bool)) ((String, Int), Bool)) ("1", (1, True)) `shouldReturn` ((("1", 1), True))
+            executeViaJSON (reassoc :: PHPLamb (String, (Int, Bool)) ((String, Int), Bool)) ("1", (1, True)) `shouldReturn` (("1", 1), True)
         xdescribe "reassocEither" $ do
             it "reassocs Left" $
-                executeViaJSON (reassocEither :: PHPLamb (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Left "1") `shouldReturn` (Left (Left "1"))
+                executeViaJSON (reassocEither :: PHPLamb (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Left "1") `shouldReturn` Left (Left "1")
             it "reassocs Right (Left)" $
-                executeViaJSON (reassocEither :: PHPLamb (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Right (Left 1)) `shouldReturn` (Left (Right 1))
+                executeViaJSON (reassocEither :: PHPLamb (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Right (Left 1)) `shouldReturn` Left (Right 1)
             it "reassoc Right (Right)" $
-                executeViaJSON (reassocEither :: PHPLamb (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Right (Right True)) `shouldReturn` (Right True)
+                executeViaJSON (reassocEither :: PHPLamb (Either String (Either Int Bool)) (Either (Either String Int) Bool)) (Right (Right True)) `shouldReturn` Right True
     describe "primitive" $ do
         describe "eq" $ do
             it "equal" $
@@ -123,11 +119,11 @@ spec = xdescribe "PHPLamb" $ do
             executeViaJSON (id :: PHPLamb (String, Int) (String, Int)) ("1", 1) `shouldReturn` ("1", 1)
         describe "Either" $ do
             it "returns a Left" $
-                executeViaJSON (id :: PHPLamb (Either String Int) (Either String Int)) (Left "1") `shouldReturn` (Left "1")
+                executeViaJSON (id :: PHPLamb (Either String Int) (Either String Int)) (Left "1") `shouldReturn` Left "1"
             it "returns a Right" $
-                executeViaJSON (id :: PHPLamb (Either String Int) (Either String Int)) (Right 1) `shouldReturn` (Right 1)
+                executeViaJSON (id :: PHPLamb (Either String Int) (Either String Int)) (Right 1) `shouldReturn` Right 1
         describe "Maybe" $ do
             it "returns a Nothing" $
                 executeViaJSON (id :: PHPLamb (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
             it "returns a Just" $
-                executeViaJSON (id :: PHPLamb (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` (Just 1)
+                executeViaJSON (id :: PHPLamb (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1

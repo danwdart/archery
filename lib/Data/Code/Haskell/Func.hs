@@ -17,10 +17,9 @@ import Control.Category.Primitive.Console
 import Control.Category.Primitive.Extra
 import Control.Category.Strong
 import Control.Category.Symmetric
-import Control.Exception hiding (bracket)
+import Control.Exception                   hiding (bracket)
 import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8          qualified as BSL
-import Data.List (intersperse)
 import Data.Render
 import Data.String
 import GHC.IO.Exception
@@ -100,24 +99,24 @@ instance Numeric HSFunc where
 -- @TODO escape shell - Text.ShellEscape?
 instance ExecuteHaskell HSFunc where
     executeViaGHCi cat param = do
-        let params :: [String]
+        let params ∷ [String]
             params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "(" <> BSL.unpack (render cat) <> ") (" <> show param <> ")"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
         case exitCode of
-            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> concat (intersperse " " params) <> " Output: " <> stderr 
+            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> case readEither stdout of
                 Left err -> liftIO . throwIO . userError $ "Can't parse response: " <> err
                 Right ret -> pure ret
-        
+
 -- @TODO this uses runKleisli, the above does not
 
 instance ExecuteStdio HSFunc where
     executeViaStdio cat stdin = do
-        let params :: [String]
+        let params ∷ [String]
             params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "runKleisli (" <> BSL.unpack (render cat) <> ") ()"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of
-            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> concat (intersperse " " params) <> " Output: " <> stderr 
+            ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> case readEither stdout of
                 Left err -> liftIO . throwIO . userError $ "Can't parse response: " <> err
                 Right ret -> pure ret

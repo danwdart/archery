@@ -23,6 +23,7 @@ let
       for i in $(find -type f | grep -v dist-newstyle); do krank $i; done
     '';
     buildInputs = tools.defaultBuildTools ++ [ nixpkgs.gettext nixpkgs.nodejs_20 nixpkgs.php82 nixpkgs.tinycc ];
+    nativeBuildInputs = tools.defaultBuildTools ++ [ nixpkgs.gettext nixpkgs.nodejs_20 nixpkgs.php82 nixpkgs.tinycc ];
     withHoogle = false;
   };
   exe = lib.justStaticExecutables (myHaskellPackages.archery);
