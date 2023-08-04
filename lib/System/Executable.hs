@@ -101,7 +101,13 @@ readToOp transformer = do
 compileHS ∷ BSL.ByteString → IO ()
 compileHS fileContents = do
     let params ∷ [String]
-        params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "runKleisli (" <> BSL.unpack fileContents <> ") ()"]
+        params = [
+            "-e", ":set -XLambdaCase",
+            "-e", "import Control.Arrow",
+            "-e", "import Prelude hiding ((.), id)",
+            "-e", "import Control.Category",
+            "-e", "runKleisli (" <> BSL.unpack fileContents <> ") ()"
+            ]
     (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghc" params "")
     case exitCode of
         ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
