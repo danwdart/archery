@@ -12,7 +12,9 @@ let
   lib = nixpkgs.pkgs.haskell.lib;
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: rec {
-      archery = lib.doBenchmark (lib.doCheck (lib.dontHaddock (self.callCabal2nix "archery" (gitignore ./.) {})));    };
+      # Don't check necessarily until we can include non-Haskell stuff for tests
+      archery = lib.doBenchmark (lib.dontHaddock (lib.dontCheck (self.callCabal2nix "archery" (gitignore ./.) {})));
+    };
   };
   shell = myHaskellPackages.shellFor {
     packages = p: [

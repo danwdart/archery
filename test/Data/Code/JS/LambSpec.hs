@@ -19,7 +19,7 @@ import Test.QuickCheck
 import Test.QuickCheck.Monadic
 
 spec ∷ Spec
-spec = xdescribe "JSLamb" $ do
+spec = describe "JSLamb" $ do
     describe "bracket" .
         it "is idempotent" $
             executeViaJSON (bracket id :: JSLamb String String) "1" `shouldReturn` "1"
