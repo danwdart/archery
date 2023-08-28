@@ -36,7 +36,7 @@ common shared-properties-lib
     -Wno-missing-kind-signatures
     -Werror
     -haddock
-  build-depends:       base >= 4.18.0.0 && < 5
+  build-depends:       base >= 4.17.0.0 && < 5
   default-extensions:
     NoGeneralizedNewtypeDeriving
 
@@ -55,7 +55,7 @@ common shared-properties-unsafe
     -Werror
     -haddock
     -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       base >= 4.18.0.0 && < 5
+  build-depends:       base >= 4.17.0.0 && < 5
   default-extensions:
     NoGeneralizedNewtypeDeriving
 
@@ -86,7 +86,7 @@ library
   import: shared-properties-lib
   --ghc-options: -Wno-unused-packages
   hs-source-dirs:      lib
-  build-depends: base >= 4.18.0.0 && < 5
+  build-depends: base >= 4.17.0.0 && < 5
                , aeson
                , bytestring
                , containers
@@ -137,72 +137,72 @@ library
 Çexecutable jcat2hsf
   import: shared-properties-unsafe
   main-is:             jcat2hsf.hs
-  build-depends:       base >= 4.18.0.0 && < 5, aeson, archery, bytestring
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
 executable jcat2hsl
   import: shared-properties-unsafe
   main-is:             jcat2hsl.hs
-  build-depends:       base >= 4.18.0.0 && < 5, aeson, archery, bytestring
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
 executable jcat2js
   import: shared-properties-unsafe
   main-is:             jcat2js.hs
-  build-depends:       base >= 4.18.0.0 && < 5, aeson, archery, bytestring
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
 executable jcat2php
   import: shared-properties-unsafe
   main-is:             jcat2php.hs
-  build-depends:       base >= 4.18.0.0 && < 5, aeson, archery, bytestring
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
 executable jcat2ycat
   import: shared-properties-unsafe
   main-is:             jcat2ycat.hs
-  build-depends:       base >= 4.18.0.0 && < 5, aeson, archery, bytestring, yaml
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring, yaml
 
 executable jcatc
   import: shared-properties-unsafe
   main-is:             jcatc.hs
-  build-depends:       base >= 4.18.0.0 && < 5, aeson, archery, bytestring
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
 executable runjcat
   import: shared-properties-unsafe
   main-is:             runjcat.hs
-  build-depends:       base >= 4.18.0.0 && < 5, aeson, archery, bytestring
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
 executable runycat
   import: shared-properties-unsafe
   main-is:             runycat.hs
-  build-depends:       base >= 4.18.0.0 && < 5, archery, bytestring, yaml
+  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
 
 executable ycat2hsf
   import: shared-properties-unsafe
   main-is:             ycat2hsf.hs
-  build-depends:       base >= 4.18.0.0 && < 5, archery, bytestring, yaml
+  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
 
 executable ycat2hsl
   import: shared-properties-unsafe
   main-is:             ycat2hsl.hs
-  build-depends:       base >= 4.18.0.0 && < 5, archery, bytestring, yaml
+  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
 
 executable ycat2jcat
   import: shared-properties-unsafe
   main-is:             ycat2jcat.hs
-  build-depends:       base >= 4.18.0.0 && < 5, aeson, archery, bytestring, yaml
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring, yaml
 
 executable ycat2js
   import: shared-properties-unsafe
   main-is:             ycat2js.hs
-  build-depends:       base >= 4.18.0.0 && < 5, archery, bytestring, yaml
+  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
 
 executable ycat2php
   import: shared-properties-unsafe
   main-is:             ycat2php.hs
-  build-depends:       base >= 4.18.0.0 && < 5, archery, bytestring, yaml
+  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
 
 executable ycatc
   import: shared-properties-unsafe
   main-is:             ycatc.hs
-  build-depends:       base >= 4.18.0.0 && < 5, archery, bytestring, yaml
+  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
 
 test-suite test
   type:                exitcode-stdio-1.0
@@ -210,7 +210,7 @@ test-suite test
   main-is:             Spec.hs
   default-language:    GHC2021
   default-extensions:  DerivingStrategies, UnicodeSyntax, NoGeneralizedNewtypeDeriving
-  build-depends:       base >= 4.18.0.0 && < 5
+  build-depends:       base >= 4.17.0.0 && < 5
                      , aeson
                      , archery
                      , hspec
@@ -228,7 +228,7 @@ test-suite test-examples
   main-is:             Spec.hs
   default-language:    GHC2021
   default-extensions:  DerivingStrategies, UnicodeSyntax, NoGeneralizedNewtypeDeriving
-  build-depends:       base >= 4.18.0.0 && < 5
+  build-depends:       base >= 4.17.0.0 && < 5
                      , aeson
                      , archery
                      , hspec
