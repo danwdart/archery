@@ -91,7 +91,7 @@ library
                , bytestring
                , containers
                , process
-               -- , text
+               , text
                -- , yaml
   exposed-modules:
     Control.Category.Apply
@@ -114,27 +114,30 @@ library
     Control.Category.Primitive.Console
     Control.Category.Primitive.Curried
     Control.Category.Primitive.Extra
+    Control.Category.Primitive.File
     Control.Category.Primitive.Interpret
     Control.Category.Primitive.JSON
     Control.Category.Primitive.Stdio
     Control.Category.Strong
     Control.Category.Symmetric
-    Data.Function.Utilities
     Data.Code.Haskell.Func
     Data.Code.Haskell.Lamb
+    Data.Code.Haskell.Mock
     Data.Code.Haskell.Program
     Data.Code.JS.Lamb
     Data.Code.PHP.Lamb
     Data.Function.Free.LambdaCalculus.BCKW
     Data.Function.Free.LambdaCalculus.SKI
     Data.Function.Free.Abstract
+    Data.Function.Utilities
     Data.Primitive.Prims
     Data.Primitive.PrimsConsole
+    Data.Primitive.PrimsExtra
     Data.Primitive.PrimsFile
     Data.Render
     System.Executable
 
-Çexecutable jcat2hsf
+executable jcat2hsf
   import: shared-properties-unsafe
   main-is:             jcat2hsf.hs
   build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring

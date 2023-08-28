@@ -21,7 +21,7 @@ import Data.ByteString.Lazy.Char8          qualified as BSL
 import Data.Kind
 import Data.Render
 import Data.String
-import Data.Tuple.Triple
+-- import Data.Tuple.Triple
 import Prelude                             hiding (id, (.))
 import System.Process
 import Text.Read

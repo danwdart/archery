@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Safe              #-}
 
-module Data.Code.Haskell.Func where
+module Data.Code.Haskell.Mock where
 
 import Control.Category
 -- import Control.Category.Apply
@@ -28,73 +28,74 @@ import Prelude                             hiding (id, (.))
 import System.Process
 import Text.Read
 
-newtype HSFunc a b = HSFunc BSL.ByteString
+newtype HSMock a b = HSMock BSL.ByteString
     deriving (Eq, Show)
 
-instance IsString (HSFunc a b) where
-    fromString = HSFunc . BSL.pack
+instance IsString (HSMock a b) where
+    fromString = HSMock . BSL.pack
 
-instance Render (HSFunc a b) where
-    render (HSFunc f) = f
+instance Render (HSMock a b) where
+    render (HSMock f) = f
 
-instance Bracket HSFunc where
-    bracket s = HSFunc $ "(" <> render s <> ")"
+instance Bracket HSMock where
+    bracket s = HSMock $ "(" <> render s <> ")"
 
-instance Category HSFunc where
+instance Category HSMock where
     id = "id"
-    a . b = bracket $ HSFunc (render a <> " . " <> render b)
+    a . b = bracket $ HSMock (render a <> " . " <> render b)
 
-instance Cartesian HSFunc where
+instance Cartesian HSMock where
     copy = bracket "\\x -> (x, x)"
     consume = bracket "const ()"
     fst' = "fst"
     snd' = "snd"
 
-instance Cocartesian HSFunc where
+instance Cocartesian HSMock where
     injectL = "Left"
     injectR = "Right"
     unify = bracket "\\case { Left a -> a; Right a -> a; }"
     tag = bracket "\\case { (False, a) -> Left a; (True, a) -> Right a; }"
 
-instance Strong HSFunc where
-    first' f = HSFunc $ "(Data.Bifunctor.first " <> render f <> ")"
-    second' f = HSFunc $ "(Data.Bifunctor.second " <> render f <> ")"
+instance Strong HSMock where
+    first' f = HSMock $ "(Data.BiMocktor.first " <> render f <> ")"
+    second' f = HSMock $ "(Data.BiMocktor.second " <> render f <> ")"
 
-instance Choice HSFunc where
-    left' f = HSFunc $ "(\\case { Left a -> Left (" <> render f <> " a); Right a -> Right a; })"
-    right' f = HSFunc $ "(\\case { Left a -> Left a; Right a -> Right (" <> render f <> " a); })"
+instance Choice HSMock where
+    left' f = HSMock $ "(\\case { Left a -> Left (" <> render f <> " a); Right a -> Right a; })"
+    right' f = HSMock $ "(\\case { Left a -> Left a; Right a -> Right (" <> render f <> " a); })"
 
-instance Symmetric HSFunc where
+instance Symmetric HSMock where
     swap = "(\\(a, b) -> (b, a))"
     swapEither = "(\\case { Left a -> Right a; Right a -> Left a; })"
     reassoc = "(\\(a, (b, c)) -> ((a, b), c))"
     reassocEither = "(\\case { Left a -> Left (Left a); Right (Left b) -> Left (Right b); Right (Right c) -> Right c })"
 
--- instance Cochoice HSFunc where
+-- instance Cochoice HSMock where
 
--- instance Costrong HSFunc where
+-- instance Costrong HSMock where
 
--- instance Apply HSFunc where
+-- instance Apply HSMock where
 
-instance Primitive HSFunc where
+instance Primitive HSMock where
     eq = "(arr . uncurry $ (==))"
     reverseString = "(arr reverse)"
 
-instance PrimitiveConsole HSFunc where
+instance PrimitiveConsole HSMock where
     outputString = "(Kleisli putStr)"
     inputString = "(Kleisli (const getContents))"
 
-instance PrimitiveExtra HSFunc where
+instance PrimitiveExtra HSMock where
     intToString = "show"
     concatString = "(uncurry (<>))"
-    constString s = HSFunc $ "(const \"" <> BSL.pack s <> "\")"
+    constString s = HSMock $ "(const \"" <> BSL.pack s <> "\")"
 
-instance PrimitiveFile HSFunc where
-    readFile' = "(Kleisli $ liftIO . readFile)"
-    writeFile' = "(Kleisli $ liftIO . uncurry writeFile)"
+-- @TODO some kind of debug (stderr?)
+instance PrimitiveFile HSMock where
+    readFile' = ""
+    writeFile' = ""
 
-instance Numeric HSFunc where
-    num n = HSFunc $ "(const " <> fromString (show n) <> ")"
+instance Numeric HSMock where
+    num n = HSMock $ "(const " <> fromString (show n) <> ")"
     negate' = "negate"
     add = "(uncurry (+))"
     mult = "(uncurry (*))"
@@ -102,7 +103,7 @@ instance Numeric HSFunc where
     mod' = "(uncurry mod)"
 
 -- @TODO escape shell - Text.ShellEscape?
-instance ExecuteHaskell HSFunc where
+instance ExecuteHaskell HSMock where
     executeViaGHCi cat param = do
         let params ∷ [String]
             params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "(" <> BSL.unpack (render cat) <> ") (" <> show param <> ")"]
@@ -115,7 +116,7 @@ instance ExecuteHaskell HSFunc where
 
 -- @TODO this uses runKleisli, the above does not
 
-instance ExecuteStdio HSFunc where
+instance ExecuteStdio HSMock where
     executeViaStdio cat stdin = do
         let params ∷ [String]
             params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "runKleisli (" <> BSL.unpack (render cat) <> ") ()"]

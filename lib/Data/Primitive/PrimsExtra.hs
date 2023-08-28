@@ -1,4 +1,15 @@
-module Data.Primitive.PrimExtra where
+{-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE Unsafe #-}
+{-# OPTIONS_GHC -Wno-unsafe #-}
+
+module Data.Primitive.PrimsExtra where
+
+import Control.Category.Primitive.Extra
+import Data.Aeson
+import Data.Function.Free.Abstract
+import Data.Text qualified as T
 
 data PrimExtra a b where
     IntToString :: PrimExtra Int String
@@ -24,7 +35,7 @@ instance FromJSON (PrimExtra (String, String) String) where
     parseJSON _ = fail "TypeError: expecting (String, String) -> String"
 
 instance FromJSON (PrimExtra () String) where
-    parseJSON (Array [ String "ConstString", s ] ) = pure $ ConstString (T.unpack s)
+    parseJSON (Array [ String "ConstString", String s ] ) = pure $ ConstString (T.unpack s)
     parseJSON _ = fail "TypeError: expecting ConstString"
 
 -- instance Interpret PrimExtra ()
