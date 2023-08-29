@@ -216,10 +216,27 @@ test-suite test
   build-depends:       base >= 4.17.0.0 && < 5
                      , aeson
                      , archery
+                     , directory
                      , hspec
                      , QuickCheck
-  other-modules:       Data.Code.Haskell.FuncSpec
+  other-modules:       Control.Category.ApplySpec
+                       Control.Category.CartesianSpec
+                       Control.Category.ChoiceSpec
+                       Control.Category.CocartesianSpec
+                       Control.Category.CochoiceSpec
+                       Control.Category.CostrongSpec
+                       Control.Category.CurrySpec
+                       Control.Category.GenericSpec
+                       Control.Category.NumericSpec
+                       Control.Category.Primitive.AbstractSpec
+                       Control.Category.Primitive.CurriedSpec
+                       Control.Category.Primitive.ExtraSpec
+                       Control.Category.Primitive.FileSpec
+                       Control.Category.StrongSpec
+                       Control.Category.SymmetricSpec
+                       Data.Code.Haskell.FuncSpec
                        Data.Code.Haskell.LambSpec
+                       Data.Code.Haskell.MockSpec
                        Data.Code.JS.LambSpec
                        Data.Code.PHP.LambSpec
                        Data.Function.Free.AbstractSpec

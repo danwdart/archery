@@ -57,8 +57,8 @@ instance Cocartesian HSMock where
     tag = bracket "\\case { (False, a) -> Left a; (True, a) -> Right a; }"
 
 instance Strong HSMock where
-    first' f = HSMock $ "(Data.BiMocktor.first " <> render f <> ")"
-    second' f = HSMock $ "(Data.BiMocktor.second " <> render f <> ")"
+    first' f = HSMock $ "(Data.Bifunctor.first " <> render f <> ")"
+    second' f = HSMock $ "(Data.Bifunctor.second " <> render f <> ")"
 
 instance Choice HSMock where
     left' f = HSMock $ "(\\case { Left a -> Left (" <> render f <> " a); Right a -> Right a; })"

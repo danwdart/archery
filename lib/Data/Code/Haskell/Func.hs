@@ -105,7 +105,7 @@ instance Numeric HSFunc where
 instance ExecuteHaskell HSFunc where
     executeViaGHCi cat param = do
         let params ∷ [String]
-            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "(" <> BSL.unpack (render cat) <> ") (" <> show param <> ")"]
+            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "import Control.Monad.IO.Class", "-e", "(" <> BSL.unpack (render cat) <> ") (" <> show param <> ")"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
@@ -118,7 +118,7 @@ instance ExecuteHaskell HSFunc where
 instance ExecuteStdio HSFunc where
     executeViaStdio cat stdin = do
         let params ∷ [String]
-            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "runKleisli (" <> BSL.unpack (render cat) <> ") ()"]
+            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "import Control.Monad.IO.Class", "-e", "runKleisli (" <> BSL.unpack (render cat) <> ") ()"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr

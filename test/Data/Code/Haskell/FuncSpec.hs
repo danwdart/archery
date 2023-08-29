@@ -3,17 +3,18 @@ module Data.Code.Haskell.FuncSpec where
 import Control.Category
 import Control.Category.Bracket
 import Control.Category.Cartesian
-import Control.Category.Cocartesian
-import Control.Category.Strong
 import Control.Category.Choice
-import Control.Category.Symmetric
+import Control.Category.Cocartesian
+import Control.Category.Execute.Haskell
+import Control.Category.Numeric
 import Control.Category.Primitive.Abstract
 import Control.Category.Primitive.Extra
-import Control.Category.Numeric
-import Control.Category.Execute.Haskell
+import Control.Category.Primitive.File
+import Control.Category.Strong
+import Control.Category.Symmetric
 import Data.Code.Haskell.Func
-import Prelude hiding ((.), id)
-import Test.Hspec                       hiding (runIO)
+import Prelude                             hiding (id, (.))
+import Test.Hspec                          hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
@@ -95,6 +96,16 @@ spec = describe "HSFunc" $ do
             executeViaGHCi (concatString :: HSFunc (String, String) String) ("a", "b") `shouldReturn` "ab"
         it "returns const string" $ do
             executeViaGHCi (constString "a" :: HSFunc () String) () `shouldReturn` "a"
+    describe "primitivefile" $ do
+        xit "reads /etc/passwd" $ do
+            executeViaGHCi (readFile' :: HSFunc String String) "/etc/passwd" >>= (`shouldSatisfy` ((> 5) . length))
+        it "doesn't read /etc/shadow" $ do
+            executeViaGHCi (readFile' :: HSFunc String String) "/etc/shadow" `shouldThrow` anyIOException
+        xit "writes a file and then reads it back" $ do
+            executeViaGHCi (writeFile' :: HSFunc (String, String) ()) ("bob", "hello")
+            executeViaGHCi (readFile' :: HSFunc String String) "bob" `shouldReturn` "hello"
+        it "doesn't write /etc/shadow" $ do
+            executeViaGHCi (writeFile' :: HSFunc (String, String) ()) ("/etc/shadow", "") `shouldThrow` anyIOException
     describe "numeric" $ do
         it "returns const int" $ do
             executeViaGHCi (num 1 :: HSFunc () Int) () `shouldReturn` 1
