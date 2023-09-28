@@ -1,11 +1,11 @@
 module Control.Category.Primitive.CurriedSpec where
 
-import Control.Arrow (Kleisli(..))
+import Control.Arrow                      (Kleisli (..))
 import Control.Category.Primitive.Curried
 import Test.Hspec
 
 
-spec :: Spec
+spec ∷ Spec
 spec = describe "curried" $ do
     describe "function arrow" $ do
         it "should equal" $

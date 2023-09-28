@@ -12,7 +12,7 @@ class Choice cat where
 instance Choice (->) where
     left' f (Left a)  = Left (f a)
     left' _ (Right a) = Right a
-    right' :: (a -> b) -> Either x a -> Either x b
+    right' :: (a → b) → Either x a → Either x b
     right' _ (Left a)  = Left a
     right' f (Right a) = Right (f a)
 

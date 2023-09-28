@@ -51,7 +51,6 @@ common shared-properties-unsafe
     -Wno-missing-export-lists
     -Wno-missing-import-lists
     -Wno-missing-kind-signatures
-    -Wno-prepositive-qualified-module
     -Werror
     -haddock
     -threaded -rtsopts -with-rtsopts=-N
@@ -76,7 +75,6 @@ common shared-properties-nobase
     -Wno-missing-export-lists
     -Wno-missing-import-lists
     -Wno-missing-kind-signatures
-    -Wno-prepositive-qualified-module
     -Werror
     -haddock
     -threaded -rtsopts -with-rtsopts=-N

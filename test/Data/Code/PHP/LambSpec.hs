@@ -3,17 +3,17 @@ module Data.Code.PHP.LambSpec where
 import Control.Category
 import Control.Category.Bracket
 import Control.Category.Cartesian
-import Control.Category.Cocartesian
-import Control.Category.Strong
 import Control.Category.Choice
-import Control.Category.Symmetric
+import Control.Category.Cocartesian
+import Control.Category.Execute.JSON
+import Control.Category.Numeric
 import Control.Category.Primitive.Abstract
 import Control.Category.Primitive.Extra
-import Control.Category.Numeric
-import Control.Category.Execute.JSON
+import Control.Category.Strong
+import Control.Category.Symmetric
 import Data.Code.PHP.Lamb
-import Prelude hiding ((.), id)
-import Test.Hspec                       hiding (runIO)
+import Prelude                             hiding (id, (.))
+import Test.Hspec                          hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic

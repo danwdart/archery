@@ -2,7 +2,7 @@
 
 module Control.Category.Primitive.File where
 
-import Control.Arrow (Kleisli (..))
+import Control.Arrow          (Kleisli (..))
 import Control.Monad.IO.Class
 
 class PrimitiveFile cat where

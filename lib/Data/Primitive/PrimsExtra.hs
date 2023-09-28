@@ -1,7 +1,7 @@
-{-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE GADTs             #-}
+{-# LANGUAGE OverloadedLists   #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE Unsafe #-}
+{-# LANGUAGE Unsafe            #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
 module Data.Primitive.PrimsExtra where
@@ -9,7 +9,7 @@ module Data.Primitive.PrimsExtra where
 import Control.Category.Primitive.Extra
 import Data.Aeson
 import Data.Function.Free.Abstract
-import Data.Text qualified as T
+import Data.Text                        qualified as T
 
 data PrimExtra a b where
     IntToString :: PrimExtra Int String

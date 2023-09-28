@@ -1,10 +1,10 @@
 module Control.Category.Primitive.ExtraSpec where
 
-import Control.Arrow (Kleisli(..))
+import Control.Arrow                    (Kleisli (..))
 import Control.Category.Primitive.Extra
 import Test.Hspec
 
-spec :: Spec
+spec ∷ Spec
 spec = describe "Extra" $ do
     describe "function arrow" $ do
         it "should cast int to string" $
