@@ -22,7 +22,7 @@ import Control.Exception                   hiding (bracket)
 import Control.Monad.IO.Class
 import Data.Aeson
 import Data.ByteString.Lazy.Char8          qualified as BSL
-import Data.Render
+import Data.Render.Statement
 import Data.String
 import GHC.IO.Exception
 import Prelude                             hiding (id, (.))
@@ -35,11 +35,11 @@ newtype PHPLamb a b = PHPLamb BSL.ByteString
 instance IsString (PHPLamb a b) where
     fromString = PHPLamb . BSL.pack
 
-instance Render (PHPLamb a b) where
-    render (PHPLamb f) = f
+instance RenderStatement (PHPLamb a b) where
+    renderStatement (PHPLamb f) = f
 
 instance Bracket PHPLamb where
-    bracket s = PHPLamb $ "(" <> render s <> ")"
+    bracket s = PHPLamb $ "(" <> renderStatement s <> ")"
 
 instance Category PHPLamb where
     id = "(fn ($x) => $x)"
@@ -102,7 +102,7 @@ instance Numeric PHPLamb where
 instance ExecuteJSON PHPLamb where
     executeViaJSON cat param = do
         let params ∷ [String]
-            params = ["-r", "\"print(json_encode((" <> BSL.unpack (render cat) <> ")(" <> BSL.unpack (encode param) <> ")));\""]
+            params = ["-r", "\"print(json_encode((" <> BSL.unpack (renderStatement cat) <> ")(" <> BSL.unpack (encode param) <> ")));\""]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "php" params [])
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run php with params: " <> unwords params <> " Output: " <> stderr
@@ -114,7 +114,7 @@ instance ExecuteStdio PHPLamb where
     -- @TODO figure out why we have to have something here for argument - for now using null...
     executeViaStdio cat stdin = do
         let params ∷ [String]
-            params = ["-r", "(" <> BSL.unpack (render cat) <> ")(null);"]
+            params = ["-r", "(" <> BSL.unpack (renderStatement cat) <> ")(null);"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "php" params (show stdin))
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run php with params: " <> unwords params <> " Output: " <> stderr

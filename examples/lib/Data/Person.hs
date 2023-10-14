@@ -1,6 +1,8 @@
 {-# LANGUAGE DeriveAnyClass     #-}
 {-# LANGUAGE DeriveGeneric      #-}
 {-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE Unsafe             #-}
+{-# OPTIONS_GHC -Wno-unsafe #-}
 
 module Data.Person where
 

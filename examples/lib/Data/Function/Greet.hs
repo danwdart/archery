@@ -6,21 +6,13 @@
 
 module Data.Function.Greet where
 
-import Control.Arrow                     (Kleisli (..))
 import Control.Category
 import Control.Category.Cartesian
 import Control.Category.Primitive.Extra
 import Control.Category.Primitive.Person
 import Control.Category.Strong
 import Control.Category.Symmetric
-import Data.Aeson
-import Data.Code.Haskell.Func
-import Data.Code.Haskell.Lamb
-import Data.Code.JS.Lamb
-import Data.Code.PHP.Lamb
-import Data.Function.Free.Abstract
 import Data.Person
-import GHC.Generics
 import Prelude                           hiding (id, (.))
 
 greetWith ∷ (Category cat, Cartesian cat, Strong cat, Symmetric cat, PrimitiveExtra cat) ⇒ cat a String → cat a Int → cat a String

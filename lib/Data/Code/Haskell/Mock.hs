@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Safe              #-}
 
+-- | Mock module, same as Func but doesn't do any real I/O.
 module Data.Code.Haskell.Mock where
 
 import Control.Category
@@ -21,7 +22,7 @@ import Control.Category.Symmetric
 import Control.Exception                   hiding (bracket)
 import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8          qualified as BSL
-import Data.Render
+import Data.Render.Statement
 import Data.String
 import GHC.IO.Exception
 import Prelude                             hiding (id, (.))
@@ -34,15 +35,15 @@ newtype HSMock a b = HSMock BSL.ByteString
 instance IsString (HSMock a b) where
     fromString = HSMock . BSL.pack
 
-instance Render (HSMock a b) where
-    render (HSMock f) = f
+instance RenderStatement (HSMock a b) where
+    renderStatement (HSMock f) = f
 
 instance Bracket HSMock where
-    bracket s = HSMock $ "(" <> render s <> ")"
+    bracket s = HSMock $ "(" <> renderStatement s <> ")"
 
 instance Category HSMock where
     id = "id"
-    a . b = bracket $ HSMock (render a <> " . " <> render b)
+    a . b = bracket $ HSMock (renderStatement a <> " . " <> renderStatement b)
 
 instance Cartesian HSMock where
     copy = bracket "\\x -> (x, x)"
@@ -57,12 +58,12 @@ instance Cocartesian HSMock where
     tag = bracket "\\case { (False, a) -> Left a; (True, a) -> Right a; }"
 
 instance Strong HSMock where
-    first' f = HSMock $ "(Data.Bifunctor.first " <> render f <> ")"
-    second' f = HSMock $ "(Data.Bifunctor.second " <> render f <> ")"
+    first' f = HSMock $ "(Data.Bifunctor.first " <> renderStatement f <> ")"
+    second' f = HSMock $ "(Data.Bifunctor.second " <> renderStatement f <> ")"
 
 instance Choice HSMock where
-    left' f = HSMock $ "(\\case { Left a -> Left (" <> render f <> " a); Right a -> Right a; })"
-    right' f = HSMock $ "(\\case { Left a -> Left a; Right a -> Right (" <> render f <> " a); })"
+    left' f = HSMock $ "(\\case { Left a -> Left (" <> renderStatement f <> " a); Right a -> Right a; })"
+    right' f = HSMock $ "(\\case { Left a -> Left a; Right a -> Right (" <> renderStatement f <> " a); })"
 
 instance Symmetric HSMock where
     swap = "(\\(a, b) -> (b, a))"
@@ -106,7 +107,13 @@ instance Numeric HSMock where
 instance ExecuteHaskell HSMock where
     executeViaGHCi cat param = do
         let params ∷ [String]
-            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "(" <> BSL.unpack (render cat) <> ") (" <> show param <> ")"]
+            params = [
+                "-e", ":set -XLambdaCase",
+                "-e", "import Control.Arrow",
+                "-e", "import Prelude hiding ((.), id)",
+                "-e", "import Control.Category",
+                "-e", "(" <> BSL.unpack (renderStatement cat) <> ") (" <> show param <> ")"
+                ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
@@ -119,7 +126,13 @@ instance ExecuteHaskell HSMock where
 instance ExecuteStdio HSMock where
     executeViaStdio cat stdin = do
         let params ∷ [String]
-            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "runKleisli (" <> BSL.unpack (render cat) <> ") ()"]
+            params = [
+                "-e", ":set -XLambdaCase",
+                "-e", "import Control.Arrow",
+                "-e", "import Prelude hiding ((.), id)",
+                "-e", "import Control.Category",
+                "-e", "runKleisli (" <> BSL.unpack (renderStatement cat) <> ") ()"
+                ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr

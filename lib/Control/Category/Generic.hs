@@ -19,7 +19,7 @@ import Control.Category.Symmetric
 import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8          qualified as BSL
 import Data.Kind
-import Data.Render
+import Data.Render.Statement
 import Data.String
 -- import Data.Tuple.Triple
 import Prelude                             hiding (id, (.))

@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Safe              #-}
 
+-- | Program module. Like Func, but dynamically imports modules as required.
 module Data.Code.Haskell.Program where
 
 import Control.Category
@@ -21,9 +22,12 @@ import Control.Category.Symmetric
 import Control.Exception                   hiding (bracket)
 import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8          qualified as BSL
-import Data.Render
-import Data.Set
+import Data.Render.File
+import Data.Render.Statement
+import Data.Set                            (Set)
+import Data.Set                            qualified as S
 import Data.String
+import Data.Typeable
 import GHC.IO.Exception
 import Prelude                             hiding (id, (.))
 import System.Process
@@ -31,21 +35,32 @@ import Text.Read
 
 type Import = BSL.ByteString
 
-data HSProg a b = HSProg (Set Import) BSL.ByteString
-    deriving (Eq, Show)
+data HSProg a b = HSProg {
+    imports :: Set Import,
+    code    :: BSL.ByteString
+} deriving (Eq, Show)
+
+toImports ∷ HSProg a b → [String]
+toImports (HSProg imports _) = S.toList imports >>= \importStr -> ["-e", "import " <> BSL.unpack importStr]
 
 instance IsString (HSProg a b) where
     fromString = HSProg [] . BSL.pack
 
-instance Render (HSProg a b) where
-    render (HSProg _ f) = f -- @TODO is
+instance RenderStatement (HSProg a b) where
+    renderStatement (HSProg _ f) = f -- @TODO is
+
+instance (Typeable a, Typeable b) ⇒ RenderFile (HSProg a b) where
+    renderFile cat = "module Func where\n\n" <>
+        BSL.unlines (("import " <>) <$> S.toList (imports cat)) <>
+        "\n\nfunc :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <> "\nfunc = " <>
+        renderStatement cat
 
 instance Bracket HSProg where
-    bracket s = HSProg [] $ "(" <> render s <> ")"
+    bracket s = HSProg (imports s) $ "(" <> renderStatement s <> ")"
 
 instance Category HSProg where
     id = "id"
-    a . b = HSProg [] $ "(" <> render a <> " . " <> render b <> ")"
+    a . b = HSProg (imports a <> imports b) $ "(" <> renderStatement a <> " . " <> renderStatement b <> ")"
 
 instance Cartesian HSProg where
     copy = HSProg ["Control.Category.Cartesian"] "copy"
@@ -61,12 +76,12 @@ instance Cocartesian HSProg where
 
 instance Strong HSProg where
     -- @TODO apply? Bracket?
-    first' f = HSProg ["Data.Bifunctor"] $ "(first " <> render f <> ")"
-    second' f = HSProg ["Data.Bifunctor"] $ "(second " <> render f <> ")"
+    first' f = HSProg (["Data.Bifunctor"] <> imports f) $ "(first " <> renderStatement f <> ")"
+    second' f = HSProg (["Data.Bifunctor"] <> imports f) $ "(second " <> renderStatement f <> ")"
 
 instance Choice HSProg where
-    left' f = HSProg [] $ "(\\case { Left a -> Left (" <> render f <> " a); Right a -> Right a; })"
-    right' f = HSProg [] $ "(\\case { Left a -> Left a; Right a -> Right (" <> render f <> " a); })"
+    left' f = HSProg (imports f) $ "(\\case { Left a -> Left (" <> renderStatement f <> " a); Right a -> Right a; })"
+    right' f = HSProg (imports f) $ "(\\case { Left a -> Left a; Right a -> Right (" <> renderStatement f <> " a); })"
 
 instance Symmetric HSProg where
     swap = "(\\(a, b) -> (b, a))"
@@ -96,11 +111,22 @@ instance Numeric HSProg where
     div' = "(uncurry div)"
     mod' = "(uncurry mod)"
 
+-- I don't quite know how to call ghci or cabal repl to include the correct functions here, so the tests are skipped.
+
 -- @TODO escape shell - Text.ShellEscape?
 instance ExecuteHaskell HSProg where
     executeViaGHCi cat param = do
         let params ∷ [String]
-            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "(" <> BSL.unpack (render cat) <> ") (" <> show param <> ")"]
+            params = [
+                "-e", ":set -XLambdaCase",
+                "-e", "import Control.Arrow",
+                "-e", "import Prelude hiding ((.), id)",
+                "-e", "import Control.Category"
+                ] <>
+                toImports cat <>
+                [
+                "-e", "(" <> BSL.unpack (renderStatement cat) <> ") (" <> show param <> ")"
+                ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
@@ -114,7 +140,16 @@ instance ExecuteHaskell HSProg where
 instance ExecuteStdio HSProg where
     executeViaStdio cat stdin = do
         let params ∷ [String]
-            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", BSL.unpack (render cat) <> " ()"]
+            params = [
+                "-e", ":set -XLambdaCase",
+                "-e", "import Control.Arrow",
+                "-e", "import Prelude hiding ((.), id)",
+                "-e", "import Control.Category"
+                ] <>
+                toImports cat <>
+                [
+                "-e", BSL.unpack (renderStatement cat) <> " ()"
+                ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr

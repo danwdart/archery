@@ -9,7 +9,7 @@ import Data.ByteString.Lazy.Char8  qualified as BSL
 import Data.Code.JS.Lamb
 import Data.Function.Free.Abstract
 import Data.Primitive.Prims
-import Data.Render
+import Data.Render.Statement
 import Data.Yaml                   qualified as Y
 import Prelude                     hiding (id, (.))
 import System.Executable
@@ -17,6 +17,6 @@ import System.Executable
 -- | Compiles a category from YAML category file to a Haskell function source file.
 main ∷ IO ()
 main = readToWrite (\bs ->
-    (pure . render :: JSLamb () () → IO BSL.ByteString) =<<
+    (pure . renderStatement :: JSLamb () () → IO BSL.ByteString) =<<
     (pure . interpret :: FreeFunc Prims () () → IO (JSLamb () ())) =<<
     (Y.decodeThrow . BSL.toStrict :: BSL.ByteString → IO (FreeFunc Prims () ())) bs)

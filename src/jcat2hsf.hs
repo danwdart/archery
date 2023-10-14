@@ -14,14 +14,14 @@ import Data.Function.Free.Abstract
 import Data.Maybe
 #endif
 import Data.Primitive.Prims
-import Data.Render
+import Data.Render.Statement
 import System.Executable
 import Prelude hiding ((.), id)
 
 -- | Compiles a category from YAML category file to a Haskell function source file.
 main ∷ IO ()
 main = readToWrite (\bs ->
-    (pure . render :: HSFunc () () -> IO BSL.ByteString) =<<
+    (pure . renderStatement :: HSFunc () () -> IO BSL.ByteString) =<<
     (pure . interpret :: FreeFunc Prims () () -> IO (HSFunc () ())) =<<
 #if MIN_VERSION_aeson(2,1,2)
     (throwDecode :: BSL.ByteString -> IO (FreeFunc Prims () ())) bs)

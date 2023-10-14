@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Safe              #-}
 
+-- | Main Haskell Func module. Runs categories as Haskell functions on the command line.
 module Data.Code.Haskell.Func where
 
 import Control.Category
@@ -21,7 +22,7 @@ import Control.Category.Symmetric
 import Control.Exception                   hiding (bracket)
 import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8          qualified as BSL
-import Data.Render
+import Data.Render.Statement
 import Data.String
 import GHC.IO.Exception
 import Prelude                             hiding (id, (.))
@@ -34,17 +35,18 @@ newtype HSFunc a b = HSFunc BSL.ByteString
 instance IsString (HSFunc a b) where
     fromString = HSFunc . BSL.pack
 
-instance Render (HSFunc a b) where
-    render (HSFunc f) = f
+instance RenderStatement (HSFunc a b) where
+    renderStatement (HSFunc f) = f
 
 instance Bracket HSFunc where
-    bracket s = HSFunc $ "(" <> render s <> ")"
+    bracket s = HSFunc $ "(" <> renderStatement s <> ")"
 
 instance Category HSFunc where
     id = "id"
-    a . b = bracket $ HSFunc (render a <> " . " <> render b)
+    a . b = bracket $ HSFunc (renderStatement a <> " . " <> renderStatement b)
 
 instance Cartesian HSFunc where
+    copy :: HSFunc a (a, a)
     copy = bracket "\\x -> (x, x)"
     consume = bracket "const ()"
     fst' = "fst"
@@ -57,12 +59,12 @@ instance Cocartesian HSFunc where
     tag = bracket "\\case { (False, a) -> Left a; (True, a) -> Right a; }"
 
 instance Strong HSFunc where
-    first' f = HSFunc $ "(Data.Bifunctor.first " <> render f <> ")"
-    second' f = HSFunc $ "(Data.Bifunctor.second " <> render f <> ")"
+    first' f = HSFunc $ "(Data.Bifunctor.first " <> renderStatement f <> ")"
+    second' f = HSFunc $ "(Data.Bifunctor.second " <> renderStatement f <> ")"
 
 instance Choice HSFunc where
-    left' f = HSFunc $ "(\\case { Left a -> Left (" <> render f <> " a); Right a -> Right a; })"
-    right' f = HSFunc $ "(\\case { Left a -> Left a; Right a -> Right (" <> render f <> " a); })"
+    left' f = HSFunc $ "(\\case { Left a -> Left (" <> renderStatement f <> " a); Right a -> Right a; })"
+    right' f = HSFunc $ "(\\case { Left a -> Left a; Right a -> Right (" <> renderStatement f <> " a); })"
 
 instance Symmetric HSFunc where
     swap = "(\\(a, b) -> (b, a))"
@@ -105,7 +107,14 @@ instance Numeric HSFunc where
 instance ExecuteHaskell HSFunc where
     executeViaGHCi cat param = do
         let params ∷ [String]
-            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "import Control.Monad.IO.Class", "-e", "(" <> BSL.unpack (render cat) <> ") (" <> show param <> ")"]
+            params = [
+                "-e", ":set -XLambdaCase",
+                "-e", "import Control.Arrow",
+                "-e", "import Prelude hiding ((.), id)",
+                "-e", "import Control.Category",
+                "-e", "import Control.Monad.IO.Class",
+                "-e", "(" <> BSL.unpack (renderStatement cat) <> ") (" <> show param <> ")"
+                ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
@@ -118,7 +127,14 @@ instance ExecuteHaskell HSFunc where
 instance ExecuteStdio HSFunc where
     executeViaStdio cat stdin = do
         let params ∷ [String]
-            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "import Control.Monad.IO.Class", "-e", "runKleisli (" <> BSL.unpack (render cat) <> ") ()"]
+            params = [
+                "-e", ":set -XLambdaCase",
+                "-e", "import Control.Arrow",
+                "-e", "import Prelude hiding ((.), id)",
+                "-e", "import Control.Category",
+                "-e", "import Control.Monad.IO.Class",
+                "-e", "runKleisli (" <> BSL.unpack (renderStatement cat) <> ") ()"
+                ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr

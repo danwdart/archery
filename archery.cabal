@@ -130,7 +130,8 @@ library
     Data.Primitive.PrimsConsole
     Data.Primitive.PrimsExtra
     Data.Primitive.PrimsFile
-    Data.Render
+    Data.Render.File
+    Data.Render.Statement
     System.Executable
 
 executable jcat2hsf
@@ -141,6 +142,16 @@ executable jcat2hsf
 executable jcat2hsl
   import: shared-properties-unsafe
   main-is:             jcat2hsl.hs
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
+
+executable jcat2hsm
+  import: shared-properties-unsafe
+  main-is:             jcat2hsm.hs
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
+
+executable jcat2hsp
+  import: shared-properties-unsafe
+  main-is:             jcat2hsp.hs
   build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
 executable jcat2js
@@ -183,6 +194,16 @@ executable ycat2hsl
   main-is:             ycat2hsl.hs
   build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
 
+executable ycat2hsm
+  import: shared-properties-unsafe
+  main-is:             ycat2hsm.hs
+  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
+
+executable ycat2hsp
+  import: shared-properties-unsafe
+  main-is:             ycat2hsp.hs
+  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
+
 executable ycat2jcat
   import: shared-properties-unsafe
   main-is:             ycat2jcat.hs
@@ -202,6 +223,19 @@ executable ycatc
   import: shared-properties-unsafe
   main-is:             ycatc.hs
   build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
+
+executable generate-examples
+  import: shared-properties-unsafe
+  main-is:             generate-examples.hs
+  hs-source-dirs:      examples/lib, examples/test
+  other-modules:       Control.Category.Primitive.Person
+                       Data.Function.CollatzStep
+                       Data.Function.Greet
+                       Data.Function.IsPalindrome
+                       Data.Function.ReverseInput
+                       Data.Person
+                       Data.Primitive.PrimPerson
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, yaml
 
 test-suite test
   type:                exitcode-stdio-1.0
@@ -233,6 +267,7 @@ test-suite test
                        Data.Code.Haskell.FuncSpec
                        Data.Code.Haskell.LambSpec
                        Data.Code.Haskell.MockSpec
+                       Data.Code.Haskell.ProgramSpec
                        Data.Code.JS.LambSpec
                        Data.Code.PHP.LambSpec
                        Data.Function.Free.AbstractSpec

@@ -22,7 +22,7 @@ import Control.Exception                   hiding (bracket)
 import Control.Monad.IO.Class
 import Data.Aeson
 import Data.ByteString.Lazy.Char8          qualified as BSL
-import Data.Render
+import Data.Render.Statement
 import Data.String
 import GHC.IO.Exception
 import Prelude                             hiding (id, (.))
@@ -35,11 +35,11 @@ newtype JSLamb a b = JSLamb BSL.ByteString
 instance IsString (JSLamb a b) where
     fromString = JSLamb . BSL.pack
 
-instance Render (JSLamb a b) where
-    render (JSLamb f) = f
+instance RenderStatement (JSLamb a b) where
+    renderStatement (JSLamb f) = f
 
 instance Bracket JSLamb where
-    bracket s = JSLamb $ "(" <> render s <> ")"
+    bracket s = JSLamb $ "(" <> renderStatement s <> ")"
 
 instance Category JSLamb where
     id = "(x => x)"
@@ -102,7 +102,7 @@ instance Numeric JSLamb where
 instance ExecuteJSON JSLamb where
     executeViaJSON cat param = do
         let params ∷ [String]
-            params = ["-e", "console.log(JSON.stringify(" <> BSL.unpack (render cat) <> "(" <> BSL.unpack (encode param) <> ")))"]
+            params = ["-e", "console.log(JSON.stringify(" <> BSL.unpack (renderStatement cat) <> "(" <> BSL.unpack (encode param) <> ")))"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params "")
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
@@ -113,7 +113,7 @@ instance ExecuteJSON JSLamb where
 instance ExecuteStdio JSLamb where
     executeViaStdio cat stdin = do
         let params ∷ [String]
-            params = ["-e", BSL.unpack (render cat) <> "()"]
+            params = ["-e", BSL.unpack (renderStatement cat) <> "()"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params (show stdin))
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr

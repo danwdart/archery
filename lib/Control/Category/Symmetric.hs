@@ -1,6 +1,7 @@
 {-# LANGUAGE Safe #-}
 
 module Control.Category.Symmetric where
+import Control.Arrow (Kleisli(..))
 
 class Symmetric cat where
     swap :: cat (a, b) (b, a)
@@ -16,3 +17,9 @@ instance Symmetric (->) where
     reassocEither (Left a)          = Left (Left a)
     reassocEither (Right (Left b))  = Left (Right b)
     reassocEither (Right (Right c)) = Right c
+
+instance Monad m ⇒ Symmetric (Kleisli m) where
+    swap = Kleisli (pure . swap)
+    swapEither = Kleisli (pure . swapEither)
+    reassoc = Kleisli (pure . reassoc)
+    reassocEither = Kleisli (pure . reassocEither)

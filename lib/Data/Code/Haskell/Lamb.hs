@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Safe              #-}
 
+-- | Lamb module. Same as Func, but with explicit lambdas.
 module Data.Code.Haskell.Lamb where
 
 import Control.Category
@@ -20,7 +21,7 @@ import Control.Category.Symmetric
 import Control.Exception                   hiding (bracket)
 import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8          qualified as BSL
-import Data.Render
+import Data.Render.Statement
 import Data.String
 import GHC.IO.Exception
 import Prelude                             hiding (id, (.))
@@ -37,17 +38,17 @@ newtype HSLamb a b = HSLamb BSL.ByteString
 instance IsString (HSLamb a b) where
     fromString = HSLamb . BSL.pack
 
-instance Render (HSLamb a b) where
-    render (HSLamb f) = f
+instance RenderStatement (HSLamb a b) where
+    renderStatement (HSLamb f) = f
 
 instance Bracket HSLamb where
-    bracket s = HSLamb $ "(" <> render s <> ")"
+    bracket s = HSLamb $ "(" <> renderStatement s <> ")"
 
 instance Category HSLamb where
     id = bracket "\\x -> x"
     -- Ohh, this is the Function instance for (.)... @TODO fix this to use the Category instance if we want both Kleisli and (->) to work!
     -- TBH we should probably fix up Kleisli by using a Monadic or Pure typeclass to specify.
-    a . b = bracket . HSLamb $ "\\x -> " <> render a <> " ( " <> render b <> " x)" -- f . g = f (g x), not g (f x)
+    a . b = bracket . HSLamb $ "\\x -> " <> renderStatement a <> " ( " <> renderStatement b <> " x)" -- f . g = f (g x), not g (f x)
 
 instance Cartesian HSLamb where
     copy = bracket "\\x -> (x, x)"
@@ -62,12 +63,12 @@ instance Cocartesian HSLamb where
     tag = bracket "\\case { (False, a) -> Left a; (True, a) -> Right a; }"
 
 instance Strong HSLamb where
-    first' f = bracket . HSLamb $ "\\(x, y) -> (" <> render f <> " x, y)"
-    second' f = bracket . HSLamb $ "\\(x, y) -> (x, " <> render f <> " y)"
+    first' f = bracket . HSLamb $ "\\(x, y) -> (" <> renderStatement f <> " x, y)"
+    second' f = bracket . HSLamb $ "\\(x, y) -> (x, " <> renderStatement f <> " y)"
 
 instance Choice HSLamb where
-    left' f = bracket . HSLamb $ "\\case { Left a -> Left (" <> render f <> " a); Right a -> Right a; }"
-    right' f = bracket . HSLamb $ "\\case { Left a -> Left a; Right a -> Right (" <> render f <> " a); }"
+    left' f = bracket . HSLamb $ "\\case { Left a -> Left (" <> renderStatement f <> " a); Right a -> Right a; }"
+    right' f = bracket . HSLamb $ "\\case { Left a -> Left a; Right a -> Right (" <> renderStatement f <> " a); }"
 
 instance Symmetric HSLamb where
     swap = bracket "\\(a, b) -> (b, a)"
@@ -106,7 +107,13 @@ instance Numeric HSLamb where
 instance ExecuteHaskell HSLamb where
     executeViaGHCi cat param = do
         let params ∷ [String]
-            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", "(" <> BSL.unpack (render cat) <> ") (" <> show param <> ")"]
+            params = [
+                "-e", ":set -XLambdaCase",
+                "-e", "import Control.Arrow",
+                "-e", "import Prelude hiding ((.), id)",
+                "-e", "import Control.Category",
+                "-e", "(" <> BSL.unpack (renderStatement cat) <> ") (" <> show param <> ")"
+                ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
@@ -120,7 +127,13 @@ instance ExecuteHaskell HSLamb where
 instance ExecuteStdio HSLamb where
     executeViaStdio cat stdin = do
         let params ∷ [String]
-            params = ["-e", ":set -XLambdaCase", "-e", "import Control.Arrow", "-e", "import Prelude hiding ((.), id)", "-e", "import Control.Category", "-e", BSL.unpack (render cat) <> " ()"]
+            params = [
+                "-e", ":set -XLambdaCase",
+                "-e", "import Control.Arrow",
+                "-e", "import Prelude hiding ((.), id)",
+                "-e", "import Control.Category",
+                "-e", BSL.unpack (renderStatement cat) <> " ()"
+                ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of
             ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr

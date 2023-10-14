@@ -21,6 +21,7 @@ import Control.Category.Strong
 import Control.Category.Primitive.Interpret
 import Data.Aeson
 import Prelude                              hiding (id, (.))
+import Control.Category.Symmetric
 
 data FreeFunc p a b where
     Id :: FreeFunc p x x
@@ -45,13 +46,17 @@ data FreeFunc p a b where
     Mult :: FreeFunc p (Int, Int) Int
     Div :: FreeFunc p (Int, Int) Int
     Mod :: FreeFunc p (Int, Int) Int
+    Swap :: FreeFunc p (a, b) (b, a)
+    SwapEither :: FreeFunc p (Either a b) (Either b a)
+    Reassoc :: FreeFunc p (a, (b, c)) ((a, b), c)
+    ReassocEither :: FreeFunc p (Either a (Either b c)) (Either (Either a b) c)
     Lift :: p a b -> FreeFunc p a b
 
 deriving instance (forall a b. Show (p a b)) ⇒ Show (FreeFunc p x y)
 
 -- deriving instance (forall a b. Read (p a b)) => Read (FreeFunc p x y)
 
-instance (Numeric cat, Cocartesian cat, {- Cochoice cat,-} Choice cat, Cartesian cat, {- Costrong cat, -} Strong cat, Category cat, InterpretPrim p cat) ⇒ Interpret (FreeFunc p) cat where
+instance (Numeric cat, Cocartesian cat, {- Cochoice cat,-} Choice cat, Cartesian cat, {- Costrong cat, -} Strong cat, Category cat, Symmetric cat, InterpretPrim p cat) ⇒ Interpret (FreeFunc p) cat where
     {-# INLINABLE interpret #-}
     interpret Id            = id
     interpret (Compose a b) = interpret a . interpret b
@@ -75,6 +80,10 @@ instance (Numeric cat, Cocartesian cat, {- Cochoice cat,-} Choice cat, Cartesian
     interpret Mult          = mult
     interpret Div           = div'
     interpret Mod           = mod'
+    interpret Swap          = swap
+    interpret SwapEither    = swapEither
+    interpret Reassoc       = reassoc
+    interpret ReassocEither = reassocEither
     interpret (Lift a)      = interpretPrim a
 
 instance (forall a b. ToJSON (k a b)) ⇒ ToJSON (FreeFunc k x y) where
@@ -100,6 +109,10 @@ instance (forall a b. ToJSON (k a b)) ⇒ ToJSON (FreeFunc k x y) where
     toJSON Mult = String "Add"
     toJSON Div = String "Div"
     toJSON Mod = String "Mod"
+    toJSON Swap = String "Swap"
+    toJSON SwapEither = String "SwapEither"
+    toJSON Reassoc = String "Reassoc"
+    toJSON ReassocEither = String "ReassocEither"
     toJSON (Lift f) = Array [ "Lift", Array [ toJSON f ] ]
 
 instance FromJSON (FreeFunc p a a) where
@@ -151,7 +164,11 @@ instance Cochoice (FreeFunc p) where
     unleft = Unleft
 -}
 
--- instance Symmetric (FreeFunc p) where
+instance Symmetric (FreeFunc p) where
+    swap = Swap
+    swapEither = SwapEither
+    reassoc = Reassoc
+    reassocEither = ReassocEither
 
 instance Numeric (FreeFunc p) where
     num = Num

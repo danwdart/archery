@@ -8,7 +8,7 @@ import Control.Category
 import Control.Category.Interpret
 import Data.Aeson
 import Data.ByteString.Lazy.Char8 qualified as BSL
-import Data.Code.Haskell.Func
+import Data.Code.Haskell.Program
 import Data.Function.Free.Abstract
 #if !(MIN_VERSION_aeson(2,1,2))
 import Data.Maybe
@@ -20,10 +20,9 @@ import Prelude hiding ((.), id)
 
 -- | Compiles a category from YAML category file to a Haskell function source file.
 main ∷ IO ()
-main = readToOp (\bs ->
-    compileHS =<<
-    (pure . renderStatement :: HSFunc () () -> IO BSL.ByteString) =<<
-    (pure . interpret :: FreeFunc Prims () () -> IO (HSFunc () ())) =<<
+main = readToWrite (\bs ->
+    (pure . renderStatement :: HSProg () () -> IO BSL.ByteString) =<<
+    (pure . interpret :: FreeFunc Prims () () -> IO (HSProg () ())) =<<
 #if MIN_VERSION_aeson(2,1,2)
     (throwDecode :: BSL.ByteString -> IO (FreeFunc Prims () ())) bs)
 #else

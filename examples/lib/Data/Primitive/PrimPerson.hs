@@ -1,5 +1,7 @@
 {-# LANGUAGE GADTs             #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Unsafe            #-}
+{-# OPTIONS_GHC -Wno-unsafe #-}
 
 module Data.Primitive.PrimPerson where
 

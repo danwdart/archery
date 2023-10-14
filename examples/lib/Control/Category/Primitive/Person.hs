@@ -1,4 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Unsafe            #-}
+{-# OPTIONS_GHC -Wno-unsafe #-}
 
 module Control.Category.Primitive.Person where
 
