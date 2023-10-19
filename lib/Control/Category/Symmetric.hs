@@ -1,7 +1,7 @@
 {-# LANGUAGE Safe #-}
 
 module Control.Category.Symmetric where
-import Control.Arrow (Kleisli(..))
+import Control.Arrow (Kleisli (..))
 
 class Symmetric cat where
     swap :: cat (a, b) (b, a)

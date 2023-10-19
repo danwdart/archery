@@ -90,11 +90,9 @@ spec = xdescribe "HSProg" $ do
             executeViaGHCi (reverseString :: HSProg String String) "abc" `shouldReturn` "cba"
     describe "primitiveconsole" $ pure ()
     describe "primitive extra" $ do
-        xit "converts int to string" $
-            pending
+        xit "converts int to string" pending
             -- executeViaGHCi (intToString :: HSProg Int String) 1 `shouldReturn` "1"
-        xit "concats string" $
-            pending
+        xit "concats string" pending
             -- executeViaGHCi (concatString :: HSProg (String, String) String) ("a", "b") `shouldReturn` "ab"
         xit "returns const string" $ do
             pending

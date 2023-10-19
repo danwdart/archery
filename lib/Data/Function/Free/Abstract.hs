@@ -19,9 +19,9 @@ import Control.Category.Numeric
 import Control.Category.Strong
 -- import Control.Category.Primitive.Abstract
 import Control.Category.Primitive.Interpret
+import Control.Category.Symmetric
 import Data.Aeson
 import Prelude                              hiding (id, (.))
-import Control.Category.Symmetric
 
 data FreeFunc p a b where
     Id :: FreeFunc p x x

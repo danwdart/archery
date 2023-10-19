@@ -4,7 +4,7 @@
 module Main where
 
 -- import Control.Category.Primitive.Person
-import Data.Aeson qualified as A
+import Data.Aeson                  qualified as A
 import Data.Function.CollatzStep
 import Data.Function.Greet
 import Data.Function.IsPalindrome
@@ -15,9 +15,9 @@ import Data.Primitive.Prims
 -- import Data.Primitive.PrimsConsole
 import Data.Primitive.PrimsExtra
 -- import Data.Primitive.PrimPerson
-import Data.Yaml qualified as Y
+import Data.Yaml                   qualified as Y
 
-main :: IO ()
+main ∷ IO ()
 main = do
     A.encodeFile "data/examples/jcat/collatzStep.json" (collatzStep :: FreeFunc Prims Int Int)
     Y.encodeFile "data/examples/ycat/collatzStep.yaml" (collatzStep :: FreeFunc Prims Int Int)
