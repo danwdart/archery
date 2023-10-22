@@ -36,7 +36,10 @@ common shared-properties-lib
     -haddock
   build-depends:       base >= 4.17.0.0 && < 5
   default-extensions:
+    DerivingStrategies
+    UnicodeSyntax
     NoGeneralizedNewtypeDeriving
+    ImportQualifiedPost
 
 common shared-properties-unsafe
   import: shared-properties-base
@@ -54,12 +57,18 @@ common shared-properties-unsafe
     -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base >= 4.17.0.0 && < 5
   default-extensions:
+    DerivingStrategies
+    UnicodeSyntax
     NoGeneralizedNewtypeDeriving
+    ImportQualifiedPost
 
 common shared-properties-safe
   import: shared-properties-unsafe
   default-extensions:
+    DerivingStrategies
+    UnicodeSyntax
     NoGeneralizedNewtypeDeriving
+    ImportQualifiedPost
     Safe
 
 common shared-properties-nobase
@@ -76,6 +85,10 @@ common shared-properties-nobase
     -Werror
     -haddock
     -threaded -rtsopts -with-rtsopts=-N
+  default-extensions:
+    DerivingStrategies
+    UnicodeSyntax
+    ImportQualifiedPost
 
 -- TODO: unsafe?
 library
