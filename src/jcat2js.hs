@@ -1,7 +1,8 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE Unsafe #-}
 {-# OPTIONS_GHC -Wwarn -Wno-unsafe #-}
-module Main where
+
+module Main (main) where
 
 import Control.Category
 import Control.Category.Interpret

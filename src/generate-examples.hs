@@ -1,7 +1,7 @@
 {-# LANGUAGE Unsafe #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
-module Main where
+module Main (main) where
 
 -- import Control.Category.Primitive.Person
 import Data.Aeson                  qualified as A
