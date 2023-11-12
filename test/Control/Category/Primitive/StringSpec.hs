@@ -1,6 +1,6 @@
 module Control.Category.Primitive.StringSpec where
 
-import Control.Arrow                       (Kleisli (..))
+import Control.Arrow                     (Kleisli (..))
 import Control.Category.Primitive.String
 import Test.Hspec
 import Test.Hspec.QuickCheck

@@ -1,5 +1,5 @@
 {-# LANGUAGE GADTs             #-}
-{-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE OverloadedLists   #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Unsafe            #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
@@ -14,7 +14,7 @@ import Control.Category.Primitive.File
 import Control.Category.Primitive.String
 import Data.Aeson
 import Data.Function.Free.Abstract
-import Data.Text qualified as T
+import Data.Text                          qualified as T
 
 data Prims a b where
     ReverseString :: Prims String String
@@ -40,22 +40,22 @@ instance ToJSON (Prims a b) where
 
 -- instance ToJSON (Prims () String) where
     toJSON (ConstString s) = Array [ String "ConstString", String (T.pack s) ]
-    toJSON InputString = String "InputString"
+    toJSON InputString     = String "InputString"
  --    toJSON _ = error "Prims () String?"
 
 -- instance ToJSON (Prims String ()) where
-    toJSON OutputString = String "OutputString"
+    toJSON OutputString    = String "OutputString"
 
 -- instance ToJSON (Prims (String, String) ()) where
-    toJSON WriteFile = String "WriteFile"
+    toJSON WriteFile       = String "WriteFile"
 
 -- instance ToJSON (Prims (String, String) Bool) where
-    toJSON Equal         = String "Equal"
+    toJSON Equal           = String "Equal"
 
 -- instance ToJSON (Prims String String) where
     -- instance ToJSON (Prims String String) where
-    toJSON ReverseString = String "ReverseString"
-    toJSON ReadFile = String "ReadFile"
+    toJSON ReverseString   = String "ReverseString"
+    toJSON ReadFile        = String "ReadFile"
 
 instance FromJSON (Prims String String) where
     parseJSON (String "ReverseString") = pure ReverseString
@@ -97,12 +97,12 @@ instance PrimitiveFile (FreeFunc Prims) where
     writeFile' = Lift WriteFile
 
 instance (PrimitiveBool cat, PrimitiveString cat, PrimitiveConsole cat, PrimitiveExtra cat, PrimitiveFile cat) ⇒ Interpret Prims cat where
-    interpret Equal         = eq
-    interpret ReverseString = reverseString
-    interpret OutputString = outputString
-    interpret InputString = inputString
-    interpret IntToString = intToString
-    interpret ConcatString = concatString
+    interpret Equal           = eq
+    interpret ReverseString   = reverseString
+    interpret OutputString    = outputString
+    interpret InputString     = inputString
+    interpret IntToString     = intToString
+    interpret ConcatString    = concatString
     interpret (ConstString s) = constString s
-    interpret ReadFile = readFile'
-    interpret WriteFile = writeFile'
+    interpret ReadFile        = readFile'
+    interpret WriteFile       = writeFile'

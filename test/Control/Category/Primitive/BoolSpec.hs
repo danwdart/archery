@@ -1,6 +1,6 @@
 module Control.Category.Primitive.BoolSpec where
 
-import Control.Arrow                       (Kleisli (..))
+import Control.Arrow                   (Kleisli (..))
 import Control.Category.Primitive.Bool
 import Test.Hspec
 import Test.Hspec.QuickCheck

@@ -3,7 +3,7 @@
 
 module Main (main) where
 
-import Data.Aeson                         qualified as A
+import Data.Aeson                  qualified as A
 import Data.Function.CollatzStep
 import Data.Function.Free.Abstract
 import Data.Function.Greet
@@ -11,7 +11,7 @@ import Data.Function.IsPalindrome
 import Data.Function.ReverseInput
 -- import Data.Person
 import Data.Prims
-import Data.Yaml                          qualified as Y
+import Data.Yaml                   qualified as Y
 
 main ∷ IO ()
 main = do

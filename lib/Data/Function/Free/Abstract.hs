@@ -19,7 +19,7 @@ import Control.Category.Numeric
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Data.Aeson
-import Prelude                              hiding (id, (.))
+import Prelude                      hiding (id, (.))
 
 data FreeFunc p a b where
     Id :: FreeFunc p x x

@@ -16,8 +16,8 @@ import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Data.Code.Haskell.Mock
-import Prelude                             hiding (id, (.))
-import Test.Hspec                          hiding (runIO)
+import Prelude                            hiding (id, (.))
+import Test.Hspec                         hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic

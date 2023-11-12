@@ -20,13 +20,13 @@ import Control.Category.Primitive.File
 import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
-import Control.Exception                   hiding (bracket)
+import Control.Exception                  hiding (bracket)
 import Control.Monad.IO.Class
-import Data.ByteString.Lazy.Char8          qualified as BSL
+import Data.ByteString.Lazy.Char8         qualified as BSL
 import Data.Render.Statement
 import Data.String
 import GHC.IO.Exception
-import Prelude                             hiding (id, (.))
+import Prelude                            hiding (id, (.))
 import System.Process
 import Text.Read
 
@@ -95,7 +95,7 @@ instance PrimitiveExtra HSLamb where
     intToString = "show"
     concatString = "(uncurry (<>))"
     constString s = HSLamb $ "(const \"" <> BSL.pack s <> "\")"
-    
+
 instance PrimitiveFile HSLamb where
     readFile' = "(Kleisli $ liftIO . readFile)"
     writeFile' = "(Kleisli $ liftIO . uncurry writeFile)"
