@@ -13,7 +13,7 @@ import Data.Function.Greet
 import Data.Function.IsPalindrome
 import Data.Function.ReverseInput
 import Data.Person
-import Data.Primitive.Prims
+import Data.Prims
 import Test.Hspec                       hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
@@ -27,19 +27,19 @@ myTuple = ("Dan", 32)
 
 spec ∷ Spec
 spec = do
-    xdescribe "greetData" $ do
-        describe "HSFunc" $ do
-            it "is correct" $
-                executeViaGHCi (greetData :: HSFunc Person String) myPerson `shouldReturn` greetData myPerson
-        describe "HSLamb" $ do
-            it "is correct"$ do
-                executeViaGHCi (greetData :: HSLamb Person String) myPerson `shouldReturn` greetData myPerson
-        describe "JSLamb" $ do
-            it "is correct" $ do
-                executeViaJSON (greetData :: JSLamb Person String) myPerson `shouldReturn` greetData myPerson
-        describe "PHPLamb" $ do
-            it "is correct" $ do
-                executeViaJSON (greetData :: PHPLamb Person String) myPerson `shouldReturn` greetData myPerson
+    -- xdescribe "greetData" $ do
+    --     describe "HSFunc" $ do
+    --         it "is correct" $
+    --             executeViaGHCi (greetData :: HSFunc Person String) myPerson `shouldReturn` greetData myPerson
+    --     describe "HSLamb" $ do
+    --         it "is correct"$ do
+    --             executeViaGHCi (greetData :: HSLamb Person String) myPerson `shouldReturn` greetData myPerson
+    --     describe "JSLamb" $ do
+    --         it "is correct" $ do
+    --             executeViaJSON (greetData :: JSLamb Person String) myPerson `shouldReturn` greetData myPerson
+    --     describe "PHPLamb" $ do
+    --         it "is correct" $ do
+    --             executeViaJSON (greetData :: PHPLamb Person String) myPerson `shouldReturn` greetData myPerson
     describe "greetTuple" $ do
         describe "HSFunc" $ do
             it "is correct" $ do

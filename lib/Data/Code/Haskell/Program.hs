@@ -14,9 +14,11 @@ import Control.Category.Cocartesian
 import Control.Category.Execute.Haskell
 import Control.Category.Execute.Stdio
 import Control.Category.Numeric
-import Control.Category.Primitive.Abstract
+import Control.Category.Primitive.Bool
 import Control.Category.Primitive.Console
--- import Control.Category.Primitive.Extra
+import Control.Category.Primitive.Extra
+import Control.Category.Primitive.File
+import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Control.Exception                   hiding (bracket)
@@ -95,13 +97,24 @@ instance Symmetric HSProg where
 
 -- instance Apply HSProg where
 
-instance Primitive HSProg where
+instance PrimitiveBool HSProg where
     eq = "(arr . uncurry $ (==))"
-    reverseString = "(arr reverse)"
 
 instance PrimitiveConsole HSProg where
     outputString = "(Kleisli putStr)"
     inputString = "(Kleisli (const getContents))"
+
+instance PrimitiveExtra HSProg where
+    intToString = "show"
+    concatString = "(uncurry (<>))"
+    constString s = HSProg [] $ "(const \"" <> BSL.pack s <> "\")"
+
+instance PrimitiveFile HSProg where
+    readFile' = "(Kleisli $ liftIO . readFile)"
+    writeFile' = "(Kleisli $ liftIO . uncurry writeFile)"
+
+instance PrimitiveString HSProg where
+    reverseString = "(arr reverse)"
 
 instance Numeric HSProg where
     num n = HSProg [] $ "(const " <> fromString (show n) <> ")"

@@ -12,7 +12,7 @@ import Data.Function.Free.Abstract
 #if !(MIN_VERSION_aeson(2,1,2))
 import Data.Maybe
 #endif
-import Data.Primitive.Prims
+import Data.Prims
 import Data.Yaml qualified as Y
 import System.Executable
 import Prelude hiding ((.), id)

@@ -4,7 +4,7 @@ name:                archery
 version:             0.1.0.0
 -- synopsis:
 description:         Playing with arrows 
-homepage:            https://github.com/danwdart/projects#readme
+homepage:            https://github.com/danwdart/archery#readme
 license:             AGPL-3.0-only
 -- license-file:        LICENSE
 author:              Dan Dart
@@ -119,14 +119,14 @@ library
     Control.Category.LambdaCalculus.BCKW
     Control.Category.LambdaCalculus.SKI
     Control.Category.Numeric
-    Control.Category.Primitive.Abstract
+    Control.Category.Primitive.Bool
     Control.Category.Primitive.Console
     Control.Category.Primitive.Curried
     Control.Category.Primitive.Extra
     Control.Category.Primitive.File
-    Control.Category.Primitive.Interpret
     Control.Category.Primitive.JSON
     Control.Category.Primitive.Stdio
+    Control.Category.Primitive.String
     Control.Category.Strong
     Control.Category.Symmetric
     Data.Code.Haskell.Func
@@ -139,10 +139,7 @@ library
     Data.Function.Free.LambdaCalculus.SKI
     Data.Function.Free.Abstract
     Data.Function.Utilities
-    Data.Primitive.Prims
-    Data.Primitive.PrimsConsole
-    Data.Primitive.PrimsExtra
-    Data.Primitive.PrimsFile
+    Data.Prims
     Data.Render.File
     Data.Render.Statement
     System.Executable
@@ -241,13 +238,11 @@ executable generate-examples
   import: shared-properties-unsafe
   main-is:             generate-examples.hs
   hs-source-dirs:      examples/lib, examples/test
-  other-modules:       Control.Category.Primitive.Person
-                       Data.Function.CollatzStep
+  other-modules:       Data.Function.CollatzStep
                        Data.Function.Greet
                        Data.Function.IsPalindrome
                        Data.Function.ReverseInput
                        Data.Person
-                       Data.Primitive.PrimPerson
   build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, yaml
 
 test-suite test
@@ -271,10 +266,11 @@ test-suite test
                        Control.Category.CurrySpec
                        Control.Category.GenericSpec
                        Control.Category.NumericSpec
-                       Control.Category.Primitive.AbstractSpec
+                       Control.Category.Primitive.BoolSpec
                        Control.Category.Primitive.CurriedSpec
                        Control.Category.Primitive.ExtraSpec
                        Control.Category.Primitive.FileSpec
+                       Control.Category.Primitive.StringSpec
                        Control.Category.StrongSpec
                        Control.Category.SymmetricSpec
                        Data.Code.Haskell.FuncSpec
@@ -284,7 +280,7 @@ test-suite test
                        Data.Code.JS.LambSpec
                        Data.Code.PHP.LambSpec
                        Data.Function.Free.AbstractSpec
-                       Data.Primitive.PrimsSpec
+                       Data.PrimsSpec
 
 test-suite test-examples
   type:                exitcode-stdio-1.0
@@ -297,9 +293,7 @@ test-suite test-examples
                      , archery
                      , hspec
                      , QuickCheck
-  other-modules:       Control.Category.Primitive.Person
-                       Control.Category.Primitive.PersonSpec
-                       Data.Function.CollatzStep
+  other-modules:       Data.Function.CollatzStep
                        Data.Function.CollatzStepSpec
                        Data.Function.Greet
                        Data.Function.GreetSpec
@@ -309,5 +303,3 @@ test-suite test-examples
                        Data.Function.ReverseInputSpec
                        Data.Person
                        Data.PersonSpec
-                       Data.Primitive.PrimPerson
-                       Data.Primitive.PrimPersonSpec

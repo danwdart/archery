@@ -17,8 +17,6 @@ import Control.Category.Cocartesian
 import Control.Category.Interpret
 import Control.Category.Numeric
 import Control.Category.Strong
--- import Control.Category.Primitive.Abstract
-import Control.Category.Primitive.Interpret
 import Control.Category.Symmetric
 import Data.Aeson
 import Prelude                              hiding (id, (.))
@@ -56,7 +54,7 @@ deriving instance (forall a b. Show (p a b)) ⇒ Show (FreeFunc p x y)
 
 -- deriving instance (forall a b. Read (p a b)) => Read (FreeFunc p x y)
 
-instance (Numeric cat, Cocartesian cat, {- Cochoice cat,-} Choice cat, Cartesian cat, {- Costrong cat, -} Strong cat, Category cat, Symmetric cat, InterpretPrim p cat) ⇒ Interpret (FreeFunc p) cat where
+instance (Numeric cat, Cocartesian cat, {- Cochoice cat,-} Choice cat, Cartesian cat, {- Costrong cat, -} Strong cat, Category cat, Symmetric cat, Interpret p cat) ⇒ Interpret (FreeFunc p) cat where
     {-# INLINABLE interpret #-}
     interpret Id            = id
     interpret (Compose a b) = interpret a . interpret b
@@ -84,7 +82,7 @@ instance (Numeric cat, Cocartesian cat, {- Cochoice cat,-} Choice cat, Cartesian
     interpret SwapEither    = swapEither
     interpret Reassoc       = reassoc
     interpret ReassocEither = reassocEither
-    interpret (Lift a)      = interpretPrim a
+    interpret (Lift a)      = interpret a
 
 instance (forall a b. ToJSON (k a b)) ⇒ ToJSON (FreeFunc k x y) where
     toJSON Id = String "Id"

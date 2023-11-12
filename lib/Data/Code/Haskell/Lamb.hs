@@ -13,9 +13,11 @@ import Control.Category.Cocartesian
 import Control.Category.Execute.Haskell
 import Control.Category.Execute.Stdio
 import Control.Category.Numeric
-import Control.Category.Primitive.Abstract
+import Control.Category.Primitive.Bool
 import Control.Category.Primitive.Console
 import Control.Category.Primitive.Extra
+import Control.Category.Primitive.File
+import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Control.Exception                   hiding (bracket)
@@ -82,9 +84,8 @@ instance Symmetric HSLamb where
 
 -- instance Apply HSLamb where
 
-instance Primitive HSLamb where
+instance PrimitiveBool HSLamb where
     eq = bracket "arr (\\(x, y) -> x == y)"
-    reverseString = bracket "arr reverse"
 
 instance PrimitiveConsole HSLamb where
     outputString = bracket "Kleisli putStr"
@@ -94,6 +95,13 @@ instance PrimitiveExtra HSLamb where
     intToString = "show"
     concatString = "(uncurry (<>))"
     constString s = HSLamb $ "(const \"" <> BSL.pack s <> "\")"
+    
+instance PrimitiveFile HSLamb where
+    readFile' = "(Kleisli $ liftIO . readFile)"
+    writeFile' = "(Kleisli $ liftIO . uncurry writeFile)"
+
+instance PrimitiveString HSLamb where
+    reverseString = bracket "arr reverse"
 
 instance Numeric HSLamb where
     num n = bracket . HSLamb $ "\\_ -> " <> BSL.pack (show n)

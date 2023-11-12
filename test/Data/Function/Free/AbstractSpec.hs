@@ -3,7 +3,7 @@ module Data.Function.Free.AbstractSpec where
 import Control.Category.Interpret
 import Data.Aeson
 import Data.Function.Free.Abstract
-import Data.Primitive.Prims
+import Data.Prims
 import Test.Hspec                  hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck

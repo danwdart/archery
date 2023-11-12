@@ -13,9 +13,11 @@ import Control.Category.Cocartesian
 import Control.Category.Execute.JSON
 import Control.Category.Execute.Stdio
 import Control.Category.Numeric
-import Control.Category.Primitive.Abstract
+import Control.Category.Primitive.Bool
 import Control.Category.Primitive.Console
 import Control.Category.Primitive.Extra
+import Control.Category.Primitive.File
+import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Control.Exception                   hiding (bracket)
@@ -77,9 +79,8 @@ instance Symmetric PHPLamb where
 
 -- instance Apply PHPLamb where
 
-instance Primitive PHPLamb where
+instance PrimitiveBool PHPLamb where
     eq = "(fn ($x) => $x[0] === $x[1])"
-    reverseString = "(fn ($x) => strrev($x))"
 
 instance PrimitiveConsole PHPLamb where
     outputString = "print"
@@ -89,6 +90,13 @@ instance PrimitiveExtra PHPLamb where
     intToString = "(fn ($i) => strval($i))"
     concatString = "(fn ([$a, $b]) => $a . $b)"
     constString s = PHPLamb $ "(fn () => \"" <> BSL.pack s <> "\")"
+
+instance PrimitiveFile PHPLamb where
+    readFile' = "@TODO"
+    writeFile' = "@TODO"
+
+instance PrimitiveString PHPLamb where
+    reverseString = "(fn ($x) => strrev($x))"
 
 instance Numeric PHPLamb where
     num n = PHPLamb $ "(fn () => " <> BSL.pack (show n) <> ")"

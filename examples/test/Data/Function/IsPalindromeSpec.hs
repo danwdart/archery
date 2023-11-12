@@ -12,7 +12,7 @@ import Data.Function.Free.Abstract
 import Data.Function.Greet
 import Data.Function.IsPalindrome
 import Data.Function.ReverseInput
-import Data.Primitive.Prims
+import Data.Prims
 import Test.Hspec                       hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
@@ -46,7 +46,7 @@ myInterpret = _
 
 prop_ViaJSONIsCorrect :: String -> Property
 prop_ViaJSONIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 $
-    (myInterpret <$> decode (encode (isPalindrome :: FreeFunc Prims String Bool)) <*> Just s) === Just (isPalindrome s)
+    (myInterpret <$> decode (encode (isPalindrome :: FreeFunc p String Bool)) <*> Just s) === Just (isPalindrome s)
 -}
 
 spec ∷ Spec
@@ -62,5 +62,5 @@ spec = describe "isPalindrome" $ do
     {-}
     describe "JSON" $ do
         it "is correct" $
-            decode (encode (isPalindrome :: FreeFunc Prims String Bool)) `shouldBe` Just (isPalindrome :: FreeFunc Prims String Bool)
+            decode (encode (isPalindrome :: FreeFunc p String Bool)) `shouldBe` Just (isPalindrome :: FreeFunc p String Bool)
     -}

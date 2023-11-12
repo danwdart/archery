@@ -13,9 +13,11 @@ import Control.Category.Cocartesian
 import Control.Category.Execute.JSON
 import Control.Category.Execute.Stdio
 import Control.Category.Numeric
-import Control.Category.Primitive.Abstract
+import Control.Category.Primitive.Bool
 import Control.Category.Primitive.Console
 import Control.Category.Primitive.Extra
+import Control.Category.Primitive.File
+import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Control.Exception                   hiding (bracket)
@@ -77,9 +79,8 @@ instance Symmetric JSLamb where
 
 -- instance Apply JSLamb where
 
-instance Primitive JSLamb where
+instance PrimitiveBool JSLamb where
     eq = "(([x, y]) => x === y)"
-    reverseString = "(x => x.split('').reverse().join(''))"
 
 instance PrimitiveConsole JSLamb where
     outputString = "console.log"
@@ -89,6 +90,13 @@ instance PrimitiveExtra JSLamb where
     intToString = "(i => i.toString())"
     concatString = "(([a, b]) => a + b)"
     constString s = JSLamb $ "(() => \"" <> BSL.pack s <> "\")"
+
+instance PrimitiveFile JSLamb where
+    readFile' = "@TODO"
+    writeFile' = "@TODO"
+
+instance PrimitiveString JSLamb where
+    reverseString = "(x => x.split('').reverse().join(''))"
 
 instance Numeric JSLamb where
     num n = JSLamb $ "(_ => " <> BSL.pack (show n) <> ")"

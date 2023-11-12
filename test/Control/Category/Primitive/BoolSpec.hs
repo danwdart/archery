@@ -1,7 +1,7 @@
-module Control.Category.Primitive.AbstractSpec where
+module Control.Category.Primitive.BoolSpec where
 
 import Control.Arrow                       (Kleisli (..))
-import Control.Category.Primitive.Abstract
+import Control.Category.Primitive.Bool
 import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
@@ -15,17 +15,9 @@ spec = describe "Abstract" $ do
                 eq (1, 1) `shouldBe` True
             it "is false" $
                 eq (1, 2) `shouldBe` False
-        describe "reverseString" .
-            prop "reverses" $ \(x :: String) -> reverseString x === reverse x
-
     describe "Kleisli" $ do
         describe "eq" $ do
             it "is true" $
                 runKleisli eq (1, 1) `shouldReturn` True
             it "is false" $
                 runKleisli eq (1, 2) `shouldReturn` False
-        describe "reverseString" .
-            prop "reverses" $ \(x :: String) -> monadicIO $ do
-                a <- runKleisli reverseString x
-                let b = reverse x
-                pure $ a === b

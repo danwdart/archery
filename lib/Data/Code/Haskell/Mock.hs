@@ -13,10 +13,11 @@ import Control.Category.Cocartesian
 import Control.Category.Execute.Haskell
 import Control.Category.Execute.Stdio
 import Control.Category.Numeric
-import Control.Category.Primitive.Abstract
+import Control.Category.Primitive.Bool
 import Control.Category.Primitive.Console
 import Control.Category.Primitive.Extra
 import Control.Category.Primitive.File
+import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Control.Exception                   hiding (bracket)
@@ -77,23 +78,24 @@ instance Symmetric HSMock where
 
 -- instance Apply HSMock where
 
-instance Primitive HSMock where
+instance PrimitiveBool HSMock where
     eq = "(arr . uncurry $ (==))"
-    reverseString = "(arr reverse)"
 
 instance PrimitiveConsole HSMock where
-    outputString = "(Kleisli putStr)"
-    inputString = "(Kleisli (const getContents))"
+    outputString = "@TODO"
+    inputString = "@TODO"
 
 instance PrimitiveExtra HSMock where
     intToString = "show"
     concatString = "(uncurry (<>))"
     constString s = HSMock $ "(const \"" <> BSL.pack s <> "\")"
 
--- @TODO some kind of debug (stderr?)
 instance PrimitiveFile HSMock where
-    readFile' = ""
-    writeFile' = ""
+    readFile' = "@TODO"
+    writeFile' = "@TODO"
+
+instance PrimitiveString HSMock where
+    reverseString = "(arr reverse)"
 
 instance Numeric HSMock where
     num n = HSMock $ "(const " <> fromString (show n) <> ")"

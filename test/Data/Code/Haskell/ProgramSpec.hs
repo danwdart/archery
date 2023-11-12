@@ -7,9 +7,12 @@ import Control.Category.Choice
 import Control.Category.Cocartesian
 import Control.Category.Execute.Haskell
 import Control.Category.Numeric
-import Control.Category.Primitive.Abstract
+import Control.Category.Primitive.Bool
+import Control.Category.Primitive.Console
+import Control.Category.Primitive.Curried
 import Control.Category.Primitive.Extra
 import Control.Category.Primitive.File
+import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Data.Code.Haskell.Program

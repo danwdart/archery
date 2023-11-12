@@ -8,12 +8,12 @@ import Control.Category.Cartesian
 import Control.Category.Choice
 import Control.Category.Cocartesian
 import Control.Category.Numeric
-import Control.Category.Primitive.Abstract
+import Control.Category.Primitive.Bool
 import Control.Category.Strong
 import Data.Function.Utilities
-import Prelude                             hiding (id, (.))
+import Prelude                         hiding (id, (.))
 
-collatzStep ∷ forall cat. (Category cat, Numeric cat, Cartesian cat, Cocartesian cat, Choice cat, Strong cat, Primitive cat) ⇒ cat Int Int
+collatzStep ∷ forall cat. (Category cat, Numeric cat, Cartesian cat, Cocartesian cat, Choice cat, Strong cat, PrimitiveBool cat) ⇒ cat Int Int
 collatzStep = unify . (onOdds +++ onEvens) . matchOn isEven where
     onOdds ∷ cat Int Int
     onOdds = strong add (num 1) . strong mult (num 3)

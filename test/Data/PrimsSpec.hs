@@ -1,7 +1,7 @@
-module Data.Primitive.PrimsSpec where
+module Data.PrimsSpec where
 
 import Control.Category.Interpret
-import Data.Primitive.Prims
+import Data.Prims
 import Test.Hspec                 hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
@@ -21,7 +21,7 @@ prop_EqualIsCorrectViaEncodeDecodeInterpret is = withMaxSuccess 200 $
 -}
 
 spec ∷ Spec
-spec = pure () {-describe "Data.Primitive.Prims" $ do
+spec = pure () {-describe "Data.Prims" $ do
     describe "execution isomorphism" $ do
         prop "reverseString is correct" prop_ReverseStringIsCorrectViaEncodeDecodeInterpret
         prop "equal is correct" prop_EqualIsCorrectViaEncodeDecodeInterpret

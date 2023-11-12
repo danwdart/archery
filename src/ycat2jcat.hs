@@ -8,7 +8,7 @@ import Control.Monad
 import Data.Aeson
 import Data.ByteString.Lazy.Char8  qualified as BSL
 import Data.Function.Free.Abstract
-import Data.Primitive.Prims
+import Data.Prims
 import Data.Yaml                   qualified as Y
 import Prelude                     hiding (id, (.))
 import System.Executable

@@ -1,0 +1,8 @@
+- Compose
+- - - Lift
+    - - OutputString
+  - - Compose
+    - - - Lift
+        - - ReverseString
+      - - Lift
+        - - InputString

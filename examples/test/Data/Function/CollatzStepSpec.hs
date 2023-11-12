@@ -12,7 +12,7 @@ import Data.Function.Free.Abstract
 import Data.Function.Greet
 import Data.Function.IsPalindrome
 import Data.Function.ReverseInput
-import Data.Primitive.Prims
+import Data.Prims
 import Test.Hspec                       hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
@@ -46,7 +46,7 @@ myInterpret = _
 
 prop_ViaJSONIsCorrect :: Int -> Property
 prop_ViaJSONIsCorrect i = withMaxSuccess 200 $
-    (myInterpret <$> decode (encode (collatzStep :: FreeFunc Prims Int Int)) <*> Just i) === Just (collatzStep i)
+    (myInterpret <$> decode (encode (collatzStep :: FreeFunc p Int Int)) <*> Just i) === Just (collatzStep i)
 -}
 
 
@@ -63,5 +63,5 @@ spec = describe "collatzStep" $ do
     {-
     describe "JSON" $ do
         it "is correct" $
-            -- decode (encode (collatzStep :: FreeFunc Prims Int Int)) `shouldBe` Just (collatzStep :: FreeFunc Prims Int Int)
+            -- decode (encode (collatzStep :: FreeFunc p Int Int)) `shouldBe` Just (collatzStep :: FreeFunc p Int Int)
     -}
