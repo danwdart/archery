@@ -245,6 +245,17 @@ executable generate-examples
                        Data.Person
   build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, yaml
 
+executable write-examples
+  import: shared-properties-unsafe
+  main-is:             write-examples.hs
+  hs-source-dirs:      examples/lib, examples/test
+  other-modules:       Data.Function.CollatzStep
+                       Data.Function.Greet
+                       Data.Function.IsPalindrome
+                       Data.Function.ReverseInput
+                       Data.Person
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring, directory
+
 test-suite test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
