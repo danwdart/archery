@@ -45,7 +45,7 @@ instance Bracket JSLamb where
 
 instance Category JSLamb where
     id = "(x => x)"
-    JSLamb a . JSLamb b = JSLamb $ "(x => " <> a <> "(" <> b <> "(x)))"
+    a . b = JSLamb $ "(x => " <> renderStatement a <> "(" <> renderStatement b <> "(x)))"
 
 instance Cartesian JSLamb where
     copy = "(x => [x, x])"

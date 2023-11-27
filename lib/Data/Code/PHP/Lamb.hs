@@ -24,6 +24,9 @@ import Control.Exception                  hiding (bracket)
 import Control.Monad.IO.Class
 import Data.Aeson
 import Data.ByteString.Lazy.Char8         qualified as BSL
+-- import Data.Map (Map)
+-- import Data.Map qualified as M
+import Data.Render.File
 import Data.Render.Statement
 import Data.String
 import GHC.IO.Exception
@@ -39,6 +42,22 @@ instance IsString (PHPLamb a b) where
 
 instance RenderStatement (PHPLamb a b) where
     renderStatement (PHPLamb f) = f
+
+instance RenderFile (PHPLamb a b) where
+    renderFile p =
+        "<?php\n" <>
+        "require(\"vendor/autoload.php\");\n" <>
+        "\nreturn " <>
+        renderStatement p <>
+        ";\n"
+
+{-}
+instance RenderFile (Map BSL.ByteString (PHPLamb a b)) where
+    renderFile p =
+        "<?php\n" <>
+        "require(\"vendor/autoload.php\");\n" <>
+        "\n/* TODO */"
+-}
 
 instance Bracket PHPLamb where
     bracket s = PHPLamb $ "(" <> renderStatement s <> ")"

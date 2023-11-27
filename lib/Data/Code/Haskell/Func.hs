@@ -1,7 +1,8 @@
+{-# LANGUAGE OverloadedLists   #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Safe              #-}
 
--- | Main Haskell Func module. Runs categories as Haskell functions on the command line.
+-- | Program module. Like Func, but dynamically imports modules as required.
 module Data.Code.Haskell.Func where
 
 import Control.Category
@@ -23,49 +24,76 @@ import Control.Category.Symmetric
 import Control.Exception                  hiding (bracket)
 import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8         qualified as BSL
+import Data.Map                           (Map)
+import Data.Map                           qualified as M
+import Data.Render.File
 import Data.Render.Statement
+import Data.Set                           (Set)
+import Data.Set                           qualified as S
 import Data.String
+import Data.Typeable
 import GHC.IO.Exception
 import Prelude                            hiding (id, (.))
 import System.Process
 import Text.Read
 
-newtype HSFunc a b = HSFunc BSL.ByteString
-    deriving (Eq, Show)
+type Module = BSL.ByteString
+
+type ImportedFunctionName = BSL.ByteString
+
+type RenderedStatement = BSL.ByteString
+
+data HSFunc a b = HSFunc {
+    imports :: Map Module (Set ImportedFunctionName),
+    code    :: RenderedStatement
+} deriving (Eq, Show)
+
+toCLIImports ∷ HSFunc a b → [String]
+toCLIImports HSFunc { imports = is } = M.toList is >>= \(moduleName, _ {-imports'-}) -> ["-e", BSL.unpack $ "import " <> moduleName {-}<> " (" <> BSL.intercalate ", " (S.toList imports') <> ")"-}]
+
+toFileImports ∷ HSFunc a b → [BSL.ByteString]
+toFileImports HSFunc { imports = is } = (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (S.toList imports') <> ")") <$> M.toList is
 
 instance IsString (HSFunc a b) where
-    fromString = HSFunc . BSL.pack
+    fromString = HSFunc [] . BSL.pack
 
 instance RenderStatement (HSFunc a b) where
-    renderStatement (HSFunc f) = f
+    renderStatement HSFunc { code = s } = s -- @TODO is
+
+-- TODO name this
+instance (Typeable a, Typeable b) ⇒ RenderFile (HSFunc a b) where
+    renderFile cat = "module Func where\n\n" <>
+        BSL.unlines (toFileImports cat) <>
+        "\nfunc :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <> "\nfunc = " <>
+        renderStatement cat
 
 instance Bracket HSFunc where
-    bracket s = HSFunc $ "(" <> renderStatement s <> ")"
+    bracket s = HSFunc (imports s) $ "(" <> renderStatement s <> ")"
 
 instance Category HSFunc where
-    id = "id"
-    a . b = bracket $ HSFunc (renderStatement a <> " . " <> renderStatement b)
+    id = HSFunc [("Control.Category", ["id"])] "id"
+    a . b = HSFunc (imports a <> imports b <> [("Control.Category", ["(.)"])]) $ "(" <> renderStatement a <> " . " <> renderStatement b <> ")"
 
 instance Cartesian HSFunc where
-    copy :: HSFunc a (a, a)
-    copy = bracket "\\x -> (x, x)"
-    consume = bracket "const ()"
+    copy = HSFunc [("Control.Category.Cartesian", ["copy"])] "copy"
+    consume = HSFunc [("Control.Category.Cartesian", ["consume"])] "consume"
     fst' = "fst"
     snd' = "snd"
 
 instance Cocartesian HSFunc where
     injectL = "Left"
     injectR = "Right"
-    unify = bracket "\\case { Left a -> a; Right a -> a; }"
-    tag = bracket "\\case { (False, a) -> Left a; (True, a) -> Right a; }"
+    unify = HSFunc [("Control.Category.Cocartesian", ["unify"])] "unify"
+    tag = HSFunc [("Control.Category.Cartesian", ["tag"])] "tag"
 
 instance Strong HSFunc where
-    first' f = HSFunc $ "(Data.Bifunctor.first " <> renderStatement f <> ")"
-    second' f = HSFunc $ "(Data.Bifunctor.second " <> renderStatement f <> ")"
+    -- @TODO apply? Bracket?
+    first' f = HSFunc ([("Data.Bifunctor", ["first"])] <> imports f) $ "(first " <> renderStatement f <> ")"
+    second' f = HSFunc ([("Data.Bifunctor", ["second"])] <> imports f) $ "(second " <> renderStatement f <> ")"
 
 instance Choice HSFunc where
-    left' f = HSFunc $ "(\\case { Left a -> Left (" <> renderStatement f <> " a); Right a -> Right a; })"
-    right' f = HSFunc $ "(\\case { Left a -> Left a; Right a -> Right (" <> renderStatement f <> " a); })"
+    left' f = HSFunc (imports f) $ "(\\case { Left a -> Left (" <> renderStatement f <> " a); Right a -> Right a; })"
+    right' f = HSFunc (imports f) $ "(\\case { Left a -> Left a; Right a -> Right (" <> renderStatement f <> " a); })"
 
 instance Symmetric HSFunc where
     swap = "(\\(a, b) -> (b, a))"
@@ -83,28 +111,30 @@ instance PrimitiveBool HSFunc where
     eq = "(arr . uncurry $ (==))"
 
 instance PrimitiveConsole HSFunc where
-    outputString = "(Kleisli putStr)"
-    inputString = "(Kleisli (const getContents))"
+    outputString = HSFunc [("Control.Arrow", ["Kleisli(..)"])] "(Kleisli putStr)"
+    inputString = HSFunc [("Control.Arrow", ["Kleisli(..)"])] "(Kleisli (const getContents))"
 
 instance PrimitiveExtra HSFunc where
     intToString = "show"
     concatString = "(uncurry (<>))"
-    constString s = HSFunc $ "(const \"" <> BSL.pack s <> "\")"
+    constString s = fromString $ "(const \"" <> s <> "\")"
 
 instance PrimitiveFile HSFunc where
-    readFile' = "(Kleisli $ liftIO . readFile)"
-    writeFile' = "(Kleisli $ liftIO . uncurry writeFile)"
+    readFile' = HSFunc [("Control.Arrow", ["Kleisli(..)"])] "(Kleisli $ liftIO . readFile)"
+    writeFile' = HSFunc [("Control.Arrow", ["Kleisli(..)"])] "(Kleisli $ liftIO . uncurry writeFile)"
 
 instance PrimitiveString HSFunc where
     reverseString = "(arr reverse)"
 
 instance Numeric HSFunc where
-    num n = HSFunc $ "(const " <> fromString (show n) <> ")"
+    num n = fromString $ "(const " <> show n <> ")"
     negate' = "negate"
     add = "(uncurry (+))"
     mult = "(uncurry (*))"
     div' = "(uncurry div)"
     mod' = "(uncurry mod)"
+
+-- I don't quite know how to call ghci or cabal repl to include the correct functions here, so the tests are skipped.
 
 -- @TODO escape shell - Text.ShellEscape?
 instance ExecuteHaskell HSFunc where
@@ -114,8 +144,10 @@ instance ExecuteHaskell HSFunc where
                 "-e", ":set -XLambdaCase",
                 "-e", "import Control.Arrow",
                 "-e", "import Prelude hiding ((.), id)",
-                "-e", "import Control.Category",
-                "-e", "import Control.Monad.IO.Class",
+                "-e", "import Control.Category"
+                ] <>
+                toCLIImports cat <>
+                [
                 "-e", "(" <> BSL.unpack (renderStatement cat) <> ") (" <> show param <> ")"
                 ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
@@ -125,8 +157,9 @@ instance ExecuteHaskell HSFunc where
                 Left err -> liftIO . throwIO . userError $ "Can't parse response: " <> err
                 Right ret -> pure ret
 
--- @TODO this uses runKleisli, the above does not
-
+-- @TODO this passes too many arguments apparently...
+-- This is because of the id and (.) using the (->) instance whereas I am running Kleisli below.
+-- This means we need to deal with both within Haskell sessions. Let's try to use Pure/Monadic... or maybe HSPure / HSMonadic accepting only appropriate typeclasses / primitives?
 instance ExecuteStdio HSFunc where
     executeViaStdio cat stdin = do
         let params ∷ [String]
@@ -134,9 +167,11 @@ instance ExecuteStdio HSFunc where
                 "-e", ":set -XLambdaCase",
                 "-e", "import Control.Arrow",
                 "-e", "import Prelude hiding ((.), id)",
-                "-e", "import Control.Category",
-                "-e", "import Control.Monad.IO.Class",
-                "-e", "runKleisli (" <> BSL.unpack (renderStatement cat) <> ") ()"
+                "-e", "import Control.Category"
+                ] <>
+                toCLIImports cat <>
+                [
+                "-e", BSL.unpack (renderStatement cat) <> " ()"
                 ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of

@@ -13,3 +13,6 @@ jwt.secret
 .hie
 stan.html
 data/examples
+library
+phpbits
+jsbits

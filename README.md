@@ -16,3 +16,7 @@ Things I want to do:
 - [ ] Tests "is correct" -> "is isomorphic to" when appropriate
 - [ ] Faster tests! More parallelisation?
 - [ ] Allow Nix to test using external tools
+
+Notes:
+
+- Using <> instead of S.union

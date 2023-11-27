@@ -132,8 +132,8 @@ library
     Data.Code.Haskell.Func
     Data.Code.Haskell.Lamb
     Data.Code.Haskell.Mock
-    Data.Code.Haskell.Program
     Data.Code.JS.Lamb
+    Data.Code.JS.Func
     Data.Code.PHP.Lamb
     Data.Function.Free.LambdaCalculus.BCKW
     Data.Function.Free.LambdaCalculus.SKI
@@ -159,14 +159,14 @@ executable jcat2hsm
   main-is:             jcat2hsm.hs
   build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
-executable jcat2hsp
+executable jcat2jsl
   import: shared-properties-unsafe
-  main-is:             jcat2hsp.hs
+  main-is:             jcat2jsl.hs
   build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
-executable jcat2js
+executable jcat2jsp
   import: shared-properties-unsafe
-  main-is:             jcat2js.hs
+  main-is:             jcat2jsp.hs
   build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
 executable jcat2php
@@ -209,11 +209,6 @@ executable ycat2hsm
   main-is:             ycat2hsm.hs
   build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
 
-executable ycat2hsp
-  import: shared-properties-unsafe
-  main-is:             ycat2hsp.hs
-  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
-
 executable ycat2jcat
   import: shared-properties-unsafe
   main-is:             ycat2jcat.hs
@@ -234,17 +229,6 @@ executable ycatc
   main-is:             ycatc.hs
   build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
 
-executable generate-examples
-  import: shared-properties-unsafe
-  main-is:             generate-examples.hs
-  hs-source-dirs:      examples/lib, examples/test
-  other-modules:       Data.Function.CollatzStep
-                       Data.Function.Greet
-                       Data.Function.IsPalindrome
-                       Data.Function.ReverseInput
-                       Data.Person
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, yaml
-
 executable write-examples
   import: shared-properties-unsafe
   main-is:             write-examples.hs
@@ -254,7 +238,41 @@ executable write-examples
                        Data.Function.IsPalindrome
                        Data.Function.ReverseInput
                        Data.Person
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring, directory
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring, directory, yaml
+
+executable write-libraries
+  import: shared-properties-unsafe
+  main-is:             write-libraries.hs
+  hs-source-dirs:      lib, test
+  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring, containers, directory, process, text
+  -- ???
+  other-modules:
+    Control.Category.Bracket
+    Control.Category.Cartesian
+    Control.Category.Choice
+    Control.Category.Cocartesian
+    Control.Category.Execute.Haskell
+    Control.Category.Execute.JSON
+    Control.Category.Execute.Stdio
+    Control.Category.Interpret
+    Control.Category.Numeric
+    Control.Category.Primitive.Bool
+    Control.Category.Primitive.Console
+    Control.Category.Primitive.Extra
+    Control.Category.Primitive.File
+    Control.Category.Primitive.String
+    Control.Category.Strong
+    Control.Category.Symmetric
+    Data.Code.Haskell.Func
+    Data.Code.Haskell.Lamb
+    Data.Code.Haskell.Mock
+    Data.Code.JS.Func
+    Data.Code.JS.Lamb
+    Data.Code.PHP.Lamb
+    Data.Function.Free.Abstract
+    Data.Prims
+    Data.Render.File
+    Data.Render.Statement
 
 test-suite test
   type:                exitcode-stdio-1.0
@@ -287,8 +305,8 @@ test-suite test
                        Data.Code.Haskell.FuncSpec
                        Data.Code.Haskell.LambSpec
                        Data.Code.Haskell.MockSpec
-                       Data.Code.Haskell.ProgramSpec
                        Data.Code.JS.LambSpec
+                       Data.Code.JS.FuncSpec
                        Data.Code.PHP.LambSpec
                        Data.Function.Free.AbstractSpec
                        Data.PrimsSpec

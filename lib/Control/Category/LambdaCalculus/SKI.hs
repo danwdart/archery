@@ -2,9 +2,7 @@
 
 module Control.Category.LambdaCalculus.SKI where
 
-{-}
 class SKI where
-    s ::
+    s :: cat (cat a b) (cat b a)
     k :: cat (cat a b) a
     i :: cat a a
--}
