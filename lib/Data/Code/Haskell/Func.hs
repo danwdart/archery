@@ -49,7 +49,7 @@ data HSFunc a b = HSFunc {
 } deriving (Eq, Show)
 
 toCLIImports ∷ HSFunc a b → [String]
-toCLIImports HSFunc { imports = is } = M.toList is >>= \(moduleName, _ {-imports'-}) -> ["-e", BSL.unpack $ "import " <> moduleName {-}<> " (" <> BSL.intercalate ", " (S.toList imports') <> ")"-}]
+toCLIImports HSFunc { imports = is } = M.toList is >>= \(moduleName, _ {-imports'-}) -> ["-e", ":l", BSL.unpack moduleName, "-e", BSL.unpack $ "import " <> moduleName {-}<> " (" <> BSL.intercalate ", " (S.toList imports') <> ")"-}]
 
 toFileImports ∷ HSFunc a b → [BSL.ByteString]
 toFileImports HSFunc { imports = is } = (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (S.toList imports') <> ")") <$> M.toList is
@@ -108,7 +108,7 @@ instance Symmetric HSFunc where
 -- instance Apply HSFunc where
 
 instance PrimitiveBool HSFunc where
-    eq = "(arr . uncurry $ (==))"
+    eq = HSFunc [("Control.Category", ["(.)"]), ("Control.Arrow", ["arr"])] "(arr . uncurry $ (==))"
 
 instance PrimitiveConsole HSFunc where
     outputString = HSFunc [("Control.Arrow", ["Kleisli(..)"])] "(Kleisli putStr)"
@@ -124,7 +124,7 @@ instance PrimitiveFile HSFunc where
     writeFile' = HSFunc [("Control.Arrow", ["Kleisli(..)"])] "(Kleisli $ liftIO . uncurry writeFile)"
 
 instance PrimitiveString HSFunc where
-    reverseString = "(arr reverse)"
+    reverseString = HSFunc [("Control.Arrow", ["arr"])] "(arr reverse)"
 
 instance Numeric HSFunc where
     num n = fromString $ "(const " <> show n <> ")"
@@ -141,10 +141,9 @@ instance ExecuteHaskell HSFunc where
     executeViaGHCi cat param = do
         let params ∷ [String]
             params = [
+                "-e", ":set -ilibrary",
                 "-e", ":set -XLambdaCase",
-                "-e", "import Control.Arrow",
-                "-e", "import Prelude hiding ((.), id)",
-                "-e", "import Control.Category"
+                "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toCLIImports cat <>
                 [
@@ -164,10 +163,9 @@ instance ExecuteStdio HSFunc where
     executeViaStdio cat stdin = do
         let params ∷ [String]
             params = [
+                "-e", ":cd library",
                 "-e", ":set -XLambdaCase",
-                "-e", "import Control.Arrow",
-                "-e", "import Prelude hiding ((.), id)",
-                "-e", "import Control.Category"
+                "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toCLIImports cat <>
                 [
