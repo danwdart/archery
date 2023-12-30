@@ -129,9 +129,9 @@ library
     Control.Category.Primitive.String
     Control.Category.Strong
     Control.Category.Symmetric
+    Data.Aeson.Compat
     Data.Code.Haskell.Func
     Data.Code.Haskell.Lamb
-    Data.Code.Haskell.Mock
     Data.Code.JS.Lamb
     Data.Code.JS.Func
     Data.Code.PHP.Lamb
@@ -152,11 +152,6 @@ executable jcat2hsf
 executable jcat2hsl
   import: shared-properties-unsafe
   main-is:             jcat2hsl.hs
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
-
-executable jcat2hsm
-  import: shared-properties-unsafe
-  main-is:             jcat2hsm.hs
   build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
 
 executable jcat2jsl
@@ -202,11 +197,6 @@ executable ycat2hsf
 executable ycat2hsl
   import: shared-properties-unsafe
   main-is:             ycat2hsl.hs
-  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
-
-executable ycat2hsm
-  import: shared-properties-unsafe
-  main-is:             ycat2hsm.hs
   build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
 
 executable ycat2jcat
@@ -265,7 +255,6 @@ executable write-libraries
     Control.Category.Symmetric
     Data.Code.Haskell.Func
     Data.Code.Haskell.Lamb
-    Data.Code.Haskell.Mock
     Data.Code.JS.Func
     Data.Code.JS.Lamb
     Data.Code.PHP.Lamb
@@ -304,7 +293,6 @@ test-suite test
                        Control.Category.SymmetricSpec
                        Data.Code.Haskell.FuncSpec
                        Data.Code.Haskell.LambSpec
-                       Data.Code.Haskell.MockSpec
                        Data.Code.JS.LambSpec
                        Data.Code.JS.FuncSpec
                        Data.Code.PHP.LambSpec

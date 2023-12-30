@@ -12,7 +12,6 @@ import Control.Category
 import Data.ByteString.Lazy.Char8  qualified as BSL
 -- import Data.Code.Haskell.Func
 import Data.Code.Haskell.Lamb
--- import Data.Code.Haskell.Mock
 import Data.Code.JS.Lamb
 -- import Data.Code.JS.Func
 import Data.Code.PHP.Lamb

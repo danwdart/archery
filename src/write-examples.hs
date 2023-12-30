@@ -9,7 +9,6 @@ import Data.Aeson                  qualified as A
 import Data.ByteString.Lazy.Char8  qualified as BSL
 import Data.Code.Haskell.Func
 import Data.Code.Haskell.Lamb
-import Data.Code.Haskell.Mock
 import Data.Code.JS.Lamb
 import Data.Code.JS.Func
 import Data.Code.PHP.Lamb
@@ -63,13 +62,6 @@ main = do
     BSL.writeFile "data/examples/statements/haskell/hslamb/isPalindrome.hss" $ renderStatement (isPalindrome :: HSLamb String Bool)
     BSL.writeFile "data/examples/statements/haskell/hslamb/greetTuple.hss" $ renderStatement (greetTuple :: HSLamb (String, Int) String)
     BSL.writeFile "data/examples/statements/haskell/hslamb/reverseInput.hss" $ renderStatement (revInputProgram :: HSFunc () ())
-
-    createDirectoryIfMissing True "data/examples/statements/haskell/hsmock"
-
-    BSL.writeFile "data/examples/statements/haskell/hsmock/collatzStep.hss" $ renderStatement (collatzStep :: HSMock Int Int)
-    BSL.writeFile "data/examples/statements/haskell/hsmock/isPalindrome.hss" $ renderStatement (isPalindrome :: HSMock String Bool)
-    BSL.writeFile "data/examples/statements/haskell/hsmock/greetTuple.hss" $ renderStatement (greetTuple :: HSMock (String, Int) String)
-    BSL.writeFile "data/examples/statements/haskell/hsmock/reverseInput.hss" $ renderStatement (revInputProgram :: HSMock () ())
 
     createDirectoryIfMissing True "data/examples/statements/haskell/HSFunc"
 
