@@ -20,7 +20,7 @@ import Control.Category.Strong
 import Control.Category.Symmetric
 import Data.ByteString.Lazy.Char8         qualified as BSL
 import Data.Map qualified as M
-import Data.Render.File
+import Data.Render.File.WithImports
 import Data.Render.Statement
 import Data.Set qualified as S
 import Data.String
@@ -63,14 +63,14 @@ instance IsString (JSFunc a b) where
 instance RenderStatement (JSFunc a b) where
     renderStatement JSFunc { code = f } = f
 
-instance RenderFile (JSFunc a b) where
-    renderFile p =
+instance RenderFileWithImports (JSFunc a b) where
+    renderFileWithImports p =
         BSL.unlines (toFileImports p) <>
         "\nexport default " <>
         renderStatement p <>
         ";\n"
     
--- instance RenderFile (Map )
+-- instance RenderFileWithImports (Map )
 
 instance Bracket JSFunc where
     bracket p@JSFunc { imports = is } = JSFunc is $ "(" <> renderStatement p <> ")"

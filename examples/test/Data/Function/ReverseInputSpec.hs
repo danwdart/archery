@@ -8,14 +8,14 @@ spec = pure ()
 {-}
 prop_RevInputProgramIsCorrectViaStdio :: String -> Property
 prop_RevInputProgramIsCorrectViaStdio s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCi (revInputProgram :: HSFunc () ()) s
+    answer <- executeViaGHCi (revInputProgram :: HS () ()) s
     pure $ answer === revInputProgram s
 -}
 
 {-}
 prop_RevInputProgramIsCorrectViaStdio :: String -> Property
 prop_RevInputProgramIsCorrectViaStdio s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCi (revInputProgram :: HSFunc () ()) s
+    answer <- executeViaGHCi (revInputProgram :: HS () ()) s
     pure $ answer === revInputProgram s
 -}
 

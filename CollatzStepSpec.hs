@@ -22,7 +22,7 @@ import Test.QuickCheck.Monadic
 prop_HSIsCorrect ∷ Int → Property
 prop_HSIsCorrect i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
     answer <- executeViaGHCi (collatzStep :: HS Int Int) i
-    pure $ answer === collatzStep i
+    pure $ answer === col
 
 prop_JSLambIsCorrect ∷ Int → Property
 prop_JSLambIsCorrect i = withMaxSuccess 200 . monadicIO $ do

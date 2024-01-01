@@ -7,8 +7,7 @@ module Main (main) where
 import Data.Aeson                  qualified as A
 -- import Data.ByteString.Char8      qualified as BS
 import Data.ByteString.Lazy.Char8  qualified as BSL
-import Data.Code.Haskell.Func
-import Data.Code.Haskell.Lamb
+import Data.Code.Haskell
 import Data.Code.JS.Lamb
 import Data.Code.JS.Func
 import Data.Code.PHP.Lamb
@@ -19,7 +18,8 @@ import Data.Function.IsPalindrome
 import Data.Function.ReverseInput
 -- import Data.Person
 import Data.Prims
-import Data.Render.File
+import Data.Render.File.WithDefinitions
+import Data.Render.File.WithImports
 import Data.Render.Statement
 -- import Data.Person
 import Data.Yaml                   qualified as Y
@@ -51,24 +51,17 @@ main = do
 
     createDirectoryIfMissing True "data/examples/statements/haskell/hsfunc"
 
-    BSL.writeFile "data/examples/statements/haskell/hsfunc/collatzStep.hss" $ renderStatement (collatzStep :: HSFunc Int Int)
-    BSL.writeFile "data/examples/statements/haskell/hsfunc/isPalindrome.hss" $ renderStatement (isPalindrome :: HSFunc String Bool)
-    BSL.writeFile "data/examples/statements/haskell/hsfunc/greetTuple.hss" $ renderStatement (greetTuple :: HSFunc (String, Int) String)
-    BSL.writeFile "data/examples/statements/haskell/hsfunc/reverseInput.hss" $ renderStatement (revInputProgram :: HSFunc () ())
+    BSL.writeFile "data/examples/statements/haskell/hsfunc/collatzStep.hss" $ renderStatement (collatzStep :: HS Int Int)
+    BSL.writeFile "data/examples/statements/haskell/hsfunc/isPalindrome.hss" $ renderStatement (isPalindrome :: HS String Bool)
+    BSL.writeFile "data/examples/statements/haskell/hsfunc/greetTuple.hss" $ renderStatement (greetTuple :: HS (String, Int) String)
+    BSL.writeFile "data/examples/statements/haskell/hsfunc/reverseInput.hss" $ renderStatement (revInputProgram :: HS () ())
 
-    createDirectoryIfMissing True "data/examples/statements/haskell/hslamb"
+    createDirectoryIfMissing True "data/examples/statements/haskell"
 
-    BSL.writeFile "data/examples/statements/haskell/hslamb/collatzStep.hss" $ renderStatement (collatzStep :: HSLamb Int Int)
-    BSL.writeFile "data/examples/statements/haskell/hslamb/isPalindrome.hss" $ renderStatement (isPalindrome :: HSLamb String Bool)
-    BSL.writeFile "data/examples/statements/haskell/hslamb/greetTuple.hss" $ renderStatement (greetTuple :: HSLamb (String, Int) String)
-    BSL.writeFile "data/examples/statements/haskell/hslamb/reverseInput.hss" $ renderStatement (revInputProgram :: HSFunc () ())
-
-    createDirectoryIfMissing True "data/examples/statements/haskell/HSFunc"
-
-    BSL.writeFile "data/examples/statements/haskell/HSFunc/collatzStep.hss" $ renderStatement (collatzStep :: HSFunc Int Int)
-    BSL.writeFile "data/examples/statements/haskell/HSFunc/isPalindrome.hss" $ renderStatement (isPalindrome :: HSFunc String Bool)
-    BSL.writeFile "data/examples/statements/haskell/HSFunc/greetTuple.hss" $ renderStatement (greetTuple :: HSFunc (String, Int) String)
-    BSL.writeFile "data/examples/statements/haskell/HSFunc/reverseInput.hss" $ renderStatement (revInputProgram :: HSFunc () ())
+    BSL.writeFile "data/examples/statements/haskell/collatzStep.hs" $ renderStatement (collatzStep :: HS Int Int)
+    BSL.writeFile "data/examples/statements/haskell/isPalindrome.hs" $ renderStatement (isPalindrome :: HS String Bool)
+    BSL.writeFile "data/examples/statements/haskell/greetTuple.hs" $ renderStatement (greetTuple :: HS (String, Int) String)
+    BSL.writeFile "data/examples/statements/haskell/reverseInput.hs" $ renderStatement (revInputProgram :: HS () ())
 
     createDirectoryIfMissing True "data/examples/statements/js/jslamb"
 
@@ -86,16 +79,23 @@ main = do
 
     -- removeDirectoryRecursive "data/examples/programs"
 
-    createDirectoryIfMissing True "data/examples/programs/haskell/hsfunc"
+    createDirectoryIfMissing True "data/examples/programs/haskell/withimports"
 
-    BSL.writeFile "data/examples/programs/haskell/hsfunc/collatzStep.hs" $ renderFile (collatzStep :: HSFunc Int Int)
-    BSL.writeFile "data/examples/programs/haskell/hsfunc/isPalindrome.hs" $ renderFile (isPalindrome :: HSFunc String Bool)
-    BSL.writeFile "data/examples/programs/haskell/hsfunc/greetTuple.hs" $ renderFile (greetTuple :: HSFunc (String, Int) String)
-    BSL.writeFile "data/examples/programs/haskell/hsfunc/reverseInput.hs" $ renderFile (revInputProgram :: HSFunc () ())
+    BSL.writeFile "data/examples/programs/haskell/withimports/collatzStep.hs" $ renderFileWithImports (collatzStep :: HS Int Int)
+    BSL.writeFile "data/examples/programs/haskell/withimports/isPalindrome.hs" $ renderFileWithImports (isPalindrome :: HS String Bool)
+    BSL.writeFile "data/examples/programs/haskell/withimports/greetTuple.hs" $ renderFileWithImports (greetTuple :: HS (String, Int) String)
+    BSL.writeFile "data/examples/programs/haskell/withimports/reverseInput.hs" $ renderFileWithImports (revInputProgram :: HS () ())
+
+    createDirectoryIfMissing True "data/examples/programs/haskell/withdefinitions"
+
+    BSL.writeFile "data/examples/programs/haskell/withdefinitions/collatzStep.hs" $ renderFileWithDefinitions (collatzStep :: HS Int Int)
+    BSL.writeFile "data/examples/programs/haskell/withdefinitions/isPalindrome.hs" $ renderFileWithDefinitions (isPalindrome :: HS String Bool)
+    BSL.writeFile "data/examples/programs/haskell/withdefinitions/greetTuple.hs" $ renderFileWithDefinitions (greetTuple :: HS (String, Int) String)
+    BSL.writeFile "data/examples/programs/haskell/withdefinitions/reverseInput.hs" $ renderFileWithDefinitions (revInputProgram :: HS () ())
 
     createDirectoryIfMissing True "data/examples/programs/js/jsfunc"
 
-    BSL.writeFile "data/examples/programs/js/jsfunc/collatzStep.js" $ renderFile (collatzStep :: JSFunc Int Int)
-    BSL.writeFile "data/examples/programs/js/jsfunc/isPalindrome.js" $ renderFile (isPalindrome :: JSFunc String Bool)
-    BSL.writeFile "data/examples/programs/js/jsfunc/greetTuple.js" $ renderFile (greetTuple :: JSFunc (String, Int) String)
-    BSL.writeFile "data/examples/programs/js/jsfunc/reverseInput.js" $ renderFile (revInputProgram :: JSFunc () ())
+    BSL.writeFile "data/examples/programs/js/jsfunc/collatzStep.js" $ renderFileWithImports (collatzStep :: JSFunc Int Int)
+    BSL.writeFile "data/examples/programs/js/jsfunc/isPalindrome.js" $ renderFileWithImports (isPalindrome :: JSFunc String Bool)
+    BSL.writeFile "data/examples/programs/js/jsfunc/greetTuple.js" $ renderFileWithImports (greetTuple :: JSFunc (String, Int) String)
+    BSL.writeFile "data/examples/programs/js/jsfunc/reverseInput.js" $ renderFileWithImports (revInputProgram :: JSFunc () ())

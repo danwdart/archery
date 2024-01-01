@@ -20,7 +20,7 @@ import Control.Category.Strong
 import Control.Category.Symmetric
 import Data.ByteString.Lazy.Char8         qualified as BSL
 import Data.Map qualified as M
-import Data.Render.File
+import Data.Render.File.WithImports
 import Data.Render.Statement
 import Data.Set qualified as S
 import Data.String
@@ -63,8 +63,8 @@ instance IsString (PHPFunc a b) where
 instance RenderStatement (PHPFunc a b) where
     renderStatement PHPFunc { code = f } = f
 
-instance RenderFile (PHPFunc a b) where
-    renderFile p =
+instance RenderFileWithImports (PHPFunc a b) where
+    renderFileWithImports p =
         "<?php\n" <>
         "require(\"vendor/autoload.php\");\n" <>
         BSL.unlines (toFileImports p) <>
@@ -76,14 +76,14 @@ instance Bracket PHPFunc where
     bracket p@PHPFunc { imports = is } = PHPFunc is $ "(" <> renderStatement p <> ")"
 
 fromCatFn :: BSL.ByteString -> PHPFunc a b
-fromCatFn = fromLibFn "Control\Category"
+fromCatFn = fromLibFn "Control\\Category"
 
 instance Category PHPFunc where
     id = fromCatFn "id"
-    a@PHPFunc { imports = isa } . b@PHPFunc { imports = isb } = PHPFunc (isa <> isb <> [("Control\Category", ["compose"])]) $ "(compose)(" <> renderStatement a <> ")(" <> renderStatement b <> ")"
+    a@PHPFunc { imports = isa } . b@PHPFunc { imports = isb } = PHPFunc (isa <> isb <> [("Control\\Category", ["compose"])]) $ "(compose)(" <> renderStatement a <> ")(" <> renderStatement b <> ")"
 
 fromCartesianFn :: Import -> PHPFunc a b
-fromCartesianFn = fromLibFn "Control\Category\Cartesian"
+fromCartesianFn = fromLibFn "Control\\Category\\Cartesian"
 
 instance Cartesian PHPFunc where
     copy = fromCartesianFn "copy"
@@ -92,7 +92,7 @@ instance Cartesian PHPFunc where
     snd' = fromCartesianFn "snd"
 
 fromCocartesianFn :: Import -> PHPFunc a b
-fromCocartesianFn = fromLibFn "Control\Category\Cocartesian"
+fromCocartesianFn = fromLibFn "Control\\Category\\Cocartesian"
 
 instance Cocartesian PHPFunc where
     injectL = fromCocartesianFn "injectL"
@@ -101,21 +101,21 @@ instance Cocartesian PHPFunc where
     tag = fromCocartesianFn "tag"
 
 wrapStrong :: Import -> PHPFunc a b -> PHPFunc c d
-wrapStrong = addLibWrapWith "Control\Category\Strong"
+wrapStrong = addLibWrapWith "Control\\Category\\Strong"
 
 instance Strong PHPFunc where
     first' = wrapStrong "first"
     second' = wrapStrong "second"
 
 wrapChoice :: Import -> PHPFunc a b -> PHPFunc c d
-wrapChoice = addLibWrapWith "Control\Category\Choice"
+wrapChoice = addLibWrapWith "Control\\Category\\Choice"
 
 instance Choice PHPFunc where
     left' = wrapChoice "left"
     right' = wrapChoice "right"
 
 fromSymmetricFn :: Import -> PHPFunc a b
-fromSymmetricFn = fromLibFn "Control\Category\Symmetric"
+fromSymmetricFn = fromLibFn "Control\\Category\\Symmetric"
 
 instance Symmetric PHPFunc where
     swap = fromSymmetricFn "swap"
@@ -130,30 +130,30 @@ instance Symmetric PHPFunc where
 -- instance Apply PHPFunc where
 
 instance PrimitiveBool PHPFunc where
-    eq = fromLibFn "Primitive\Bool" "eq"
+    eq = fromLibFn "Primitive\\Bool" "eq"
 
 instance PrimitiveConsole PHPFunc where
-    outputString = fromLibFn "Primitive\Console" "outputString"
-    inputString = fromLibFn "Primitive\Console" "inputString"
+    outputString = fromLibFn "Primitive\\Console" "outputString"
+    inputString = fromLibFn "Primitive\\Console" "inputString"
 
 instance PrimitiveExtra PHPFunc where
-    intToString = fromLibFn "Primitive\Extra" "intToString"
-    concatString = fromLibFn "Primitive\Extra" "concatString"
-    constString = fromLib "Primitive\Extra" "constString" . ("(\"" <>) . (<> "\")") . BSL.pack
+    intToString = fromLibFn "Primitive\\Extra" "intToString"
+    concatString = fromLibFn "Primitive\\Extra" "concatString"
+    constString = fromLib "Primitive\\Extra" "constString" . ("(\"" <>) . (<> "\")") . BSL.pack
 
 instance PrimitiveFile PHPFunc where
-    readFile' = fromLibFn "Primitive\File" "readFile"
-    writeFile' = fromLibFn "Primitive\File" "writeFile"
+    readFile' = fromLibFn "Primitive\\File" "readFile"
+    writeFile' = fromLibFn "Primitive\\File" "writeFile"
 
 instance PrimitiveString PHPFunc where
-    reverseString = fromLibFn "Primitive\String" "reverseString"
+    reverseString = fromLibFn "Primitive\\String" "reverseString"
 
 fromNumericFn :: Import -> PHPFunc a b
-fromNumericFn = fromLibFn "Control\Category\Numeric"
+fromNumericFn = fromLibFn "Control\\Category\\Numeric"
 
 instance Numeric PHPFunc where
-    num = fromLib "Control\Category\Numeric" "num" . ("(" <>) . (<> ")") . BSL.pack . show
-    negate' = fromLibFn "Control\Category\Numeric" "negate"
+    num = fromLib "Control\\Category\\Numeric" "num" . ("(" <>) . (<> ")") . BSL.pack . show
+    negate' = fromLibFn "Control\\Category\\Numeric" "negate"
     add = fromNumericFn "add"
     mult = fromNumericFn "mult"
     div' = fromNumericFn "div"

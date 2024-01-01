@@ -8,7 +8,7 @@ import Control.Category.Interpret
 import Data.Aeson
 import Data.Aeson.Compat
 import Data.ByteString.Lazy.Char8 qualified as BSL
-import Data.Code.Haskell.Func
+import Data.Code.Haskell
 import Data.Function.Free.Abstract
 import Data.Prims
 import Data.Render.Statement
@@ -19,6 +19,6 @@ import Prelude hiding ((.), id)
 main ∷ IO ()
 main = readToOp (\bs ->
     compileHS =<<
-    (pure . renderStatement :: HSFunc () () -> IO BSL.ByteString) =<<
-    (pure . interpret :: FreeFunc Prims () () -> IO (HSFunc () ())) =<<
+    (pure . renderStatement :: HS () () -> IO BSL.ByteString) =<<
+    (pure . interpret :: FreeFunc Prims () () -> IO (HS () ())) =<<
     (throwDecode :: BSL.ByteString -> IO (FreeFunc Prims () ())) bs)

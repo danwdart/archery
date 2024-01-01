@@ -3,8 +3,7 @@ module Data.Function.IsPalindromeSpec where
 import Control.Category.Execute.Haskell
 import Control.Category.Execute.JSON
 import Data.Aeson
-import Data.Code.Haskell.Func
-import Data.Code.Haskell.Lamb
+import Data.Code.Haskell
 import Data.Code.JS.Lamb
 import Data.Code.PHP.Lamb
 import Data.Function.CollatzStep
@@ -18,22 +17,15 @@ import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
 
-prop_HSFuncIsCorrect ∷ String → Property
-prop_HSFuncIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCi (isPalindrome :: HSFunc String Bool) s
-    pure $ answer === isPalindrome s
-
-
-prop_HSLambIsCorrect ∷ String → Property
-prop_HSLambIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCi (isPalindrome :: HSLamb String Bool) s
+prop_HSIsCorrect ∷ String → Property
+prop_HSIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeViaGHCi (isPalindrome :: HS String Bool) s
     pure $ answer === isPalindrome s
 
 prop_JSLambIsCorrect ∷ String → Property
 prop_JSLambIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
     answer <- executeViaJSON (isPalindrome :: JSLamb String Bool) s
     pure $ answer === isPalindrome s
-
 
 prop_PHPLambIsCorrect ∷ String → Property
 prop_PHPLambIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
@@ -51,10 +43,8 @@ prop_ViaJSONIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSucce
 
 spec ∷ Spec
 spec = describe "isPalindrome" $ do
-    describe "HSFunc" $ do
-        prop "is correct" prop_HSFuncIsCorrect
-    describe "HSLamb" $ do
-        prop "is correct" prop_HSLambIsCorrect
+    describe "HS" $ do
+        prop "is correct" prop_HSIsCorrect
     xdescribe "JSLamb" $ do
         prop "is correct" prop_JSLambIsCorrect
     xdescribe "PHPLamb" $ do
