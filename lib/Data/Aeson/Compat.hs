@@ -7,6 +7,6 @@ import Data.Aeson
 import Data.ByteString.Lazy.Char8 qualified as BSL
 import Data.Maybe
 
-throwDecode :: FromJSON a => BSL.ByteString -> a
+throwDecode ∷ FromJSON a ⇒ BSL.ByteString → a
 throwDecode = fromJust . decode
 #endif

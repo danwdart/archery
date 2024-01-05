@@ -2,7 +2,7 @@
 {-# LANGUAGE Unsafe            #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
-module Data.Code.JS.Lamb where
+module Data.Code.JS where
 
 import Control.Category
 -- import Control.Category.Apply
@@ -10,8 +10,10 @@ import Control.Category.Bracket
 import Control.Category.Cartesian
 import Control.Category.Choice
 import Control.Category.Cocartesian
-import Control.Category.Execute.JSON
-import Control.Category.Execute.Stdio
+import Control.Category.Execute.JSON.WithDefinitions
+import Control.Category.Execute.JSON.WithImports
+import Control.Category.Execute.Stdio.WithDefinitions
+import Control.Category.Execute.Stdio.WithImports
 import Control.Category.Numeric
 import Control.Category.Primitive.Bool
 import Control.Category.Primitive.Console
@@ -31,75 +33,75 @@ import Prelude                            hiding (id, (.))
 import System.Process
 import Text.Read
 
-newtype JSLamb a b = JSLamb BSL.ByteString
+newtype JS a b = JS BSL.ByteString
     deriving (Eq, Show)
 
-instance IsString (JSLamb a b) where
-    fromString = JSLamb . BSL.pack
+instance IsString (JS a b) where
+    fromString = JS . BSL.pack
 
-instance RenderStatement (JSLamb a b) where
-    renderStatement (JSLamb f) = f
+instance RenderStatement (JS a b) where
+    renderStatement (JS f) = f
 
-instance Bracket JSLamb where
-    bracket s = JSLamb $ "(" <> renderStatement s <> ")"
+instance Bracket JS where
+    bracket s = JS $ "(" <> renderStatement s <> ")"
 
-instance Category JSLamb where
+instance Category JS where
     id = "(x => x)"
-    a . b = JSLamb $ "(x => " <> renderStatement a <> "(" <> renderStatement b <> "(x)))"
+    a . b = JS $ "(x => " <> renderStatement a <> "(" <> renderStatement b <> "(x)))"
 
-instance Cartesian JSLamb where
+instance Cartesian JS where
     copy = "(x => [x, x])"
     consume = "(x => null)"
     fst' = "(([x, _]) => x)"
     snd' = "(([_, y]) => y)"
 
-instance Cocartesian JSLamb where
+instance Cocartesian JS where
     injectL = "(x => ({ Left: x}))"
     injectR = "(x => ({ Right: x}))"
     unify = "(x => x.Left ? x.Left : x.Right)"
     tag = "(([b, x]) => b ? ({Right: x}) : ({Left: x}))"
 
-instance Strong JSLamb where
-    first' (JSLamb f) = JSLamb $ "(([x, y]) => [" <> f <> "(x), y])"
-    second' (JSLamb f) = JSLamb $ "(([x, y]) => [x, " <> f <> "(y)])"
+instance Strong JS where
+    first' (JS f) = JS $ "(([x, y]) => [" <> f <> "(x), y])"
+    second' (JS f) = JS $ "(([x, y]) => [x, " <> f <> "(y)])"
 
-instance Choice JSLamb where
-    left' (JSLamb f) = JSLamb $ "(x => x.Left ? ({ Left: " <> f <> " (x.Left) }) : x)"
-    right' (JSLamb f) = JSLamb $ "(x => x.Right ? ({ Right: " <> f <> " (x.Right) }) : x)"
+instance Choice JS where
+    left' (JS f) = JS $ "(x => x.Left ? ({ Left: " <> f <> " (x.Left) }) : x)"
+    right' (JS f) = JS $ "(x => x.Right ? ({ Right: " <> f <> " (x.Right) }) : x)"
 
-instance Symmetric JSLamb where
+instance Symmetric JS where
     swap = "(([a, b]) => ([b, a]))"
     swapEither = "(x => x.Left ? ({ Right: x.Left }) : ({ Left: x.Right }))"
     reassoc = "(([a, [b, c]]) => [[a, b], c])"
     reassocEither = error "Not yet implemented"
 
--- instance Cochoice JSLamb where
+-- instance Cochoice JS where
 
--- instance Costrong JSLamb where
+-- instance Costrong JS where
 
--- instance Apply JSLamb where
+-- instance Apply JS where
 
-instance PrimitiveBool JSLamb where
+instance PrimitiveBool JS where
     eq = "(([x, y]) => x === y)"
 
-instance PrimitiveConsole JSLamb where
+instance PrimitiveConsole JS where
     outputString = "console.log"
     inputString = "prompt"
 
-instance PrimitiveExtra JSLamb where
+instance PrimitiveExtra JS where
     intToString = "(i => i.toString())"
     concatString = "(([a, b]) => a + b)"
-    constString s = JSLamb $ "(() => \"" <> BSL.pack s <> "\")"
+    constString s = JS $ "(() => \"" <> BSL.pack s <> "\")"
 
-instance PrimitiveFile JSLamb where
+instance PrimitiveFile JS where
     readFile' = "@TODO"
     writeFile' = "@TODO"
 
-instance PrimitiveString JSLamb where
+instance PrimitiveString JS where
     reverseString = "(x => x.split('').reverse().join(''))"
 
-instance Numeric JSLamb where
-    num n = JSLamb $ "(_ => " <> BSL.pack (show n) <> ")"
+instance Numeric JS where
+    num n = JS $ "(_ => " <> BSL.pack (show n) <> ")"
     negate' = "(x => -x)"
     add = "(([x, y]) => x + y)"
     mult = "(([x, y]) => x * y)"
@@ -107,7 +109,7 @@ instance Numeric JSLamb where
     mod' = "(([x, y]) => x % y)"
 
 -- @TODO escape shell - Text.ShellEscape?
-instance ExecuteJSON JSLamb where
+instance ExecuteJSON JS where
     executeViaJSON cat param = do
         let params ∷ [String]
             params = ["-e", "console.log(JSON.stringify(" <> BSL.unpack (renderStatement cat) <> "(" <> BSL.unpack (encode param) <> ")))"]
@@ -118,7 +120,7 @@ instance ExecuteJSON JSLamb where
                 Left err -> liftIO . throwIO . userError $ "Can't parse response: " <> err
                 Right ret -> pure ret
 
-instance ExecuteStdio JSLamb where
+instance ExecuteStdio JS where
     executeViaStdio cat stdin = do
         let params ∷ [String]
             params = ["-e", BSL.unpack (renderStatement cat) <> "()"]

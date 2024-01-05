@@ -1,11 +1,13 @@
 module Data.Function.GreetSpec where
 
-import Control.Category.Execute.Haskell
-import Control.Category.Execute.JSON
+import Control.Category.Execute.Haskell.WithDefinitions
+import Control.Category.Execute.Haskell.WithImports
+import Control.Category.Execute.JSON.WithDefinitions
+import Control.Category.Execute.JSON.WithImports
 import Data.Aeson
 import Data.Code.Haskell
-import Data.Code.JS.Lamb
-import Data.Code.PHP.Lamb
+-- import Data.Code.JS
+-- import Data.Code.PHP
 import Data.Function.CollatzStep
 import Data.Function.Free.Abstract
 import Data.Function.Greet
@@ -30,19 +32,33 @@ spec = do
     --     describe "HS" $ do
     --         it "is correct" $
     --             executeViaGHCi (greetData :: HS Person String) myPerson `shouldReturn` greetData myPerson
-    --     describe "JSLamb" $ do
+    --         it "is correct" $
+    --             executeViaGHCi (greetData :: HS Person String) myPerson `shouldReturn` greetData myPerson
+    --     describe "JS" $ do
     --         it "is correct" $ do
-    --             executeViaJSON (greetData :: JSLamb Person String) myPerson `shouldReturn` greetData myPerson
-    --     describe "PHPLamb" $ do
+    --             executeViaJSON (greetData :: JS Person String) myPerson `shouldReturn` greetData myPerson
+    --     describe "PHP" $ do
     --         it "is correct" $ do
-    --             executeViaJSON (greetData :: PHPLamb Person String) myPerson `shouldReturn` greetData myPerson
+    --             executeViaJSON (greetData :: PHP Person String) myPerson `shouldReturn` greetData myPerson
     describe "greetTuple" $ do
         describe "HS" $ do
-            it "is correct" $ do
-                executeViaGHCi (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
-        xdescribe "JSLamb" $ do
-            it "is correct" $ do
-                executeViaJSON (greetTuple :: JSLamb (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
-        xdescribe "PHPLamb" $ do
-            it "is correct" $ do
-                executeViaJSON (greetTuple :: PHPLamb (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+            describe "with definitions" $ do
+                it "is correct" $ do
+                    executeViaGHCiWithDefinitions (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+            xdescribe "with imports" $ do
+                it "is correct" $ do
+                    executeViaGHCiWithImports (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+        -- xdescribe "JS" $ do
+        --     describe "with definitions" $ do
+        --         it "is correct" $ do
+        --             executeViaJSONWithDefinitions (greetTuple :: JS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+        --     describe "with imports" $ do
+        --         it "is correct" $ do
+        --             executeViaJSONWithImports (greetTuple :: JS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+        -- xdescribe "PHP" $ do
+        --     describe "with definitions" $ do
+        --         it "is correct" $ do
+        --             executeViaJSONWithDefinitions (greetTuple :: PHP (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+        --     describe "with imports" $ do
+        --         it "is correct" $ do
+        --             executeViaJSONWithImports (greetTuple :: PHP (String, Int) String) myTuple `shouldReturn` greetTuple myTuple

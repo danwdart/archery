@@ -104,7 +104,7 @@ compileHS fileContents = do
         params = [
             "-e", ":set -XLambdaCase",
             "-e", "import Control.Arrow",
-            "-e", "import Prelude hiding ((.), id)",
+            -- "-e", "import Prelude hiding ((.), id)",
             "-e", "import Control.Category",
             "-e", "runKleisli (" <> BSL.unpack fileContents <> ") ()"
             ]

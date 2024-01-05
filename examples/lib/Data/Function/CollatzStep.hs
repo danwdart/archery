@@ -3,7 +3,6 @@
 module Data.Function.CollatzStep where
 
 import Control.Category
--- import Control.Category.Execute.Haskell
 import Control.Category.Cartesian
 import Control.Category.Choice
 import Control.Category.Cocartesian

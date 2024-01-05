@@ -1,11 +1,16 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 module Data.Function.CollatzStepSpec where
 
-import Control.Category.Execute.Haskell
-import Control.Category.Execute.JSON
+import Control.Category.Execute.Haskell.WithDefinitions
+import Control.Category.Execute.Haskell.WithImports
+import Control.Category.Execute.JSON.WithDefinitions
+import Control.Category.Execute.JSON.WithImports
+import Control.Monad.IO.Class
 import Data.Aeson
 import Data.Code.Haskell
-import Data.Code.JS.Lamb
-import Data.Code.PHP.Lamb
+-- import Data.Code.JS
+-- import Data.Code.PHP
 import Data.Function.CollatzStep
 import Data.Function.Free.Abstract
 import Data.Function.Greet
@@ -19,20 +24,35 @@ import Test.QuickCheck.Monadic
 
 -- @TODO random functions
 
-prop_HSIsCorrect ∷ Int → Property
-prop_HSIsCorrect i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCi (collatzStep :: HS Int Int) i
+prop_HSIsCorrectWithDefinitions ∷ Int → Property
+prop_HSIsCorrectWithDefinitions i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeViaGHCiWithDefinitions (collatzStep :: HS Int Int) i
     pure $ answer === collatzStep i
 
-prop_JSLambIsCorrect ∷ Int → Property
-prop_JSLambIsCorrect i = withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaJSON (collatzStep :: JSLamb Int Int) i
+xprop_HSIsCorrectWithImports ∷ Int → Property
+xprop_HSIsCorrectWithImports i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeViaGHCiWithImports (collatzStep :: HS Int Int) i
     pure $ answer === collatzStep i
 
-prop_PHPLambIsCorrect ∷ Int → Property
-prop_PHPLambIsCorrect i = withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaJSON (collatzStep :: PHPLamb Int Int) i
-    pure $ answer === collatzStep i
+-- prop_JSIsCorrectWithDefinitions ∷ Int → Property
+-- prop_JSIsCorrectWithDefinitions i = withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeViaJSONWithDefinitions (collatzStep :: JS Int Int) i
+--     pure $ answer === collatzStep i
+-- 
+-- prop_JSIsCorrectWithImports ∷ Int → Property
+-- prop_JSIsCorrectWithImports i = withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeViaJSONWithImports (collatzStep :: JS Int Int) i
+--     pure $ answer === collatzStep i
+-- 
+-- prop_PHPIsCorrectWithDefinitions ∷ Int → Property
+-- prop_PHPIsCorrectWithDefinitions i = withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeViaJSONWithDefinitions (collatzStep :: PHP Int Int) i
+--     pure $ answer === collatzStep i
+-- 
+-- prop_PHPIsCorrectWithImports ∷ Int → Property
+-- prop_PHPIsCorrectWithImports i = withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeViaJSONWithImports (collatzStep :: PHP Int Int) i
+--     pure $ answer === collatzStep i
 
 {-}
 myInterpret :: a
@@ -44,16 +64,14 @@ prop_ViaJSONIsCorrect i = withMaxSuccess 200 $
 -}
 
 
-spec ∷ Spec
-spec = describe "collatzStep" $ do
-    describe "HS" $ do
-        prop "is correct" prop_HSIsCorrect
-    xdescribe "JSLamb" $ do
-        prop "is correct" prop_JSLambIsCorrect
-    xdescribe "PHPLamb" $ do
-        prop "is correct" prop_PHPLambIsCorrect
-    {-
+{-}
     describe "JSON" $ do
         it "is correct" $
             -- decode (encode (collatzStep :: FreeFunc p Int Int)) `shouldBe` Just (collatzStep :: FreeFunc p Int Int)
     -}
+
+return []
+runTests = $quickCheckAll
+
+spec ∷ Spec
+spec = prop "all" . monadicIO . liftIO $ runTests

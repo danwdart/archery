@@ -1,107 +1,101 @@
-cabal-version:       3.4
+cabal-version:      3.4
+
 -- Newer versions complain
-name:                archery
-version:             0.1.0.0
+name:               archery
+version:            0.1.0.0
+
 -- synopsis:
-description:         Playing with arrows 
-homepage:            https://github.com/danwdart/archery#readme
-license:             AGPL-3.0-only
+description:        Playing with arrows 
+homepage:           https://github.com/danwdart/archery#readme
+license:            AGPL-3.0-only
+
 -- license-file:        LICENSE
-author:              Dan Dart
-maintainer:          cabal@dandart.co.uk
-copyright:           2019 Dan Dart
-category:            Web
-build-type:          Simple
-extra-source-files:
-                     README.md
+author:             Dan Dart
+maintainer:         cabal@dandart.co.uk
+copyright:          2019 Dan Dart
+category:           Web
+build-type:         Simple
+extra-source-files: README.md
 
 common shared-properties-base
-  hs-source-dirs:      src
-  default-language:    GHC2021
-  default-extensions:  DerivingStrategies, UnicodeSyntax, ImportQualifiedPost
-  ghcjs-options:       -dedupe
+  hs-source-dirs:     src
+  default-language:   GHC2021
+  default-extensions:
+    DerivingStrategies
+    ImportQualifiedPost
+    UnicodeSyntax
+
+  ghcjs-options:      -dedupe
 
 common shared-properties-lib
-  import: shared-properties-base
+  import:             shared-properties-base
   ghc-options:
-    -Weverything
-    -Wno-compat-unqualified-imports
-    -Wno-implicit-prelude
-    -Wno-inferred-safe-imports
-    -Wno-missing-deriving-strategies
-    -Wno-missing-export-lists
-    -Wno-missing-import-lists
-    -Wno-missing-kind-signatures
-    -Werror
-    -haddock
-  build-depends:       base >= 4.17.0.0 && < 5
+    -Weverything -Wno-compat-unqualified-imports -Wno-implicit-prelude
+    -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
+    -Wno-missing-export-lists -Wno-missing-import-lists
+    -Wno-missing-kind-signatures -Werror -haddock
+
+  build-depends:      base >=4.17.0.0 && <5
   default-extensions:
     DerivingStrategies
-    UnicodeSyntax
-    NoGeneralizedNewtypeDeriving
     ImportQualifiedPost
+    NoGeneralizedNewtypeDeriving
+    UnicodeSyntax
 
 common shared-properties-unsafe
-  import: shared-properties-base
+  import:             shared-properties-base
   ghc-options:
-    -Weverything
-    -Wno-compat-unqualified-imports
-    -Wno-implicit-prelude
-    -Wno-inferred-safe-imports
-    -Wno-missing-deriving-strategies
-    -Wno-missing-export-lists
-    -Wno-missing-import-lists
-    -Wno-missing-kind-signatures
-    -Werror
-    -haddock
-    -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       base >= 4.17.0.0 && < 5
+    -Weverything -Wno-compat-unqualified-imports -Wno-implicit-prelude
+    -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
+    -Wno-missing-export-lists -Wno-missing-import-lists
+    -Wno-missing-kind-signatures -Werror -haddock -threaded -rtsopts
+    -with-rtsopts=-N
+
+  build-depends:      base >=4.17.0.0 && <5
   default-extensions:
     DerivingStrategies
-    UnicodeSyntax
-    NoGeneralizedNewtypeDeriving
     ImportQualifiedPost
+    NoGeneralizedNewtypeDeriving
+    UnicodeSyntax
 
 common shared-properties-safe
-  import: shared-properties-unsafe
+  import:             shared-properties-unsafe
   default-extensions:
     DerivingStrategies
-    UnicodeSyntax
-    NoGeneralizedNewtypeDeriving
     ImportQualifiedPost
+    NoGeneralizedNewtypeDeriving
     Safe
+    UnicodeSyntax
 
 common shared-properties-nobase
-  import: shared-properties-base
+  import:             shared-properties-base
   ghc-options:
-    -Weverything
-    -Wno-compat-unqualified-imports
-    -Wno-implicit-prelude
-    -Wno-inferred-safe-imports
-    -Wno-missing-deriving-strategies
-    -Wno-missing-export-lists
-    -Wno-missing-import-lists
-    -Wno-missing-kind-signatures
-    -Werror
-    -haddock
-    -threaded -rtsopts -with-rtsopts=-N
+    -Weverything -Wno-compat-unqualified-imports -Wno-implicit-prelude
+    -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
+    -Wno-missing-export-lists -Wno-missing-import-lists
+    -Wno-missing-kind-signatures -Werror -haddock -threaded -rtsopts
+    -with-rtsopts=-N
+
   default-extensions:
     DerivingStrategies
-    UnicodeSyntax
     ImportQualifiedPost
+    UnicodeSyntax
 
 -- TODO: unsafe?
 library
-  import: shared-properties-lib
+  import:          shared-properties-lib
+
   --ghc-options: -Wno-unused-packages
-  hs-source-dirs:      lib
-  build-depends: base >= 4.17.0.0 && < 5
-               , aeson
-               , bytestring
-               , containers
-               , process
-               , text
-               -- , yaml
+  hs-source-dirs:  lib
+  build-depends:
+    , aeson
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , containers
+    , process
+    , text
+
+  -- , yaml
   exposed-modules:
     Control.Category.Apply
     Control.Category.Bracket
@@ -111,10 +105,15 @@ library
     Control.Category.Cochoice
     Control.Category.Costrong
     Control.Category.Curry
-    Control.Category.Execute.Haskell
-    Control.Category.Execute.JSON
-    Control.Category.Execute.Stdio
-    -- Control.Category.Generic
+    Control.Category.Execute.Haskell.WithDefinitions
+    Control.Category.Execute.Haskell.WithImports
+    Control.Category.Execute.Haskell.WithShorthand
+    Control.Category.Execute.JSON.WithDefinitions
+    Control.Category.Execute.JSON.WithImports
+    Control.Category.Execute.JSON.WithShorthand
+    Control.Category.Execute.Stdio.WithDefinitions
+    Control.Category.Execute.Stdio.WithImports
+    Control.Category.Execute.Stdio.WithShorthand
     Control.Category.Interpret
     Control.Category.LambdaCalculus.BCKW
     Control.Category.LambdaCalculus.SKI
@@ -131,148 +130,341 @@ library
     Control.Category.Symmetric
     Data.Aeson.Compat
     Data.Code.Haskell
-    Data.Code.JS.Lamb
-    Data.Code.JS.Func
-    Data.Code.PHP.Lamb
+    Data.Function.Free.Abstract
     Data.Function.Free.LambdaCalculus.BCKW
     Data.Function.Free.LambdaCalculus.SKI
-    Data.Function.Free.Abstract
     Data.Function.Utilities
     Data.Prims
     Data.Render.File.WithDefinitions
     Data.Render.File.WithImports
-    Data.Render.Statement
+    Data.Render.File.WithShorthand
+    Data.Render.Statement.WithDefinitions
+    Data.Render.Statement.WithShorthand
     System.Executable
 
-executable jcat2hs
-  import: shared-properties-unsafe
-  main-is:             jcat2hs.hs
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
+-- Data.Code.JS
+-- Data.Code.PHP
+-- Control.Category.Generic
 
-executable jcat2jsl
-  import: shared-properties-unsafe
-  main-is:             jcat2jsl.hs
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
+executable jcat2hsfd
+  import:        shared-properties-unsafe
+  main-is:       jcat2hsfd.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
 
-executable jcat2jsp
-  import: shared-properties-unsafe
-  main-is:             jcat2jsp.hs
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
+executable jcat2hsfi
+  import:        shared-properties-unsafe
+  main-is:       jcat2hsfi.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
 
-executable jcat2php
-  import: shared-properties-unsafe
-  main-is:             jcat2php.hs
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
+executable jcat2hsfs
+  import:        shared-properties-unsafe
+  main-is:       jcat2hsfs.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+
+executable jcat2hssd
+  import:        shared-properties-unsafe
+  main-is:       jcat2hssd.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+
+executable jcat2hsss
+  import:        shared-properties-unsafe
+  main-is:       jcat2hsss.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+
+-- executable jcat2jsp
+--   import:        shared-properties-unsafe
+--   main-is:       jcat2jsp.hs
+--   build-depends:
+--     , aeson
+--     , archery
+--     , base        >=4.17.0.0 && <5
+--     , bytestring
+-- 
+-- executable jcat2php
+--   import:        shared-properties-unsafe
+--   main-is:       jcat2php.hs
+--   build-depends:
+--     , aeson
+--     , archery
+--     , base        >=4.17.0.0 && <5
+--     , bytestring
 
 executable jcat2ycat
-  import: shared-properties-unsafe
-  main-is:             jcat2ycat.hs
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring, yaml
+  import:        shared-properties-unsafe
+  main-is:       jcat2ycat.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
 
-executable jcatc
-  import: shared-properties-unsafe
-  main-is:             jcatc.hs
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
+executable jcatcfd
+  import:        shared-properties-unsafe
+  main-is:       jcatcfd.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+
+executable jcatcfi
+  import:        shared-properties-unsafe
+  main-is:       jcatcfi.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+
+executable jcatcfs
+  import:        shared-properties-unsafe
+  main-is:       jcatcfs.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+
+executable jcatcsd
+  import:        shared-properties-unsafe
+  main-is:       jcatcsd.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+
+executable jcatcss
+  import:        shared-properties-unsafe
+  main-is:       jcatcss.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
 
 executable runjcat
-  import: shared-properties-unsafe
-  main-is:             runjcat.hs
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring
+  import:        shared-properties-unsafe
+  main-is:       runjcat.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
 
 executable runycat
-  import: shared-properties-unsafe
-  main-is:             runycat.hs
-  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
+  import:        shared-properties-unsafe
+  main-is:       runycat.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
 
-executable ycat2hs
-  import: shared-properties-unsafe
-  main-is:             ycat2hs.hs
-  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
+executable ycat2hsfd
+  import:        shared-properties-unsafe
+  main-is:       ycat2hsfd.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
+
+executable ycat2hsfi
+  import:        shared-properties-unsafe
+  main-is:       ycat2hsfi.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
+
+executable ycat2hsfs
+  import:        shared-properties-unsafe
+  main-is:       ycat2hsfs.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
+
+executable ycat2hssd
+  import:        shared-properties-unsafe
+  main-is:       ycat2hssd.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
+
+executable ycat2hsss
+  import:        shared-properties-unsafe
+  main-is:       ycat2hsss.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
 
 executable ycat2jcat
-  import: shared-properties-unsafe
-  main-is:             ycat2jcat.hs
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring, yaml
+  import:        shared-properties-unsafe
+  main-is:       ycat2jcat.hs
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
 
-executable ycat2js
-  import: shared-properties-unsafe
-  main-is:             ycat2js.hs
-  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
+-- executable ycat2js
+--   import:        shared-properties-unsafe
+--   main-is:       ycat2js.hs
+--   build-depends:
+--     , archery
+--     , base        >=4.17.0.0 && <5
+--     , bytestring
+--     , yaml
 
-executable ycat2php
-  import: shared-properties-unsafe
-  main-is:             ycat2php.hs
-  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
+-- executable ycat2php
+--   import:        shared-properties-unsafe
+--   main-is:       ycat2php.hs
+--   build-depends:
+--     , archery
+--     , base        >=4.17.0.0 && <5
+--     , bytestring
+--     , yaml
 
-executable ycatc
-  import: shared-properties-unsafe
-  main-is:             ycatc.hs
-  build-depends:       base >= 4.17.0.0 && < 5, archery, bytestring, yaml
+executable ycatcfd
+  import:        shared-properties-unsafe
+  main-is:       ycatcfd.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
+
+executable ycatcfi
+  import:        shared-properties-unsafe
+  main-is:       ycatcfi.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
+
+executable ycatcfs
+  import:        shared-properties-unsafe
+  main-is:       ycatcfs.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
+
+executable ycatcsd
+  import:        shared-properties-unsafe
+  main-is:       ycatcsd.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
+
+executable ycatcss
+  import:        shared-properties-unsafe
+  main-is:       ycatcss.hs
+  build-depends:
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , yaml
 
 executable write-examples
-  import: shared-properties-unsafe
-  main-is:             write-examples.hs
-  hs-source-dirs:      examples/lib, examples/test
-  other-modules:       Data.Function.CollatzStep
-                       Data.Function.Greet
-                       Data.Function.IsPalindrome
-                       Data.Function.ReverseInput
-                       Data.Person
-  build-depends:       base >= 4.17.0.0 && < 5, aeson, archery, bytestring, directory, yaml
+  import:         shared-properties-unsafe
+  main-is:        write-examples.hs
+  hs-source-dirs: examples/lib examples/test
+  other-modules:
+    Data.Function.CollatzStep
+    Data.Function.Greet
+    Data.Function.IsPalindrome
+    Data.Function.ReverseInput
+    Data.Person
+
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , bytestring
+    , directory
+    , yaml
 
 test-suite test
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Spec.hs
-  default-language:    GHC2021
-  default-extensions:  DerivingStrategies, UnicodeSyntax, NoGeneralizedNewtypeDeriving, ImportQualifiedPost
-  build-depends:       base >= 4.17.0.0 && < 5
-                     , aeson
-                     , archery
-                     , directory
-                     , hspec
-                     , QuickCheck
-  other-modules:       Control.Category.ApplySpec
-                       Control.Category.CartesianSpec
-                       Control.Category.ChoiceSpec
-                       Control.Category.CocartesianSpec
-                       Control.Category.CochoiceSpec
-                       Control.Category.CostrongSpec
-                       Control.Category.CurrySpec
-                       Control.Category.GenericSpec
-                       Control.Category.NumericSpec
-                       Control.Category.Primitive.BoolSpec
-                       Control.Category.Primitive.CurriedSpec
-                       Control.Category.Primitive.ExtraSpec
-                       Control.Category.Primitive.FileSpec
-                       Control.Category.Primitive.StringSpec
-                       Control.Category.StrongSpec
-                       Control.Category.SymmetricSpec
-                       Data.Code.HaskellSpec
-                       Data.Code.JS.LambSpec
-                       Data.Code.JS.FuncSpec
-                       Data.Code.PHP.LambSpec
-                       Data.Function.Free.AbstractSpec
-                       Data.PrimsSpec
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     test
+  main-is:            Spec.hs
+  default-language:   GHC2021
+  default-extensions:
+    DerivingStrategies
+    ImportQualifiedPost
+    NoGeneralizedNewtypeDeriving
+    UnicodeSyntax
+
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , directory
+    , hspec
+    , QuickCheck
+
+  other-modules:
 
 test-suite test-examples
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      examples/lib, examples/test
-  main-is:             Spec.hs
-  default-language:    GHC2021
-  default-extensions:  DerivingStrategies, UnicodeSyntax, NoGeneralizedNewtypeDeriving, ImportQualifiedPost
-  build-depends:       base >= 4.17.0.0 && < 5
-                     , aeson
-                     , archery
-                     , hspec
-                     , QuickCheck
-  other-modules:       Data.Function.CollatzStep
-                       Data.Function.CollatzStepSpec
-                       Data.Function.Greet
-                       Data.Function.GreetSpec
-                       Data.Function.IsPalindrome
-                       Data.Function.IsPalindromeSpec
-                       Data.Function.ReverseInput
-                       Data.Function.ReverseInputSpec
-                       Data.Person
-                       Data.PersonSpec
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     examples/lib examples/test
+  main-is:            Spec.hs
+  default-language:   GHC2021
+  default-extensions:
+    DerivingStrategies
+    ImportQualifiedPost
+    NoGeneralizedNewtypeDeriving
+    UnicodeSyntax
+
+  build-depends:
+    , aeson
+    , archery
+    , base        >=4.17.0.0 && <5
+    , hspec
+    , QuickCheck
+
+  other-modules:
+    Data.Function.CollatzStep
+    Data.Function.CollatzStepSpec
+    Data.Function.Greet
+    Data.Function.GreetSpec
+    Data.Function.IsPalindrome
+    Data.Function.IsPalindromeSpec
+    Data.Function.ReverseInput
+    Data.Person
+    Data.PersonSpec
