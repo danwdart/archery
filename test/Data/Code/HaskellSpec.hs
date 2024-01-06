@@ -17,8 +17,8 @@ import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Data.Code.Haskell
-import Prelude                            hiding (id, (.))
-import Test.Hspec                         hiding (runIO)
+import Prelude                                          hiding (id, (.))
+import Test.Hspec                                       hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
@@ -26,9 +26,8 @@ import Test.QuickCheck.Monadic
 spec ∷ Spec
 spec = describe "HS" $ do
     describe "with definitions" $ do
-        describe "bracket" $
-            it "is idempotent" $ do
-                executeViaGHCiWithDefinitions (bracket id :: HS String String) "1" `shouldReturn` "1"
+        describe "bracket" . it "is idempotent" $ (do
+                executeViaGHCiWithDefinitions (bracket id :: HS String String) "1" `shouldReturn` "1")
         describe "category" $ do
             it "composes" $
                 executeViaGHCiWithDefinitions (id :: HS String String) "1" `shouldReturn` "1"
@@ -145,9 +144,8 @@ spec = describe "HS" $ do
             it "returns a Just" $
                 executeViaGHCiWithDefinitions (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
     xdescribe "with imports" $ do
-        describe "bracket" $
-            it "is idempotent" $ do
-                executeViaGHCiWithImports (bracket id :: HS String String) "1" `shouldReturn` "1"
+        describe "bracket" . it "is idempotent" $ (do
+                executeViaGHCiWithImports (bracket id :: HS String String) "1" `shouldReturn` "1")
         describe "category" $ do
             it "composes" $
                 executeViaGHCiWithImports (id :: HS String String) "1" `shouldReturn` "1"

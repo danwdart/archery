@@ -28,24 +28,24 @@ import Control.Category.Primitive.File
 import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
-import Control.Exception                  hiding (bracket)
+import Control.Exception                                hiding (bracket)
 import Control.Monad.IO.Class
-import Data.ByteString.Lazy.Char8         qualified as BSL
-import Data.Map                           (Map)
-import Data.Map                           qualified as M
+import Data.ByteString.Lazy.Char8                       qualified as BSL
+import Data.Map                                         (Map)
+import Data.Map                                         qualified as M
 import Data.Maybe
 import Data.Render.File.WithDefinitions
 import Data.Render.File.WithImports
 import Data.Render.File.WithShorthand
 import Data.Render.Statement.WithDefinitions
 import Data.Render.Statement.WithShorthand
-import Data.Set                           (Set)
-import Data.Set                           qualified as S
+import Data.Set                                         (Set)
+import Data.Set                                         qualified as S
 import Data.String
 import Data.Typeable
 import GHC.IO.Exception
 import GHC.IsList
-import Prelude                            hiding (id, (.))
+import Prelude                                          hiding (id, (.))
 import System.Process
 import Text.Read
 
@@ -68,10 +68,10 @@ instance Semigroup Imports where
 deriving instance Monoid Imports
 
 data Export = Export {
-    module' :: Module,
+    module'      :: Module,
     functionName :: FunctionName,
     functionType :: FunctionType,
-    definition :: Definition
+    definition   :: Definition
 } deriving (Eq, Show)
 
 data HS a b = HS {
@@ -106,7 +106,7 @@ instance IsString (HS a b) where
 
 instance RenderStatementWithDefinitions (HS a b) where
     renderStatementWithDefinitions HS { export = export', shorthand = s } = case export' of
-        Nothing -> s
+        Nothing                                  -> s
         Just Export { definition = definition' } -> definition' -- @TODO is
 
 instance RenderStatementWithShorthand (HS a b) where

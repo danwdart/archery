@@ -17,7 +17,7 @@ import Data.Function.Greet
 import Data.Function.IsPalindrome
 import Data.Function.ReverseInput
 import Data.Prims
-import Test.Hspec                       hiding (runIO)
+import Test.Hspec                                       hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
@@ -36,17 +36,17 @@ xprop_HSIsCorrectWithImports s = length s > 1 && all (`notElem` "$") s ==> withM
 -- prop_JSIsCorrectWithDefinitions s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
 --     answer <- executeViaJSONWithDefinitions (isPalindrome :: JS String Bool) s
 --     pure $ answer === isPalindrome s
--- 
+--
 -- prop_JSIsCorrectWithImports ∷ String → Property
 -- prop_JSIsCorrectWithImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
 --     answer <- executeViaJSONWithImports (isPalindrome :: JS String Bool) s
 --     pure $ answer === isPalindrome s
--- 
+--
 -- prop_PHPIsCorrectWithDefinitions ∷ String → Property
 -- prop_PHPIsCorrectWithDefinitions s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
 --     answer <- executeViaJSONWithDefinitions (isPalindrome :: PHP String Bool) s
 --     pure $ answer === isPalindrome s
--- 
+--
 -- prop_PHPIsCorrectWithImports ∷ String → Property
 -- prop_PHPIsCorrectWithImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
 --     answer <- executeViaJSONWithImports (isPalindrome :: PHP String Bool) s
@@ -67,7 +67,7 @@ prop_ViaJSONIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSucce
             decode (encode (isPalindrome :: FreeFunc p String Bool)) `shouldBe` Just (isPalindrome :: FreeFunc p String Bool)
     -}
 
-return []
+pure []
 runTests = $quickCheckAll
 
 spec ∷ Spec

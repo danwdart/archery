@@ -17,7 +17,7 @@ import Data.Function.Greet
 import Data.Function.IsPalindrome
 import Data.Function.ReverseInput
 import Data.Prims
-import Test.Hspec                       hiding (runIO)
+import Test.Hspec                                       hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
@@ -38,17 +38,17 @@ xprop_HSIsCorrectWithImports i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
 -- prop_JSIsCorrectWithDefinitions i = withMaxSuccess 200 . monadicIO $ do
 --     answer <- executeViaJSONWithDefinitions (collatzStep :: JS Int Int) i
 --     pure $ answer === collatzStep i
--- 
+--
 -- prop_JSIsCorrectWithImports ∷ Int → Property
 -- prop_JSIsCorrectWithImports i = withMaxSuccess 200 . monadicIO $ do
 --     answer <- executeViaJSONWithImports (collatzStep :: JS Int Int) i
 --     pure $ answer === collatzStep i
--- 
+--
 -- prop_PHPIsCorrectWithDefinitions ∷ Int → Property
 -- prop_PHPIsCorrectWithDefinitions i = withMaxSuccess 200 . monadicIO $ do
 --     answer <- executeViaJSONWithDefinitions (collatzStep :: PHP Int Int) i
 --     pure $ answer === collatzStep i
--- 
+--
 -- prop_PHPIsCorrectWithImports ∷ Int → Property
 -- prop_PHPIsCorrectWithImports i = withMaxSuccess 200 . monadicIO $ do
 --     answer <- executeViaJSONWithImports (collatzStep :: PHP Int Int) i
@@ -70,7 +70,7 @@ prop_ViaJSONIsCorrect i = withMaxSuccess 200 $
             -- decode (encode (collatzStep :: FreeFunc p Int Int)) `shouldBe` Just (collatzStep :: FreeFunc p Int Int)
     -}
 
-return []
+pure []
 runTests = $quickCheckAll
 
 spec ∷ Spec

@@ -15,7 +15,7 @@ import Data.Function.IsPalindrome
 import Data.Function.ReverseInput
 import Data.Person
 import Data.Prims
-import Test.Hspec                       hiding (runIO)
+import Test.Hspec                                       hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic

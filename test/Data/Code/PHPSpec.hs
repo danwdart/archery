@@ -18,7 +18,7 @@ import Control.Category.Symmetric
 import Data.Code.PHP
 import Prelude                            hiding (id, (.))
 -}
-import Test.Hspec                         hiding (runIO)
+import Test.Hspec hiding (runIO)
 {-}
 import Test.Hspec.QuickCheck
 import Test.QuickCheck

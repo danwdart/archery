@@ -23,13 +23,13 @@ import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Control.Monad.IO.Class
-import Data.ByteString.Lazy.Char8         qualified as BSL
+import Data.ByteString.Lazy.Char8                       qualified as BSL
 import Data.Kind
 import Data.Render.Statement.WithDefinitions
 import Data.Render.Statement.WithShorthand
 import Data.String
 -- import Data.Tuple.Triple
-import Prelude                            hiding (id, (.))
+import Prelude                                          hiding (id, (.))
 import System.Process
 import Text.Read
 

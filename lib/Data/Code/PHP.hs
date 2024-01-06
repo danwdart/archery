@@ -43,7 +43,7 @@ data PHP a b = PHP {
 -- toCLIImports (PHP imports _) = S.toList imports >>= \importStr -> ["-e", "const {} " <> BSL.unpack importStr]
 
 toFileImports ∷ PHP a b → [BSL.ByteString]
-toFileImports PHP { imports = is } = (\(file, imports) -> BSL.intercalate "\n" (fmap (\imprt -> "use function " <> file <> "\\" <> imprt) $ S.toList imports) <> ";") <$> M.toList is
+toFileImports PHP { imports = is } = (\(file, imports) -> BSL.intercalate "\n" ((\imprt -> "use function " <> file <> "\\" <> imprt) <$> S.toList imports) <> ";") <$> M.toList is
 
 fromLib ∷ Module → ImportedFunctionName → RenderedStatement → PHP a b
 fromLib lib fnName = PHP [(lib, [fnName])]

@@ -22,14 +22,14 @@ import Control.Category.Primitive.File
 import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
-import Control.Exception                  hiding (bracket)
+import Control.Exception                              hiding (bracket)
 import Control.Monad.IO.Class
 import Data.Aeson
-import Data.ByteString.Lazy.Char8         qualified as BSL
+import Data.ByteString.Lazy.Char8                     qualified as BSL
 import Data.Render.Statement
 import Data.String
 import GHC.IO.Exception
-import Prelude                            hiding (id, (.))
+import Prelude                                        hiding (id, (.))
 import System.Process
 import Text.Read
 

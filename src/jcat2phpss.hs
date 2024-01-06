@@ -7,12 +7,12 @@ import Control.Category
 import Control.Category.Interpret
 import Data.Aeson
 import Data.Aeson.Compat
-import Data.ByteString.Lazy.Char8  qualified as BSL
+import Data.ByteString.Lazy.Char8          qualified as BSL
 import Data.Code.PHP
 import Data.Function.Free.Abstract
 import Data.Prims
 import Data.Render.Statement.WithShorthand
-import Prelude                     hiding (id, (.))
+import Prelude                             hiding (id, (.))
 import System.Executable
 
 -- | Compiles a category from YAML category file to a Haskell function source file.

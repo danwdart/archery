@@ -4,9 +4,9 @@
 module Main (main) where
 
 -- import Control.Category.Interpret
-import Data.Aeson                       qualified as A
+import Data.Aeson                            qualified as A
 -- import Data.ByteString.Char8      qualified as BS
-import Data.ByteString.Lazy.Char8       qualified as BSL
+import Data.ByteString.Lazy.Char8            qualified as BSL
 import Data.Code.Haskell
 -- import Data.Code.JS
 -- import Data.Code.PHP
@@ -23,7 +23,7 @@ import Data.Render.File.WithShorthand
 import Data.Render.Statement.WithDefinitions
 import Data.Render.Statement.WithShorthand
 -- import Data.Person
-import Data.Yaml                        qualified as Y
+import Data.Yaml                             qualified as Y
 import System.Directory
 
 main ∷ IO ()
@@ -65,14 +65,14 @@ main = do
     BSL.writeFile "data/examples/statements/definitions/haskell/reverseInput.hs" $ renderStatementWithShorthand (revInputProgram :: HS () ())
 
     -- createDirectoryIfMissing True "data/examples/statements/js"
--- 
+--
     -- BSL.writeFile "data/examples/statements/js/collatzStep.js" $ renderStatement (collatzStep :: JS Int Int)
     -- BSL.writeFile "data/examples/statements/js/isPalindrome.js" $ renderStatement (isPalindrome :: JS String Bool)
     -- BSL.writeFile "data/examples/statements/js/greetTuple.js" $ renderStatement (greetTuple :: JS (String, Int) String)
     -- BSL.writeFile "data/examples/statements/js/reverseInput.js" $ renderStatement (revInputProgram :: JS () ())
--- 
+--
     -- createDirectoryIfMissing True "data/examples/statements/php"
--- 
+--
     -- BSL.writeFile "data/examples/statements/php/collatzStep.php" $ renderStatement (collatzStep :: PHP Int Int)
     -- BSL.writeFile "data/examples/statements/php/isPalindrome.php" $ renderStatement (isPalindrome :: PHP String Bool)
     -- BSL.writeFile "data/examples/statements/php/greetTuple.php" $ renderStatement (greetTuple :: PHP (String, Int) String)
@@ -102,7 +102,7 @@ main = do
     BSL.writeFile "data/examples/programs/withshorthand/haskell/reverseInput.hs" $ renderFileWithShorthand (revInputProgram :: HS () ())
 
     -- createDirectoryIfMissing True "data/examples/programs/js/JS"
--- 
+--
     -- BSL.writeFile "data/examples/programs/js/JS/collatzStep.js" $ renderFileWithImports (collatzStep :: JS Int Int)
     -- BSL.writeFile "data/examples/programs/js/JS/isPalindrome.js" $ renderFileWithImports (isPalindrome :: JS String Bool)
     -- BSL.writeFile "data/examples/programs/js/JS/greetTuple.js" $ renderFileWithImports (greetTuple :: JS (String, Int) String)

@@ -19,7 +19,7 @@ import Control.Category.Symmetric
 import Data.Code.JS
 import Prelude                            hiding (id, (.))
 -}
-import Test.Hspec                         hiding (runIO)
+import Test.Hspec hiding (runIO)
 {-}
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
@@ -29,7 +29,7 @@ spec ∷ Spec
 spec = pure ()
 
 {-} describe "JS" $ do
-    
+
     describe "executeViaJSONWithDefinitions" $ do
         it "returns a string" $
             executeViaJSONWithDefinitions (id :: JS String String) "1" `shouldReturn` "1"
