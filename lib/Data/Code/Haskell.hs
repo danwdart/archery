@@ -105,7 +105,9 @@ instance IsString (HS a b) where
     fromString = HS [] Nothing . BSL.pack
 
 instance RenderStatementWithDefinitions (HS a b) where
-    renderStatementWithDefinitions HS { shorthand = s } = s -- @TODO is
+    renderStatementWithDefinitions HS { export = export', shorthand = s } = case export' of
+        Nothing -> s
+        Just Export { definition = definition' } -> definition' -- @TODO is
 
 instance RenderStatementWithShorthand (HS a b) where
     renderStatementWithShorthand HS { shorthand = s } = s -- @TODO is
@@ -115,6 +117,7 @@ instance (Typeable a, Typeable b) ⇒ RenderFileWithShorthand (HS a b) where
     renderFileWithShorthand cat@HS { export = export' } =
         "{-# LANGUAGE LambdaCase #-}" <>
         "\nmodule " <> module' <> " where\n\n" <>
+        BSL.unlines (renderDefinitions cat) <>
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         "\n" <> functionName' <> " = " <> renderStatementWithShorthand cat where
             Export {
@@ -134,7 +137,6 @@ instance (Typeable a, Typeable b) ⇒ RenderFileWithDefinitions (HS a b) where
         "{-# LANGUAGE LambdaCase #-}" <>
         "\nmodule " <> module' <> " where\n\n" <>
         BSL.unlines (toExternalFileImports cat) <>
-        BSL.unlines (renderDefinitions cat) <>
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         "\n" <> functionName' <> " = " <> renderStatementWithDefinitions cat where
             Export {
