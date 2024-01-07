@@ -10,6 +10,7 @@ import Data.ByteString.Lazy.Char8            qualified as BSL
 import Data.Code.Haskell
 -- import Data.Code.JS
 -- import Data.Code.PHP
+import Data.Function.AskName
 import Data.Function.CollatzStep
 import Data.Function.Free.Abstract
 import Data.Function.Greet
@@ -35,6 +36,7 @@ main = do
 
     createDirectoryIfMissing True "data/examples/jcat"
 
+    A.encodeFile "data/examples/jcat/askName.json" (askName :: FreeFunc Prims () ())
     A.encodeFile "data/examples/jcat/collatzStep.json" (collatzStep :: FreeFunc Prims Int Int)
     A.encodeFile "data/examples/jcat/helloWorld.json" (helloWorld :: FreeFunc Prims () ())
     A.encodeFile "data/examples/jcat/isPalindrome.json" (isPalindrome :: FreeFunc Prims String Bool)
@@ -44,6 +46,7 @@ main = do
 
     createDirectoryIfMissing True "data/examples/ycat"
 
+    Y.encodeFile "data/examples/ycat/askName.yaml" (askName :: FreeFunc Prims () ())
     Y.encodeFile "data/examples/ycat/collatzStep.yaml" (collatzStep :: FreeFunc Prims Int Int)
     Y.encodeFile "data/examples/ycat/helloWorld.yaml" (helloWorld :: FreeFunc Prims () ())
     Y.encodeFile "data/examples/ycat/isPalindrome.yaml" (isPalindrome :: FreeFunc Prims String Bool)
@@ -55,6 +58,7 @@ main = do
 
     createDirectoryIfMissing True "data/examples/statements/definitions/haskell"
 
+    BSL.writeFile "data/examples/statements/definitions/haskell/askName.hs" $ renderStatementWithDefinitions (askName :: HS () ())
     BSL.writeFile "data/examples/statements/definitions/haskell/collatzStep.hs" $ renderStatementWithDefinitions (collatzStep :: HS Int Int)
     BSL.writeFile "data/examples/statements/definitions/haskell/helloWorld.hs" $ renderStatementWithDefinitions (helloWorld :: HS () ())
     BSL.writeFile "data/examples/statements/definitions/haskell/isPalindrome.hs" $ renderStatementWithDefinitions (isPalindrome :: HS String Bool)
@@ -63,8 +67,9 @@ main = do
 
     createDirectoryIfMissing True "data/examples/statements/shorthand/haskell"
 
+    BSL.writeFile "data/examples/statements/shorthand/haskell/askName.hs" $ renderStatementWithShorthand (askName :: HS () ())
     BSL.writeFile "data/examples/statements/shorthand/haskell/collatzStep.hs" $ renderStatementWithShorthand (collatzStep :: HS Int Int)
-    BSL.writeFile "data/examples/statements/shorthand/haskell/isPalhelloWorldindrome.hs" $ renderStatementWithShorthand (helloWorld :: HS () ())
+    BSL.writeFile "data/examples/statements/shorthand/haskell/helloWorld.hs" $ renderStatementWithShorthand (helloWorld :: HS () ())
     BSL.writeFile "data/examples/statements/shorthand/haskell/isPalindrome.hs" $ renderStatementWithShorthand (isPalindrome :: HS String Bool)
     BSL.writeFile "data/examples/statements/shorthand/haskell/greetTuple.hs" $ renderStatementWithShorthand (greetTuple :: HS (String, Int) String)
     BSL.writeFile "data/examples/statements/definitions/haskell/reverseInput.hs" $ renderStatementWithShorthand (revInputProgram :: HS () ())
@@ -87,6 +92,7 @@ main = do
 
     createDirectoryIfMissing True "data/examples/programs/withimports/haskell"
 
+    BSL.writeFile "data/examples/programs/withimports/haskell/askName.hs" $ renderFileWithImports (askName :: HS () ())
     BSL.writeFile "data/examples/programs/withimports/haskell/collatzStep.hs" $ renderFileWithImports (collatzStep :: HS Int Int)
     BSL.writeFile "data/examples/programs/withimports/haskell/helloWorld.hs" $ renderFileWithImports (helloWorld :: HS () ())
     BSL.writeFile "data/examples/programs/withimports/haskell/isPalindrome.hs" $ renderFileWithImports (isPalindrome :: HS String Bool)
@@ -95,6 +101,7 @@ main = do
 
     createDirectoryIfMissing True "data/examples/programs/withdefinitions/haskell"
 
+    BSL.writeFile "data/examples/programs/withdefinitions/haskell/askName.hs" $ renderFileWithDefinitions (askName :: HS () ())
     BSL.writeFile "data/examples/programs/withdefinitions/haskell/collatzStep.hs" $ renderFileWithDefinitions (collatzStep :: HS Int Int)
     BSL.writeFile "data/examples/programs/withdefinitions/haskell/helloWorld.hs" $ renderFileWithDefinitions (helloWorld :: HS () ())
     BSL.writeFile "data/examples/programs/withdefinitions/haskell/isPalindrome.hs" $ renderFileWithDefinitions (isPalindrome :: HS String Bool)
@@ -103,6 +110,7 @@ main = do
 
     createDirectoryIfMissing True "data/examples/programs/withshorthand/haskell"
 
+    BSL.writeFile "data/examples/programs/withshorthand/haskell/askName.hs" $ renderFileWithShorthand (askName :: HS () ())
     BSL.writeFile "data/examples/programs/withshorthand/haskell/collatzStep.hs" $ renderFileWithShorthand (collatzStep :: HS Int Int)
     BSL.writeFile "data/examples/programs/withshorthand/haskell/helloWorld.hs" $ renderFileWithShorthand (helloWorld :: HS () ())
     BSL.writeFile "data/examples/programs/withshorthand/haskell/isPalindrome.hs" $ renderFileWithShorthand (isPalindrome :: HS String Bool)

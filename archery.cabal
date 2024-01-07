@@ -405,6 +405,7 @@ executable write-examples
   main-is:        write-examples.hs
   hs-source-dirs: examples/lib examples/test
   other-modules:
+    Data.Function.AskName
     Data.Function.CollatzStep
     Data.Function.Greet
     Data.Function.HelloWorld
@@ -460,6 +461,7 @@ test-suite test-examples
     , QuickCheck
 
   other-modules:
+    Data.Function.AskName
     Data.Function.CollatzStep
     Data.Function.CollatzStepSpec
     Data.Function.Greet
