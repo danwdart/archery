@@ -4,8 +4,10 @@ module Data.Function.CollatzStepSpec where
 
 import Control.Category.Execute.Haskell.WithDefinitions
 import Control.Category.Execute.Haskell.WithImports
+import Control.Category.Execute.Haskell.WithShorthand
 import Control.Category.Execute.JSON.WithDefinitions
 import Control.Category.Execute.JSON.WithImports
+import Control.Category.Execute.JSON.WithShorthand
 import Control.Monad.IO.Class
 import Data.Aeson
 import Data.Code.Haskell
@@ -34,6 +36,11 @@ xprop_HSIsCorrectWithImports i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
     answer <- executeViaGHCiWithImports (collatzStep :: HS Int Int) i
     pure $ answer === collatzStep i
 
+xprop_HSIsCorrectWithShorthand ∷ Int → Property
+xprop_HSIsCorrectWithShorthand i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeViaGHCiWithShorthand (collatzStep :: HS Int Int) i
+    pure $ answer === collatzStep i
+
 -- prop_JSIsCorrectWithDefinitions ∷ Int → Property
 -- prop_JSIsCorrectWithDefinitions i = withMaxSuccess 200 . monadicIO $ do
 --     answer <- executeViaJSONWithDefinitions (collatzStep :: JS Int Int) i
@@ -58,8 +65,8 @@ xprop_HSIsCorrectWithImports i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
 myInterpret :: a
 myInterpret = _
 
-prop_ViaJSONIsCorrect :: Int -> Property
-prop_ViaJSONIsCorrect i = withMaxSuccess 200 $
+xprop_ViaJSONIsCorrect :: Int -> Property
+xprop_ViaJSONIsCorrect i = withMaxSuccess 200 $
     (myInterpret <$> decode (encode (collatzStep :: FreeFunc p Int Int)) <*> Just i) === Just (collatzStep i)
 -}
 

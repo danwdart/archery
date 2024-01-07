@@ -4,8 +4,10 @@ module Data.Function.IsPalindromeSpec where
 
 import Control.Category.Execute.Haskell.WithDefinitions
 import Control.Category.Execute.Haskell.WithImports
+import Control.Category.Execute.Haskell.WithShorthand
 import Control.Category.Execute.JSON.WithDefinitions
 import Control.Category.Execute.JSON.WithImports
+import Control.Category.Execute.JSON.WithShorthand
 import Control.Monad.IO.Class
 import Data.Aeson
 import Data.Code.Haskell
@@ -32,6 +34,11 @@ xprop_HSIsCorrectWithImports s = length s > 1 && all (`notElem` "$") s ==> withM
     answer <- executeViaGHCiWithImports (isPalindrome :: HS String Bool) s
     pure $ answer === isPalindrome s
 
+xprop_HSIsCorrectWithShorthand ∷ String → Property
+xprop_HSIsCorrectWithShorthand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeViaGHCiWithShorthand (isPalindrome :: HS String Bool) s
+    pure $ answer === isPalindrome s
+
 -- prop_JSIsCorrectWithDefinitions ∷ String → Property
 -- prop_JSIsCorrectWithDefinitions s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
 --     answer <- executeViaJSONWithDefinitions (isPalindrome :: JS String Bool) s
@@ -56,8 +63,8 @@ xprop_HSIsCorrectWithImports s = length s > 1 && all (`notElem` "$") s ==> withM
 
 myInterpret = _
 
-prop_ViaJSONIsCorrect :: String -> Property
-prop_ViaJSONIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 $
+xprop_ViaJSONIsCorrect :: String -> Property
+xprop_ViaJSONIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 $
     (myInterpret <$> decode (encode (isPalindrome :: FreeFunc p String Bool)) <*> Just s) === Just (isPalindrome s)
 -}
 

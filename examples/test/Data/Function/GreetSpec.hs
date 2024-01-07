@@ -2,8 +2,10 @@ module Data.Function.GreetSpec where
 
 import Control.Category.Execute.Haskell.WithDefinitions
 import Control.Category.Execute.Haskell.WithImports
+import Control.Category.Execute.Haskell.WithShorthand
 import Control.Category.Execute.JSON.WithDefinitions
 import Control.Category.Execute.JSON.WithImports
+import Control.Category.Execute.JSON.WithShorthand
 import Data.Aeson
 import Data.Code.Haskell
 -- import Data.Code.JS
@@ -48,6 +50,9 @@ spec = do
             xdescribe "with imports" $ do
                 it "is correct" $ do
                     executeViaGHCiWithImports (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+            xdescribe "with shorthand" $ do
+                it "is correct" $ do
+                    executeViaGHCiWithShorthand (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
         -- xdescribe "JS" $ do
         --     describe "with definitions" $ do
         --         it "is correct" $ do
