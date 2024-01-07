@@ -407,6 +407,7 @@ executable write-examples
   other-modules:
     Data.Function.CollatzStep
     Data.Function.Greet
+    Data.Function.HelloWorld
     Data.Function.IsPalindrome
     Data.Function.ReverseInput
     Data.Person
@@ -463,6 +464,7 @@ test-suite test-examples
     Data.Function.CollatzStepSpec
     Data.Function.Greet
     Data.Function.GreetSpec
+    Data.Function.HelloWorld
     Data.Function.IsPalindrome
     Data.Function.IsPalindromeSpec
     Data.Function.ReverseInput
