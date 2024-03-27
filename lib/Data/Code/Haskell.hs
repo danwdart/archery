@@ -74,10 +74,10 @@ data Export = Export {
 } deriving (Eq, Show)
 
 data HS a b = HS {
-    imports   :: Imports,
-    export    :: Maybe Export,
-    shorthand :: Shorthand,
-    definition   :: Definition
+    imports    :: Imports,
+    export     :: Maybe Export,
+    shorthand  :: Shorthand,
+    definition :: Definition
 } deriving (Eq, Show)
 
 toCLIImports ∷ HS a b → [String]
