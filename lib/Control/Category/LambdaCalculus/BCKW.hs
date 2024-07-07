@@ -3,7 +3,7 @@
 module Control.Category.LambdaCalculus.BCKW where
 
 class SKI where
-    b :: cat (cat (cat b c) (cat a b)) (cat a c)
-    c :: cat (cat a (cat b c)) (cat b (cat a c))
-    k :: cat (cat a b) a
-    w :: cat (cat (cat (cat a a) b) a) b
+    b :: cat (cat (cat p2 p3) (cat p1 p2)) (cat p1 p3)
+    c :: cat (cat p1 (cat p2 p3)) (cat p2 (cat p1 p3))
+    k :: cat (cat p1 p2) p1
+    w :: cat (cat (cat (cat p1 p1) p2) p1) p2
