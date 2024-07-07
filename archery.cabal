@@ -33,11 +33,13 @@ common shared-properties-lib
     -Weverything -Wno-compat-unqualified-imports -Wno-implicit-prelude
     -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
     -Wno-missing-export-lists -Wno-missing-import-lists
-    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures -Wno-all-missed-specialisations -Wno-missed-specialsations
-    -Wno-missing-role-annotations -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
+    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
+    -Wno-all-missed-specialisations -Wno-missed-specialisations
+    -Wno-missing-role-annotations -Wno-missing-kind-signatures
+    -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
     -Werror -haddock
 
-  build-depends:      base >= 4.19.1.0 && <5
+  build-depends:      base >=4.19.1.0 && <5
   default-extensions:
     DerivingStrategies
     ImportQualifiedPost
@@ -50,10 +52,13 @@ common shared-properties-unsafe
     -Weverything -Wno-compat-unqualified-imports -Wno-implicit-prelude
     -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
     -Wno-missing-export-lists -Wno-missing-import-lists
-    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures -Wno-all-missed-specialisations -Wno-missed-specialsations
-    -Wno-missing-role-annotations -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
+    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
+    -Wno-all-missed-specialisations -Wno-missed-specialisations
+    -Wno-missing-role-annotations -Wno-missing-kind-signatures
+    -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
     -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
-  build-depends:      base >= 4.19.1.0 && <5
+
+  build-depends:      base >=4.19.1.0 && <5
   default-extensions:
     DerivingStrategies
     ImportQualifiedPost
@@ -75,9 +80,12 @@ common shared-properties-nobase
     -Weverything -Wno-compat-unqualified-imports -Wno-implicit-prelude
     -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
     -Wno-missing-export-lists -Wno-missing-import-lists
-    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures -Wno-all-missed-specialisations -Wno-missed-specialsations
-    -Wno-missing-role-annotations -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
+    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
+    -Wno-all-missed-specialisations -Wno-missed-specialisations
+    -Wno-missing-role-annotations -Wno-missing-kind-signatures
+    -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
     -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
+
   default-extensions:
     DerivingStrategies
     ImportQualifiedPost
@@ -86,15 +94,17 @@ common shared-properties-nobase
 -- TODO: unsafe?
 library
   import:          shared-properties-lib
+
   --ghc-options: -Wno-unused-packages
   hs-source-dirs:  lib
   build-depends:
     , aeson
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , containers
     , process
     , text
+
   -- , yaml
   exposed-modules:
     Control.Category.Apply
@@ -141,6 +151,7 @@ library
     Data.Render.Statement.WithDefinitions
     Data.Render.Statement.WithShorthand
     System.Executable
+
 -- Data.Code.JS
 -- Data.Code.PHP
 -- Control.Category.Generic
@@ -151,7 +162,7 @@ executable jcat2hsfd
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 executable jcat2hsfi
@@ -160,7 +171,7 @@ executable jcat2hsfi
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 executable jcat2hsfs
@@ -169,7 +180,7 @@ executable jcat2hsfs
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 executable jcat2hssd
@@ -178,7 +189,7 @@ executable jcat2hssd
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 executable jcat2hsss
@@ -187,7 +198,7 @@ executable jcat2hsss
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 -- executable jcat2jsp
@@ -214,7 +225,7 @@ executable jcat2ycat
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -224,7 +235,7 @@ executable jcatcfd
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 executable jcatcfi
@@ -233,7 +244,7 @@ executable jcatcfi
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 executable jcatcfs
@@ -242,7 +253,7 @@ executable jcatcfs
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 executable jcatcsd
@@ -251,7 +262,7 @@ executable jcatcsd
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 executable jcatcss
@@ -260,7 +271,7 @@ executable jcatcss
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 executable runjcat
@@ -269,7 +280,7 @@ executable runjcat
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
 
 executable runycat
@@ -277,7 +288,7 @@ executable runycat
   main-is:       runycat.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -286,7 +297,7 @@ executable ycat2hsfd
   main-is:       ycat2hsfd.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -295,7 +306,7 @@ executable ycat2hsfi
   main-is:       ycat2hsfi.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -304,7 +315,7 @@ executable ycat2hsfs
   main-is:       ycat2hsfs.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -313,7 +324,7 @@ executable ycat2hssd
   main-is:       ycat2hssd.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -322,7 +333,7 @@ executable ycat2hsss
   main-is:       ycat2hsss.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -332,7 +343,7 @@ executable ycat2jcat
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -359,7 +370,7 @@ executable ycatcfd
   main-is:       ycatcfd.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -368,7 +379,7 @@ executable ycatcfi
   main-is:       ycatcfi.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -377,7 +388,7 @@ executable ycatcfs
   main-is:       ycatcfs.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -386,7 +397,7 @@ executable ycatcsd
   main-is:       ycatcsd.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -395,7 +406,7 @@ executable ycatcss
   main-is:       ycatcss.hs
   build-depends:
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , yaml
 
@@ -415,7 +426,7 @@ executable write-examples
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , bytestring
     , directory
     , yaml
@@ -434,7 +445,7 @@ test-suite test
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , directory
     , hspec
     , QuickCheck
@@ -455,7 +466,7 @@ test-suite test-examples
   build-depends:
     , aeson
     , archery
-    , base        >= 4.19.1.0 && <5
+    , base        >=4.19.1.0 && <5
     , hspec
     , QuickCheck
 
