@@ -28,8 +28,7 @@ let
     nativeBuildInputs = tools.defaultBuildTools ++ [ nixpkgs.gettext nixpkgs.nodejs_20 nixpkgs.php82 nixpkgs.tinycc ];
     withHoogle = false;
   };
-  exe = lib.justStaticExecutables (myHaskellPackages.archery);
-in
+  in
 {
   inherit shell;
   archery = lib.justStaticExecutables (myHaskellPackages.archery);
