@@ -39,7 +39,7 @@ common shared-properties-lib
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
     -Werror -haddock
 
-  build-depends:      base >=4.19.1.0 && <5
+  build-depends:      base >=4.20.0.0 && <5
   default-extensions:
     DerivingStrategies
     ImportQualifiedPost
@@ -58,7 +58,7 @@ common shared-properties-unsafe
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
     -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
 
-  build-depends:      base >=4.19.1.0 && <5
+  build-depends:      base >=4.20.0.0 && <5
   default-extensions:
     DerivingStrategies
     ImportQualifiedPost
@@ -99,7 +99,7 @@ library
   hs-source-dirs:  lib
   build-depends:
     , aeson
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , containers
     , process
@@ -162,7 +162,7 @@ executable jcat2hsfd
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 executable jcat2hsfi
@@ -171,7 +171,7 @@ executable jcat2hsfi
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 executable jcat2hsfs
@@ -180,7 +180,7 @@ executable jcat2hsfs
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 executable jcat2hssd
@@ -189,7 +189,7 @@ executable jcat2hssd
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 executable jcat2hsss
@@ -198,7 +198,7 @@ executable jcat2hsss
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 -- executable jcat2jsp
@@ -225,7 +225,7 @@ executable jcat2ycat
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -235,7 +235,7 @@ executable jcatcfd
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 executable jcatcfi
@@ -244,7 +244,7 @@ executable jcatcfi
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 executable jcatcfs
@@ -253,7 +253,7 @@ executable jcatcfs
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 executable jcatcsd
@@ -262,7 +262,7 @@ executable jcatcsd
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 executable jcatcss
@@ -271,7 +271,7 @@ executable jcatcss
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 executable runjcat
@@ -280,7 +280,7 @@ executable runjcat
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
 
 executable runycat
@@ -288,7 +288,7 @@ executable runycat
   main-is:       runycat.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -297,7 +297,7 @@ executable ycat2hsfd
   main-is:       ycat2hsfd.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -306,7 +306,7 @@ executable ycat2hsfi
   main-is:       ycat2hsfi.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -315,7 +315,7 @@ executable ycat2hsfs
   main-is:       ycat2hsfs.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -324,7 +324,7 @@ executable ycat2hssd
   main-is:       ycat2hssd.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -333,7 +333,7 @@ executable ycat2hsss
   main-is:       ycat2hsss.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -343,7 +343,7 @@ executable ycat2jcat
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -370,7 +370,7 @@ executable ycatcfd
   main-is:       ycatcfd.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -379,7 +379,7 @@ executable ycatcfi
   main-is:       ycatcfi.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -388,7 +388,7 @@ executable ycatcfs
   main-is:       ycatcfs.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -397,7 +397,7 @@ executable ycatcsd
   main-is:       ycatcsd.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -406,7 +406,7 @@ executable ycatcss
   main-is:       ycatcss.hs
   build-depends:
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , yaml
 
@@ -426,7 +426,7 @@ executable write-examples
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , bytestring
     , directory
     , yaml
@@ -441,16 +441,15 @@ test-suite test
     ImportQualifiedPost
     NoGeneralizedNewtypeDeriving
     UnicodeSyntax
-
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , directory
     , hspec
     , QuickCheck
-
   other-modules:
+  build-tool-depends: hspec-discover:hspec-discover
 
 test-suite test-examples
   type:               exitcode-stdio-1.0
@@ -462,14 +461,12 @@ test-suite test-examples
     ImportQualifiedPost
     NoGeneralizedNewtypeDeriving
     UnicodeSyntax
-
   build-depends:
     , aeson
     , archery
-    , base        >=4.19.1.0 && <5
+    , base        >=4.20.0.0 && <5
     , hspec
     , QuickCheck
-
   other-modules:
     Data.Function.AskName
     Data.Function.CollatzStep
@@ -482,3 +479,4 @@ test-suite test-examples
     Data.Function.ReverseInput
     Data.Person
     Data.PersonSpec
+  build-tool-depends: hspec-discover:hspec-discover
