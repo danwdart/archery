@@ -1,5 +1,5 @@
-{-# LANGUAGE DeriveAnyClass     #-}
-{-# LANGUAGE Unsafe             #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE Unsafe         #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
 module Data.Person where

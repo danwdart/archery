@@ -1,4 +1,4 @@
-{-# LANGUAGE Safe       #-}
+{-# LANGUAGE Safe #-}
 
 module Control.Category.Cocartesian where
 

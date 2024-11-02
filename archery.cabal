@@ -21,8 +21,8 @@ common shared-properties-base
   hs-source-dirs:     src
   default-language:   GHC2024
   default-extensions:
-    UnicodeSyntax
     NoGeneralisedNewtypeDeriving
+    UnicodeSyntax
 
   ghcjs-options:      -dedupe
 
@@ -39,8 +39,7 @@ common shared-properties-lib
     -Werror -haddock
 
   build-depends:      base >=4.20.0.0 && <5
-  default-extensions:
-    UnicodeSyntax
+  default-extensions: UnicodeSyntax
 
 common shared-properties-unsafe
   import:             shared-properties-base
@@ -55,8 +54,7 @@ common shared-properties-unsafe
     -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
 
   build-depends:      base >=4.20.0.0 && <5
-  default-extensions:
-    UnicodeSyntax
+  default-extensions: UnicodeSyntax
 
 common shared-properties-safe
   import:             shared-properties-unsafe
@@ -76,8 +74,8 @@ common shared-properties-nobase
     -Wno-missing-role-annotations -Wno-missing-kind-signatures
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
     -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
-  default-extensions:
-    UnicodeSyntax
+
+  default-extensions: UnicodeSyntax
 
 -- TODO: unsafe?
 library
@@ -427,6 +425,7 @@ test-suite test
   default-extensions:
     NoGeneralizedNewtypeDeriving
     UnicodeSyntax
+
   build-depends:
     , aeson
     , archery
@@ -434,6 +433,7 @@ test-suite test
     , directory
     , hspec
     , QuickCheck
+
   other-modules:
     Control.Category.ApplySpec
     Control.Category.CartesianSpec
@@ -456,6 +456,7 @@ test-suite test
     Data.Code.PHPSpec
     Data.Function.Free.AbstractSpec
     Data.PrimsSpec
+
   build-tool-depends: hspec-discover:hspec-discover
 
 test-suite test-examples
@@ -466,12 +467,14 @@ test-suite test-examples
   default-extensions:
     NoGeneralizedNewtypeDeriving
     UnicodeSyntax
+
   build-depends:
     , aeson
     , archery
     , base        >=4.20.0.0 && <5
     , hspec
     , QuickCheck
+
   other-modules:
     Data.Function.AskName
     Data.Function.CollatzStep
@@ -484,4 +487,5 @@ test-suite test-examples
     Data.Function.ReverseInput
     Data.Person
     Data.PersonSpec
+
   build-tool-depends: hspec-discover:hspec-discover

@@ -1,5 +1,5 @@
-{-# LANGUAGE OverloadedStrings  #-}
-{-# LANGUAGE Safe               #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Safe              #-}
 
 module Data.Function.HelloWorld where
 
