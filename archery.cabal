@@ -56,7 +56,6 @@ common shared-properties-unsafe
 
   build-depends:      base >=4.20.0.0 && <5
   default-extensions:
-    NoGeneralizedNewtypeDeriving
     UnicodeSyntax
 
 common shared-properties-safe
