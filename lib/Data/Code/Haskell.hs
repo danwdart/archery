@@ -116,7 +116,6 @@ instance RenderStatementWithShorthand (HS a b) where
 -- TODO name this
 instance (Typeable a, Typeable b) ⇒ RenderFileWithShorthand (HS a b) where
     renderFileWithShorthand cat@HS { export = export' } =
-        "{-# LANGUAGE LambdaCase #-}" <>
         "\nmodule " <> module' <> " where\n\n" <>
         BSL.unlines (renderDefinitions cat) <>
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
@@ -134,7 +133,6 @@ instance (Typeable a, Typeable b) ⇒ RenderFileWithShorthand (HS a b) where
 
 instance (Typeable a, Typeable b) ⇒ RenderFileWithDefinitions (HS a b) where
     renderFileWithDefinitions cat@HS { export = export' } =
-        "{-# LANGUAGE LambdaCase #-}" <>
         "\nmodule " <> module' <> " where\n\n" <>
         BSL.unlines (toExternalFileImports cat) <>
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
@@ -152,7 +150,6 @@ instance (Typeable a, Typeable b) ⇒ RenderFileWithDefinitions (HS a b) where
 
 instance (Typeable a, Typeable b) ⇒ RenderFileWithImports (HS a b) where
     renderFileWithImports cat@HS { export = export' } =
-        "{-# LANGUAGE LambdaCase #-}" <>
         "\nmodule " <> module' <> " where\n\n" <>
         BSL.unlines (toFileImports cat) <>
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
@@ -271,7 +268,7 @@ instance ExecuteHaskellWithDefinitions HS where
         let params ∷ [String]
             params = [
                 "-e", ":set -ilibrary",
-                "-e", ":set -XLambdaCase"
+                "-e", ":set -XGHC2024"
                 -- "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toExternalCLIImports cat <>
@@ -289,7 +286,7 @@ instance ExecuteHaskellWithShorthand HS where
         let params ∷ [String]
             params = [
                 "-e", ":set -ilibrary",
-                "-e", ":set -XLambdaCase"
+                "-e", ":set -XGHC2024"
                 -- "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toExternalCLIImports cat <>
@@ -306,7 +303,7 @@ instance ExecuteHaskellWithImports HS where
         let params ∷ [String]
             params = [
                 "-e", ":set -ilibrary",
-                "-e", ":set -XLambdaCase"
+                "-e", ":set -XGHC2024"
                 -- "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toCLIImports cat <>
@@ -327,7 +324,7 @@ instance ExecuteStdioWithDefinitions HS where
         let params ∷ [String]
             params = [
                 "-e", ":cd library",
-                "-e", ":set -XLambdaCase"
+                "-e", ":set -XGHC2024"
                 -- "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toExternalCLIImports cat <>
@@ -344,7 +341,7 @@ instance ExecuteStdioWithImports HS where
         let params ∷ [String]
             params = [
                 "-e", ":cd library",
-                "-e", ":set -XLambdaCase"
+                "-e", ":set -XGHC2024"
                 -- "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toCLIImports cat <>
@@ -361,7 +358,7 @@ instance ExecuteStdioWithShorthand HS where
         let params ∷ [String]
             params = [
                 "-e", ":cd library",
-                "-e", ":set -XLambdaCase"
+                "-e", ":set -XGHC2024"
                 -- "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toExternalCLIImports cat <>

@@ -1,4 +1,3 @@
-{-# LANGUAGE GADTs             #-}
 {-# LANGUAGE OverloadedLists   #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Unsafe            #-}

@@ -102,7 +102,6 @@ compileHS ∷ BSL.ByteString → IO ()
 compileHS fileContents = do
     let params ∷ [String]
         params = [
-            "-e", ":set -XLambdaCase",
             "-e", "import Control.Arrow",
             -- "-e", "import Prelude hiding ((.), id)",
             "-e", "import Control.Category",

@@ -19,11 +19,10 @@ extra-source-files: README.md
 
 common shared-properties-base
   hs-source-dirs:     src
-  default-language:   GHC2021
+  default-language:   GHC2024
   default-extensions:
-    DerivingStrategies
-    ImportQualifiedPost
     UnicodeSyntax
+    NoGeneralisedNewtypeDeriving
 
   ghcjs-options:      -dedupe
 
@@ -41,9 +40,6 @@ common shared-properties-lib
 
   build-depends:      base >=4.20.0.0 && <5
   default-extensions:
-    DerivingStrategies
-    ImportQualifiedPost
-    NoGeneralizedNewtypeDeriving
     UnicodeSyntax
 
 common shared-properties-unsafe
@@ -60,16 +56,12 @@ common shared-properties-unsafe
 
   build-depends:      base >=4.20.0.0 && <5
   default-extensions:
-    DerivingStrategies
-    ImportQualifiedPost
     NoGeneralizedNewtypeDeriving
     UnicodeSyntax
 
 common shared-properties-safe
   import:             shared-properties-unsafe
   default-extensions:
-    DerivingStrategies
-    ImportQualifiedPost
     NoGeneralizedNewtypeDeriving
     Safe
     UnicodeSyntax
@@ -85,10 +77,7 @@ common shared-properties-nobase
     -Wno-missing-role-annotations -Wno-missing-kind-signatures
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
     -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
-
   default-extensions:
-    DerivingStrategies
-    ImportQualifiedPost
     UnicodeSyntax
 
 -- TODO: unsafe?
@@ -435,10 +424,8 @@ test-suite test
   type:               exitcode-stdio-1.0
   hs-source-dirs:     test
   main-is:            Spec.hs
-  default-language:   GHC2021
+  default-language:   GHC2024
   default-extensions:
-    DerivingStrategies
-    ImportQualifiedPost
     NoGeneralizedNewtypeDeriving
     UnicodeSyntax
   build-depends:
@@ -449,16 +436,35 @@ test-suite test
     , hspec
     , QuickCheck
   other-modules:
+    Control.Category.ApplySpec
+    Control.Category.CartesianSpec
+    Control.Category.ChoiceSpec
+    Control.Category.CocartesianSpec
+    Control.Category.CochoiceSpec
+    Control.Category.CostrongSpec
+    Control.Category.CurrySpec
+    Control.Category.GenericSpec
+    Control.Category.NumericSpec
+    Control.Category.Primitive.BoolSpec
+    Control.Category.Primitive.CurriedSpec
+    Control.Category.Primitive.ExtraSpec
+    Control.Category.Primitive.FileSpec
+    Control.Category.Primitive.StringSpec
+    Control.Category.StrongSpec
+    Control.Category.SymmetricSpec
+    Data.Code.HaskellSpec
+    Data.Code.JSSpec
+    Data.Code.PHPSpec
+    Data.Function.Free.AbstractSpec
+    Data.PrimsSpec
   build-tool-depends: hspec-discover:hspec-discover
 
 test-suite test-examples
   type:               exitcode-stdio-1.0
   hs-source-dirs:     examples/lib examples/test
   main-is:            Spec.hs
-  default-language:   GHC2021
+  default-language:   GHC2024
   default-extensions:
-    DerivingStrategies
-    ImportQualifiedPost
     NoGeneralizedNewtypeDeriving
     UnicodeSyntax
   build-depends:
