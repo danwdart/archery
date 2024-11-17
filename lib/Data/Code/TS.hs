@@ -3,7 +3,7 @@
 {-# LANGUAGE Unsafe              #-}
 {-# OPTIONS_GHC -Wno-unsafe -Wno-safe -Wno-unused-imports #-}
 
-module Data.Code.JS where
+module Data.Code.TS where
 
 import Control.Category
 -- import Control.Category.Apply
@@ -33,15 +33,15 @@ import Data.Set                           qualified as S
 import Data.String
 import Prelude                            hiding (id, (.))
 
-newtype JS a b = JS {
+newtype TS a b = TS {
     _code :: Code a b
 } deriving stock (Eq, Show)
 
-instance HasCode JS a b where
+instance HasCode TS a b where
     code = _code
 
-instance MkCode JS a b where
-    mkCode i e s d = JS $ mkCode i e s d
+instance MkCode TS a b where
+    mkCode i e s d = TS $ mkCode i e s d
 
 -- toCLIImports ∷ JS a b → [String]
 -- toCLIImports (JS imports _) = S.toList imports >>= \importStr -> ["-e", "const {} " <> BSL.unpack importStr]

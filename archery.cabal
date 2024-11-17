@@ -125,7 +125,11 @@ library
     Control.Category.Strong
     Control.Category.Symmetric
     Data.Aeson.Compat
+    Data.Code.Generic
     Data.Code.Haskell
+    Data.Code.JS
+    Data.Code.PHP
+    Data.Code.TS
     Data.Function.Free.Abstract
     Data.Function.Free.LambdaCalculus.BCKW
     Data.Function.Free.LambdaCalculus.SKI
@@ -138,8 +142,6 @@ library
     Data.Render.Statement.WithShorthand
     System.Executable
 
--- Data.Code.JS
--- Data.Code.PHP
 -- Control.Category.Generic
 
 executable jcat2hsfd
