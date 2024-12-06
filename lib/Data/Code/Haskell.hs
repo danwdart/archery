@@ -1,4 +1,4 @@
-{-# LANGUAGE GeneralisedNewtypeDeriving #-}
+{- GeneralisedNewtypeDeriving -}
 {-# LANGUAGE OverloadedLists            #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE UndecidableInstances       #-}
@@ -10,45 +10,45 @@ module Data.Code.Haskell where
 
 import Control.Category
 -- import Control.Category.Apply
-import Control.Category.Bracket
+-- import Control.Category.Bracket
 import Control.Category.Cartesian
-import Control.Category.Choice
+-- import Control.Category.Choice
 import Control.Category.Cocartesian
-import Control.Category.Execute.Haskell.WithDefinitions
-import Control.Category.Execute.Haskell.WithImports
-import Control.Category.Execute.Haskell.WithShorthand
-import Control.Category.Execute.Stdio.WithDefinitions
-import Control.Category.Execute.Stdio.WithImports
-import Control.Category.Execute.Stdio.WithShorthand
-import Control.Category.Numeric
-import Control.Category.Primitive.Bool
-import Control.Category.Primitive.Console
-import Control.Category.Primitive.Extra
-import Control.Category.Primitive.File
-import Control.Category.Primitive.String
-import Control.Category.Strong
-import Control.Category.Symmetric
-import Control.Exception                                hiding (bracket)
-import Control.Monad.IO.Class
-import Data.ByteString.Lazy.Char8                       qualified as BSL
+-- import Control.Category.Execute.Haskell.WithDefinitions
+-- import Control.Category.Execute.Haskell.WithImports
+-- import Control.Category.Execute.Haskell.WithShorthand
+-- import Control.Category.Execute.Stdio.WithDefinitions
+-- import Control.Category.Execute.Stdio.WithImports
+-- import Control.Category.Execute.Stdio.WithShorthand
+-- import Control.Category.Numeric
+-- import Control.Category.Primitive.Bool
+-- import Control.Category.Primitive.Console
+-- import Control.Category.Primitive.Extra
+-- import Control.Category.Primitive.File
+-- import Control.Category.Primitive.String
+-- import Control.Category.Strong
+-- import Control.Category.Symmetric
+-- import Control.Exception                                hiding (bracket)
+-- import Control.Monad.IO.Class
+-- import Data.ByteString.Lazy.Char8                       qualified as BSL
 import Data.Code.Generic
 -- import Data.Map                                         (Map)
-import Data.Map                                         qualified as M
-import Data.Maybe
-import Data.Render.File.WithDefinitions
-import Data.Render.File.WithImports
-import Data.Render.File.WithShorthand
-import Data.Render.Statement.WithDefinitions
-import Data.Render.Statement.WithShorthand
+-- import Data.Map                                         qualified as M
+-- import Data.Maybe
+-- import Data.Render.File.WithDefinitions
+-- import Data.Render.File.WithImports
+-- import Data.Render.File.WithShorthand
+-- import Data.Render.Statement.WithDefinitions
+-- import Data.Render.Statement.WithShorthand
 -- import Data.Set                                         (Set)
-import Data.Set                                         qualified as S
-import Data.String
-import Data.Typeable
-import GHC.IO.Exception
+-- import Data.Set                                         qualified as S
+-- import Data.String
+-- import Data.Typeable
+-- import GHC.IO.Exception
 -- import GHC.IsList
 import Prelude                                          hiding (id, (.))
-import System.Process
-import Text.Read
+-- import System.Process
+-- import Text.Read
 
 newtype HS a b = HS {
     _code :: Code a b
@@ -58,8 +58,9 @@ instance HasCode HS a b where
     code = _code
 
 instance MkCode HS a b where
-    mkCode i e s d = HS $ mkCode i e s d
+    mkCode ei ii m f = HS $ mkCode ei ii m f
 
+{-}
 toCLIImports ∷ HS a b → [String]
 toCLIImports hs = M.toList (unImports . imports $ hs) >>= \(moduleName, _imports') -> [{-}"-e", ":l", BSL.unpack moduleName,-}"-e", BSL.unpack $ "import " <> moduleName {-<> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")\""-}]
 
@@ -92,13 +93,13 @@ instance (Typeable a, Typeable b) ⇒ RenderFileWithShorthand (HS a b) where
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         "\n" <> functionName' <> " = " <> renderStatementWithShorthand cat where
             Export {
-                module' = module',
-                functionName = functionName'
+                _module = module',
+                _functionName = functionName'
             } = fromMaybe (
                 Export {
-                    module' = "Main",
-                    functionName = "main",
-                    functionType = "IO ()"
+                    _module = "Main",
+                    _functionName = "main",
+                    _functionType = "IO ()"
                 }
                 ) (export cat)
 
@@ -109,13 +110,13 @@ instance (Typeable a, Typeable b) ⇒ RenderFileWithDefinitions (HS a b) where
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         "\n" <> functionName' <> " = " <> renderStatementWithDefinitions cat where
             Export {
-                module' = module',
-                functionName = functionName'
+                _module = module',
+                _functionName = functionName'
             } = fromMaybe (
                 Export {
-                    module' = "Main",
-                    functionName = "main",
-                    functionType = "IO ()"
+                    _module = "Main",
+                    _functionName = "main",
+                    _functionType = "IO ()"
                 }
                 ) (export cat)
 
@@ -126,13 +127,13 @@ instance (Typeable a, Typeable b) ⇒ RenderFileWithImports (HS a b) where
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         "\n" <> functionName' <> " = " <> renderStatementWithShorthand cat where
             Export {
-                module' = module',
-                functionName = functionName'
+                _module = module',
+                _functionName = functionName'
             } = fromMaybe (
                 Export {
-                    module' = "Main",
-                    functionName = "main",
-                    functionType = "IO ()"
+                    _module = "Main",
+                    _functionName = "main",
+                    _functionType = "IO ()"
                 }
                 ) (export cat)
 
@@ -141,28 +142,144 @@ instance Bracket HS where
         _shorthand = "(" <> renderStatementWithShorthand hs <> ")",
         _definition = "(" <> renderStatementWithDefinitions hs <> ")"
     }
+-}
 
 instance Category HS where
-    id = "id"
+    id = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Function",
+        _function = Function {
+            _functionName = "id",
+            _functionTypeFrom = "a",
+            _functionTypeTo = "a",
+            _shorthand = "id",
+            _longhand = "\\x -> x"
+        }
+    }
     a . b = HS $ Code {
-        _imports = imports a <> imports b <> toImports a <> toImports b,
-        _export = Nothing,
-        _shorthand = "(" <> renderStatementWithShorthand a <> " . " <> renderStatementWithShorthand b <> ")",
-        _definition = "(" <> renderStatementWithDefinitions a <> " . " <> renderStatementWithDefinitions b <> ")"
+        _externalImports = externalImports a <> externalImports b,
+        _internalImports = internalImports a <> internalImports b <> [
+            (module' a, [ function a ])
+        ] <> [
+            (module' b, [ function b ])
+        ],
+        _module = "Control.Category.Function",
+        _function = Function {
+            _functionName = "(.)",
+            -- TODO Typeable
+            _functionTypeFrom = "(" <> functionTypeFrom b <> " -> " <> functionTypeTo b <> ") -> (" <> functionTypeFrom a <> " -> " <> functionTypeTo a <> ")",
+            _functionTypeTo = functionTypeFrom b <> " -> " <> functionTypeTo a,
+            _shorthand = "(" <> shorthand a <> " . " <> shorthand b <> ")",
+            _longhand = "(" <> longhand a <> " . " <> longhand b <> ")"
+        }
     }
 
 instance Cartesian HS where
-    copy = mkCode [] (Just (Export { module' = "Control.Category.Cartesian", functionName = "copy", functionType = "" })) "copy" "\\x -> (x, x)"
-    consume = mkCode [] (Just (Export { module' = "Control.Category.Cartesian", functionName = "consume", functionType = "" })) "consume" "\\x -> ()"
-    fst' = "fst"
-    snd' = "snd"
+    copy = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Cartesian",
+        _function = Function {
+            _functionName = "copy",
+            _functionTypeFrom = "a",
+            _functionTypeTo = "(a, a)",
+            _shorthand = "\\x -> (x, x)",
+            _longhand = "\\x -> (x, x)"
+        }
+    }
+    consume = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Cartesian",
+        _function = Function {
+            _functionName = "consume",
+            _functionTypeFrom = "a",
+            _functionTypeTo = "()",
+            _shorthand = "consume",
+            _longhand = "\\x -> ()"
+        }
+    }
+    fst' = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Cartesian",
+        _function = Function {
+            _functionName = "fst",
+            _functionTypeFrom = "(a, b)",
+            _functionTypeTo = "a",
+            _shorthand = "fst",
+            _longhand = "\\(a, b) -> a"
+        }
+    }
+    snd' = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Cartesian",
+        _function = Function {
+            _functionName = "snd",
+            _functionTypeFrom = "(a, b)",
+            _functionTypeTo = "a",
+            _shorthand = "snd",
+            _longhand = "\\(a, b) -> b"
+        }
+    }
 
 instance Cocartesian HS where
-    injectL = "Left"
-    injectR = "Right"
-    unify = mkCode [] (Just (Export { module' = "Control.Category.Cocartesian", functionName = "unify", functionType = "" })) "unify" "\\case { Left a -> a; Right a -> a; }"
-    tag = mkCode [] (Just (Export { module' = "Control.Category.Cartesian", functionName = "tag", functionType = "" })) "tag" "\\case { (False, a) -> Left a; (True, a) -> Right a; }"
+    injectL = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Cocartesian",
+        _function = Function {
+            _functionName = "injectL",
+            _functionTypeFrom = "a",
+            _functionTypeTo = "Either a b",
+            _shorthand = "Left",
+            _longhand = "\\a -> Left a"
+        }
+    }
+    injectR = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Cocartesian",
+        _function = Function {
+            _functionName = "injectR",
+            _functionTypeFrom = "b",
+            _functionTypeTo = "Either a b",
+            _shorthand = "Right",
+            _longhand = "\\b -> Right b"
+        }
+    }
+    unify = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Cocartesian",
+        _function = Function {
+            _functionName = "unify",
+            _functionTypeFrom = "Either a a",
+            _functionTypeTo = "a",
+            _shorthand = "unify",
+            _longhand = "\\case { Left a -> a; Right a -> a; }"
+        }
+    }
+    tag = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Cocartesian",
+        _function = Function {
+            _functionName = "unify",
+            _functionTypeFrom = "(Bool, a)",
+            _functionTypeTo = "Either a a",
+            _shorthand = "tag",
+            _longhand = "\\case { (False, a) -> Left a; (True, a) -> Right a; }"
+        }
+    }
 
+-- >>> import Control.Category
+-- >>> ((Control.Category..) fst' copy) :: HS String String
+-- HS {_code = Code {_externalImports = MapSet {getMapSet = fromList []}, _internalImports = MapSet {getMapSet = fromList [("Control.Category.Cartesian",fromList [Function {_functionName = "copy", _functionTypeFrom = "a", _functionTypeTo = "(a, a)", _shorthand = "\\x -> (x, x)", _longhand = "\\x -> (x, x)"},Function {_functionName = "fst", _functionTypeFrom = "(a, b)", _functionTypeTo = "a", _shorthand = "fst", _longhand = "\\(a, b) -> a"}])]}, _module = "Control.Category.Function", _function = Function {_functionName = "(.)", _functionTypeFrom = "(a -> (a, a)) -> ((a, b) -> a)", _functionTypeTo = "a -> a", _shorthand = "(fst . \\x -> (x, x))", _longhand = "(\\(a, b) -> a . \\x -> (x, x))"}}}
+
+{-}
 instance Strong HS where
     -- @TODO apply? Bracket?
     first' f = HS $ Code {
@@ -193,10 +310,10 @@ instance Choice HS where
     }
 
 instance Symmetric HS where
-    swap = mkCode [] (Just (Export { module' = "Control.Category.Symmetric", functionName = "swap", functionType = "" })) "swap" "\\(a, b) -> (b, a)"
-    swapEither = mkCode [] (Just (Export { module' = "Control.Category.Symmetric", functionName = "swapEither", functionType = "" })) "swapEither" "(\\case { Left a -> Right a; Right a -> Left a; })"
-    reassoc = mkCode [] (Just (Export { module' = "Control.Category.Symmetric", functionName = "reassoc", functionType = "" })) "reassoc" "(\\(a, (b, c)) -> ((a, b), c))"
-    reassocEither = mkCode [] (Just (Export { module' = "Control.Category.Symmetric", functionName = "reassocEither", functionType = "" })) "reassocEither" "(\\case { Left a -> Left (Left a); Right (Left b) -> Left (Right b); Right (Right c) -> Right c })"
+    swap = mkCode [] (Just (Export { _module = "Control.Category.Symmetric", _functionName = "swap", _functionType = "" })) "swap" "\\(a, b) -> (b, a)"
+    swapEither = mkCode [] (Just (Export { _module = "Control.Category.Symmetric", _functionName = "swapEither", _functionType = "" })) "swapEither" "(\\case { Left a -> Right a; Right a -> Left a; })"
+    reassoc = mkCode [] (Just (Export { _module = "Control.Category.Symmetric", _functionName = "reassoc", _functionType = "" })) "reassoc" "(\\(a, (b, c)) -> ((a, b), c))"
+    reassocEither = mkCode [] (Just (Export { _module = "Control.Category.Symmetric", _functionName = "reassocEither", _functionType = "" })) "reassocEither" "(\\case { Left a -> Left (Left a); Right (Left b) -> Left (Right b); Right (Right c) -> Right c })"
 
 -- instance Cochoice HS where
 
@@ -205,31 +322,32 @@ instance Symmetric HS where
 -- instance Apply HS where
 
 instance PrimitiveBool HS where
-    eq = mkCode [("Control.Arrow", [("arr", Nothing)])] (Just (Export { module' = "Control.Category.Primitive.Bool", functionName = "eq", functionType = "" })) "eq" "(arr . uncurry $ (==))"
+    eq = mkCode [("Control.Arrow", [("arr", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.Bool", _functionName = "eq", _functionType = "" })) "eq" "(arr . uncurry $ (==))"
 
 instance PrimitiveConsole HS where
-    outputString = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { module' = "Control.Category.Primitive.Console", functionName = "outputString", functionType = "" })) "outputString" "(Kleisli putStr)"
-    inputString = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { module' = "Control.Category.Primitive.Console", functionName = "inputString", functionType = "" })) "inputString" "(Kleisli (const getContents))"
+    outputString = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.Console", _functionName = "outputString", _functionType = "" })) "outputString" "(Kleisli putStr)"
+    inputString = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.Console", _functionName = "inputString", _functionType = "" })) "inputString" "(Kleisli (const getContents))"
 
 instance PrimitiveExtra HS where
+    intToString :: HS Int String
     intToString = "show"
-    concatString = mkCode [] (Just (Export { module' = "Control.Category.Primitive.Extra", functionName = "concatString", functionType = "" })) "concatString" "(uncurry (<>))"
+    concatString = mkCode [] (Just (Export { _module = "Control.Category.Primitive.Extra", _functionName = "concatString", _functionType = "" })) "concatString" "(uncurry (<>))"
     constString s = fromString $ "(const \"" <> s <> "\")"
 
 instance PrimitiveFile HS where
-    readFile' = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { module' = "Control.Category.Primitive.File", functionName = "readFile'", functionType = "" })) "readFile'" "(Kleisli $ liftIO . readFile)"
-    writeFile' = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { module' = "Control.Category.Primitive.File", functionName = "writeFile'", functionType = "" })) "writeFile'" "(Kleisli $ liftIO . uncurry writeFile)"
+    readFile' = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.File", _functionName = "readFile'", _functionType = "" })) "readFile'" "(Kleisli $ liftIO . readFile)"
+    writeFile' = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.File", _functionName = "writeFile'", _functionType = "" })) "writeFile'" "(Kleisli $ liftIO . uncurry writeFile)"
 
 instance PrimitiveString HS where
-    reverseString = mkCode [("Control.Arrow", [("arr", Nothing)])] (Just (Export { module' = "Control.Category.Primitive.String", functionName = "reverseString", functionType = "" })) "reverseString" "(arr reverse)"
+    reverseString = mkCode [("Control.Arrow", [("arr", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.String", _functionName = "reverseString", _functionType = "" })) "reverseString" "(arr reverse)"
 
 instance Numeric HS where
     num n = fromString $ "(const " <> show n <> ")"
     negate' = "negate"
-    add = mkCode [] (Just (Export { module' = "Control.Category.Numeric", functionName = "add", functionType = "" })) "add" "(uncurry (+))"
-    mult = mkCode [] (Just (Export { module' = "Control.Category.Numeric", functionName = "mult", functionType = "" })) "mult" "(uncurry (*))"
-    div' = mkCode [] (Just (Export { module' = "Control.Category.Numeric", functionName = "div'", functionType = "" })) "div'" "(uncurry div)"
-    mod' = mkCode [] (Just (Export { module' = "Control.Category.Numeric", functionName = "mod'", functionType = "" })) "mod'" "(uncurry mod)"
+    add = mkCode [] (Just (Export { _module = "Control.Category.Numeric", _functionName = "add", _functionType = "" })) "add" "(uncurry (+))"
+    mult = mkCode [] (Just (Export { _module = "Control.Category.Numeric", _functionName = "mult", _functionType = "" })) "mult" "(uncurry (*))"
+    div' = mkCode [] (Just (Export { _module = "Control.Category.Numeric", _functionName = "div'", _functionType = "" })) "div'" "(uncurry div)"
+    mod' = mkCode [] (Just (Export { _module = "Control.Category.Numeric", _functionName = "mod'", _functionType = "" })) "mod'" "(uncurry mod)"
 
 -- I don't quite know how to call ghci or cabal repl to include the correct functions here, so the tests are skipped.
 
@@ -342,3 +460,4 @@ instance ExecuteStdioWithShorthand HS where
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
 
 -- @ TODO JSON
+-}

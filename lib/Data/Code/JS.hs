@@ -40,9 +40,10 @@ newtype JS a b = JS {
 instance HasCode JS a b where
     code = _code
 
+{-}
 instance MkCode JS a b where
     mkCode i e s d = JS $ mkCode i e s d
-
+-}
 -- toCLIImports ∷ JS a b → [String]
 -- toCLIImports (JS imports _) = S.toList imports >>= \importStr -> ["-e", "const {} " <> BSL.unpack importStr]
 
@@ -67,6 +68,10 @@ instance MkCode JS a b where
 -- instance RenderStatementWithShorthand (JS a b) where
 --     renderStatement JS { code = f } = f
 
+{-}
+instance RenderStatementWithDefinitions (JS a b) where
+    renderStatementWithDefinitions = definition
+-}
 -- instance RenderFileWithImports (JS a b) where
 --     renderFileWithImports p =
 --         BSL.unlines (toFileImports p) <>
@@ -79,13 +84,15 @@ instance MkCode JS a b where
 -- instance Bracket JS where
     -- bracket p@JS { imports = is } = JS is $ "(" <> renderStatement p <> ")"
 
--- fromCatFn ∷ BSL.ByteString → JS a b
--- fromCatFn = fromLibFn "control/category"
-
--- instance Category JS where
+{-}
+instance Category JS where
+    id = mkCode (Imports []) (Just (Export "control/category" "id" "a => a")) "id" "x => x"
+    -- TODO check that this definition can't just be (a => b => c => a (b (c)))
+    -- e.g. 
+    a . b = mkCode (imports a <> imports b) (Just (Export "control/category" "compose" "any")) ("(compose)(" <> shorthand a <> ")(" <> shorthand b <> ")") ("()") 
 --     id = fromCatFn "id"
 --     a@JS { imports = isa } . b@JS { imports = isb } = JS (isa <> isb <> [("control/category", ["compose"])]) $ "(compose)(" <> renderStatement a <> ")(" <> renderStatement b <> ")"-- 
-
+-}
 -- fromCartesianFn ∷ ImportedFunctionName → JS a b
 -- fromCartesianFn = fromLibFn "control/category/cartesian"-- 
 

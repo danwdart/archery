@@ -1,5 +1,5 @@
 {-# LANGUAGE Unsafe #-}
-{-# OPTIONS_GHC -Wno-unsafe #-}
+{-# OPTIONS_GHC -Wno-unsafe -Wwarn #-}
 
 module Main (main) where
 
@@ -9,8 +9,8 @@ import Data.Aeson                            qualified as A
 import Data.ByteString.Lazy.Char8            qualified as BSL
 import Data.Code.Haskell
 import Data.Code.JS
-import Data.Code.PHP
-import Data.Code.TS
+-- import Data.Code.PHP
+-- import Data.Code.TS
 import Data.Function.AskName
 import Data.Function.CollatzStep
 import Data.Function.Free.Abstract
@@ -103,7 +103,6 @@ main = do
         BSL.writeFile "data/examples/programs/withshorthand/haskell/greetTuple.hs" $ renderFileWithShorthand (greetTuple :: HS (String, Int) String)
         BSL.writeFile "data/examples/programs/withshorthand/haskell/reverseInput.hs" $ renderFileWithShorthand (revInputProgram :: HS () ())
 
-    {-}
     do
         createDirectoryIfMissing True "data/examples/statements/definitions/js"
 
@@ -150,6 +149,7 @@ main = do
         BSL.writeFile "data/examples/programs/withshorthand/js/greetTuple.js" $ renderFileWithShorthand (greetTuple :: JS (String, Int) String)
         BSL.writeFile "data/examples/programs/withshorthand/js/reverseInput.js" $ renderFileWithShorthand (revInputProgram :: JS () ())
 
+    {-}
     do
         createDirectoryIfMissing True "data/examples/statements/definitions/ts"
 

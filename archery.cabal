@@ -23,10 +23,10 @@ common shared-properties-base
   default-extensions:
     NoGeneralisedNewtypeDeriving
     UnicodeSyntax
-
   ghcjs-options:      -dedupe
 
-common shared-properties-lib
+
+common shared-properties-dev-unsafe
   import:             shared-properties-base
   ghc-options:
     -Weverything -Wno-compat-unqualified-imports -Wno-implicit-prelude
@@ -36,7 +36,7 @@ common shared-properties-lib
     -Wno-all-missed-specialisations -Wno-missed-specialisations
     -Wno-missing-role-annotations -Wno-missing-kind-signatures
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
-    -Werror -haddock
+    -Wwarn -haddock -threaded -rtsopts -with-rtsopts=-N
 
   build-depends:      base >=4.20.0.0 && <5
   default-extensions: UnicodeSyntax
@@ -74,14 +74,21 @@ common shared-properties-nobase
     -Wno-missing-role-annotations -Wno-missing-kind-signatures
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
     -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
-
   default-extensions: UnicodeSyntax
 
 -- TODO: unsafe?
 library
-  import:          shared-properties-lib
-
-  --ghc-options: -Wno-unused-packages
+  import:             shared-properties-base
+  ghc-options:
+    -Weverything -Wno-compat-unqualified-imports -Wno-implicit-prelude
+    -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
+    -Wno-missing-export-lists -Wno-missing-import-lists
+    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
+    -Wno-all-missed-specialisations -Wno-missed-specialisations
+    -Wno-missing-role-annotations -Wno-missing-kind-signatures
+    -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
+    -Werror -haddock
+  default-extensions: UnicodeSyntax
   hs-source-dirs:  lib
   build-depends:
     , aeson
@@ -91,7 +98,6 @@ library
     , process
     , text
 
-  -- , yaml
   exposed-modules:
     Control.Category.Apply
     Control.Category.Bracket
@@ -134,6 +140,7 @@ library
     Data.Function.Free.LambdaCalculus.BCKW
     Data.Function.Free.LambdaCalculus.SKI
     Data.Function.Utilities
+    Data.MapSet
     Data.Prims
     Data.Render.File.WithDefinitions
     Data.Render.File.WithImports
@@ -401,7 +408,7 @@ executable ycatcss
 executable write-examples
   import:         shared-properties-unsafe
   main-is:        write-examples.hs
-  hs-source-dirs: examples/lib examples/test
+  hs-source-dirs: examples/lib
   other-modules:
     Data.Function.AskName
     Data.Function.CollatzStep
@@ -417,6 +424,79 @@ executable write-examples
     , base        >=4.20.0.0 && <5
     , bytestring
     , directory
+    , yaml
+
+executable write-examples-dev
+  import:         shared-properties-dev-unsafe
+  main-is:        write-examples.hs
+  hs-source-dirs: lib examples/lib
+  other-modules:
+    Data.Function.AskName
+    Data.Function.CollatzStep
+    Data.Function.Greet
+    Data.Function.HelloWorld
+    Data.Function.IsPalindrome
+    Data.Function.ReverseInput
+    Data.Person
+
+    Control.Category.Apply
+    Control.Category.Bracket
+    Control.Category.Cartesian
+    Control.Category.Choice
+    Control.Category.Cocartesian
+    Control.Category.Cochoice
+    Control.Category.Costrong
+    Control.Category.Curry
+    Control.Category.Execute.Haskell.WithDefinitions
+    Control.Category.Execute.Haskell.WithImports
+    Control.Category.Execute.Haskell.WithShorthand
+    Control.Category.Execute.JSON.WithDefinitions
+    Control.Category.Execute.JSON.WithImports
+    Control.Category.Execute.JSON.WithShorthand
+    Control.Category.Execute.Stdio.WithDefinitions
+    Control.Category.Execute.Stdio.WithImports
+    Control.Category.Execute.Stdio.WithShorthand
+    Control.Category.Interpret
+    Control.Category.LambdaCalculus.BCKW
+    Control.Category.LambdaCalculus.SKI
+    Control.Category.Numeric
+    Control.Category.Primitive.Bool
+    Control.Category.Primitive.Console
+    Control.Category.Primitive.Curried
+    Control.Category.Primitive.Extra
+    Control.Category.Primitive.File
+    Control.Category.Primitive.JSON
+    Control.Category.Primitive.Stdio
+    Control.Category.Primitive.String
+    Control.Category.Strong
+    Control.Category.Symmetric
+    Data.Aeson.Compat
+    Data.Code.Generic
+    Data.Code.Haskell
+    Data.Code.JS
+    Data.Code.PHP
+    Data.Code.TS
+    Data.Function.Free.Abstract
+    Data.Function.Free.LambdaCalculus.BCKW
+    Data.Function.Free.LambdaCalculus.SKI
+    Data.Function.Utilities
+    Data.MapSet
+    Data.Prims
+    Data.Render.File.WithDefinitions
+    Data.Render.File.WithImports
+    Data.Render.File.WithShorthand
+    Data.Render.Statement.WithDefinitions
+    Data.Render.Statement.WithShorthand
+    System.Executable
+
+  build-depends:
+    , aeson
+    , base        >=4.20.0.0 && <5
+    , bytestring
+    , containers
+    , directory
+    , process
+    , text
     , yaml
 
 test-suite test

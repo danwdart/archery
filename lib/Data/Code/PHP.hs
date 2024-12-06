@@ -39,10 +39,10 @@ newtype PHP a b = PHP {
 
 instance HasCode PHP a b where
     code = _code
-
+{-}
 instance MkCode PHP a b where
     mkCode i e s d = PHP $ mkCode i e s d
-
+-}
 -- toCLIImports ∷ PHP a b → [String]
 -- toCLIImports (PHP imports _) = S.toList imports >>= \importStr -> ["-e", "const {} " <> BSL.unpack importStr]
 

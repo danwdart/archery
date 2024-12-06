@@ -40,9 +40,10 @@ newtype TS a b = TS {
 instance HasCode TS a b where
     code = _code
 
+{-}
 instance MkCode TS a b where
     mkCode i e s d = TS $ mkCode i e s d
-
+-}
 -- toCLIImports ∷ JS a b → [String]
 -- toCLIImports (JS imports _) = S.toList imports >>= \importStr -> ["-e", "const {} " <> BSL.unpack importStr]
 
