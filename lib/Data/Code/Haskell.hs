@@ -14,10 +14,10 @@ import Control.Category
 import Control.Category.Cartesian
 -- import Control.Category.Choice
 import Control.Category.Cocartesian
--- import Control.Category.Execute.Haskell.WithDefinitions
+-- import Control.Category.Execute.Haskell.WithLonghand
 -- import Control.Category.Execute.Haskell.WithImports
 -- import Control.Category.Execute.Haskell.WithShorthand
--- import Control.Category.Execute.Stdio.WithDefinitions
+-- import Control.Category.Execute.Stdio.WithLonghand
 -- import Control.Category.Execute.Stdio.WithImports
 -- import Control.Category.Execute.Stdio.WithShorthand
 -- import Control.Category.Numeric
@@ -35,11 +35,11 @@ import Data.Code.Generic
 -- import Data.Map                                         (Map)
 -- import Data.Map                                         qualified as M
 -- import Data.Maybe
--- import Data.Render.File.WithDefinitions
+-- import Data.Render.File.WithLonghand
 -- import Data.Render.File.WithImports
 -- import Data.Render.File.WithShorthand
--- import Data.Render.Statement.WithDefinitions
--- import Data.Render.Statement.WithShorthand
+import Data.Render.Statement.WithLonghand
+import Data.Render.Statement.WithShorthand
 -- import Data.Set                                         (Set)
 -- import Data.Set                                         qualified as S
 -- import Data.String
@@ -73,23 +73,26 @@ toFileImports hs = (\(moduleName, imports') -> "import " <> moduleName <> " (" <
 toExternalFileImports ∷ HS a b → [BSL.ByteString]
 toExternalFileImports hs = (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")") <$> M.toList (unImports $ filterExternal (imports hs))
 
-renderDefinitions ∷ HS a b → [BSL.ByteString]
-renderDefinitions hs = M.toList (unImports $ imports hs) >>= (fmap (\(fnName', mDefinition) -> case mDefinition of
+renderLonghand ∷ HS a b → [BSL.ByteString]
+renderLonghand hs = M.toList (unImports $ imports hs) >>= (fmap (\(fnName', mDefinition) -> case mDefinition of
     Nothing          -> ""
     Just definition' -> "\n" <> fnName' <> " = " <> definition' -- TODO types
     ) . S.toList . snd)
 
-instance RenderStatementWithDefinitions (HS a b) where
-    renderStatementWithDefinitions = definition -- @TODO is
+-}
+
+instance RenderStatementWithLonghand (HS a b) where
+    renderStatementWithLonghand = definition -- @TODO is
 
 instance RenderStatementWithShorthand (HS a b) where
     renderStatementWithShorthand = shorthand -- @TODO is
 
+{-}
 -- TODO name this
 instance (Typeable a, Typeable b) ⇒ RenderFileWithShorthand (HS a b) where
     renderFileWithShorthand cat =
         "\nmodule " <> module' <> " where\n\n" <>
-        BSL.unlines (renderDefinitions cat) <>
+        BSL.unlines (renderLonghand cat) <>
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         "\n" <> functionName' <> " = " <> renderStatementWithShorthand cat where
             Export {
@@ -103,12 +106,12 @@ instance (Typeable a, Typeable b) ⇒ RenderFileWithShorthand (HS a b) where
                 }
                 ) (export cat)
 
-instance (Typeable a, Typeable b) ⇒ RenderFileWithDefinitions (HS a b) where
-    renderFileWithDefinitions cat =
+instance (Typeable a, Typeable b) ⇒ RenderFileWithLonghand (HS a b) where
+    renderFileWithLonghand cat =
         "\nmodule " <> module' <> " where\n\n" <>
         BSL.unlines (toExternalFileImports cat) <>
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\n" <> functionName' <> " = " <> renderStatementWithDefinitions cat where
+        "\n" <> functionName' <> " = " <> renderStatementWithLonghand cat where
             Export {
                 _module = module',
                 _functionName = functionName'
@@ -140,7 +143,7 @@ instance (Typeable a, Typeable b) ⇒ RenderFileWithImports (HS a b) where
 instance Bracket HS where
     bracket hs@(HS s) = HS $ s {
         _shorthand = "(" <> renderStatementWithShorthand hs <> ")",
-        _definition = "(" <> renderStatementWithDefinitions hs <> ")"
+        _definition = "(" <> renderStatementWithLonghand hs <> ")"
     }
 -}
 
@@ -286,13 +289,13 @@ instance Strong HS where
         _imports = [("Data.Bifunctor", [("first", Nothing)])] <> imports f,
         _export = Nothing,
         _shorthand = "(Data.Bifunctor.first (" <> renderStatementWithShorthand f <> "))",
-        _definition = "(Data.Bifunctor.first (" <> renderStatementWithDefinitions f <> "))"
+        _definition = "(Data.Bifunctor.first (" <> renderStatementWithLonghand f <> "))"
     }
     second' f = HS $ Code {
         _imports = [("Data.Bifunctor", [("second", Nothing)])] <> imports f,
         _export = Nothing,
         _shorthand = "(Data.Bifunctor.second (" <> renderStatementWithShorthand f <> "))",
-        _definition = "(Data.Bifunctor.second (" <> renderStatementWithDefinitions f <> "))"
+        _definition = "(Data.Bifunctor.second (" <> renderStatementWithLonghand f <> "))"
     }
 
 instance Choice HS where
@@ -300,13 +303,13 @@ instance Choice HS where
         _imports = imports f,
         _export = Nothing,
         _shorthand = "(\\case { Left a -> Left ((" <> renderStatementWithShorthand f <> ") a); Right a -> Right a; })",
-        _definition = "(\\case { Left a -> Left ((" <> renderStatementWithDefinitions f <> ") a); Right a -> Right a; })"
+        _definition = "(\\case { Left a -> Left ((" <> renderStatementWithLonghand f <> ") a); Right a -> Right a; })"
     }
     right' f = HS $ Code {
         _imports = imports f,
         _export = Nothing,
         _shorthand = "(\\case { Left a -> Left a; Right a -> Right ((" <> renderStatementWithShorthand f <> ") a); })",
-        _definition = "(\\case { Left a -> Left a; Right a -> Right ((" <> renderStatementWithDefinitions f <> ") a); })"
+        _definition = "(\\case { Left a -> Left a; Right a -> Right ((" <> renderStatementWithLonghand f <> ") a); })"
     }
 
 instance Symmetric HS where
@@ -352,8 +355,8 @@ instance Numeric HS where
 -- I don't quite know how to call ghci or cabal repl to include the correct functions here, so the tests are skipped.
 
 -- @TODO escape shell - Text.ShellEscape?
-instance ExecuteHaskellWithDefinitions HS where
-    executeViaGHCiWithDefinitions cat param = do
+instance ExecuteHaskellWithLonghand HS where
+    executeViaGHCiWithLonghand cat param = do
         let params ∷ [String]
             params = [
                 "-e", ":set -ilibrary",
@@ -362,7 +365,7 @@ instance ExecuteHaskellWithDefinitions HS where
                 ] <>
                 toExternalCLIImports cat <>
                 [
-                "-e", "(" <> BSL.unpack (renderStatementWithDefinitions cat) <> ") (" <> show param <> ")"
+                "-e", "(" <> BSL.unpack (renderStatementWithLonghand cat) <> ") (" <> show param <> ")"
                 ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
         case exitCode of
@@ -408,8 +411,8 @@ instance ExecuteHaskellWithImports HS where
 -- @TODO this passes too many arguments apparently...
 -- This is because of the id and (.) using the (->) instance whereas I am running Kleisli below.
 -- This means we need to deal with both within Haskell sessions. Let's try to use Pure/Monadic... or maybe HSPure / HSMonadic accepting only appropriate typeclasses / primitives?
-instance ExecuteStdioWithDefinitions HS where
-    executeViaStdioWithDefinitions cat stdin = do
+instance ExecuteStdioWithLonghand HS where
+    executeViaStdioWithLonghand cat stdin = do
         let params ∷ [String]
             params = [
                 "-e", ":cd library",
@@ -418,7 +421,7 @@ instance ExecuteStdioWithDefinitions HS where
                 ] <>
                 toExternalCLIImports cat <>
                 [
-                "-e", BSL.unpack (renderStatementWithDefinitions cat) <> " ()"
+                "-e", BSL.unpack (renderStatementWithLonghand cat) <> " ()"
                 ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of

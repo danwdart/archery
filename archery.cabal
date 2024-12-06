@@ -107,13 +107,13 @@ library
     Control.Category.Cochoice
     Control.Category.Costrong
     Control.Category.Curry
-    Control.Category.Execute.Haskell.WithDefinitions
+    Control.Category.Execute.Haskell.WithLonghand
     Control.Category.Execute.Haskell.WithImports
     Control.Category.Execute.Haskell.WithShorthand
-    Control.Category.Execute.JSON.WithDefinitions
+    Control.Category.Execute.JSON.WithLonghand
     Control.Category.Execute.JSON.WithImports
     Control.Category.Execute.JSON.WithShorthand
-    Control.Category.Execute.Stdio.WithDefinitions
+    Control.Category.Execute.Stdio.WithLonghand
     Control.Category.Execute.Stdio.WithImports
     Control.Category.Execute.Stdio.WithShorthand
     Control.Category.Interpret
@@ -142,10 +142,10 @@ library
     Data.Function.Utilities
     Data.MapSet
     Data.Prims
-    Data.Render.File.WithDefinitions
+    Data.Render.File.WithLonghand
     Data.Render.File.WithImports
     Data.Render.File.WithShorthand
-    Data.Render.Statement.WithDefinitions
+    Data.Render.Statement.WithLonghand
     Data.Render.Statement.WithShorthand
     System.Executable
 
@@ -447,13 +447,13 @@ executable write-examples-dev
     Control.Category.Cochoice
     Control.Category.Costrong
     Control.Category.Curry
-    Control.Category.Execute.Haskell.WithDefinitions
+    Control.Category.Execute.Haskell.WithLonghand
     Control.Category.Execute.Haskell.WithImports
     Control.Category.Execute.Haskell.WithShorthand
-    Control.Category.Execute.JSON.WithDefinitions
+    Control.Category.Execute.JSON.WithLonghand
     Control.Category.Execute.JSON.WithImports
     Control.Category.Execute.JSON.WithShorthand
-    Control.Category.Execute.Stdio.WithDefinitions
+    Control.Category.Execute.Stdio.WithLonghand
     Control.Category.Execute.Stdio.WithImports
     Control.Category.Execute.Stdio.WithShorthand
     Control.Category.Interpret
@@ -482,10 +482,10 @@ executable write-examples-dev
     Data.Function.Utilities
     Data.MapSet
     Data.Prims
-    Data.Render.File.WithDefinitions
+    Data.Render.File.WithLonghand
     Data.Render.File.WithImports
     Data.Render.File.WithShorthand
-    Data.Render.Statement.WithDefinitions
+    Data.Render.Statement.WithLonghand
     Data.Render.Statement.WithShorthand
     System.Executable
 
