@@ -23,11 +23,11 @@ import Data.ByteString.Lazy.Char8         qualified as BSL
 import Data.Code.Generic
 import Data.Map
 import Data.Map                           qualified as M
-import Data.Render.File.WithDefinitions
-import Data.Render.File.WithImports
-import Data.Render.File.WithShorthand
-import Data.Render.Statement.WithDefinitions
-import Data.Render.Statement.WithShorthand
+import Data.Render.File.Longhand
+import Data.Render.File.Imports
+import Data.Render.File.Shorthand
+import Data.Render.Statement.Longhand
+import Data.Render.Statement.Shorthand
 import Data.Set
 import Data.Set                           qualified as S
 import Data.String
@@ -57,7 +57,7 @@ instance MkCode TS a b where
 -- fromLibFn lib fnName = fromLib lib fnName $ "(" <> fnName <> ")"
 -- 
 -- addLib ∷ Module → FunctionName → (RenderedStatement → RenderedStatement) → JS a b → JS c d
--- addLib lib fnName wrapper p@JS { imports = is } = JS ([(lib, [fnName])] <> is) (wrapper (renderStatementWithDefinitions p))
+-- addLib lib fnName wrapper p@JS { imports = is } = JS ([(lib, [fnName])] <> is) (wrapper (renderStatementLonghand p))
 -- 
 -- addLibWrapWith ∷ Module → FunctionName → JS a b → JS c d
 -- addLibWrapWith lib fnName = addLib lib fnName ((("((" <> fnName <> ")") <>) . (<> ")"))
@@ -65,17 +65,17 @@ instance MkCode TS a b where
 -- instance IsString (JS a b) where
 --     fromString = JS [] . BSL.pack
 
--- instance RenderStatementWithShorthand (JS a b) where
+-- instance RenderStatementShorthand (JS a b) where
 --     renderStatement JS { code = f } = f
 
--- instance RenderFileWithImports (JS a b) where
---     renderFileWithImports p =
+-- instance RenderFileImports (JS a b) where
+--     renderFileImports p =
 --         BSL.unlines (toFileImports p) <>
 --         "\nexport default " <>
 --         renderStatement p <>
 --         ";\n"
 
--- instance RenderFileWithImports (Map )
+-- instance RenderFileImports (Map )
 
 -- instance Bracket JS where
     -- bracket p@JS { imports = is } = JS is $ "(" <> renderStatement p <> ")"
@@ -167,7 +167,7 @@ instance MkCode TS a b where
 -- @TODO escape shell - Text.ShellEscape?
 {-}
 instance ExecuteJSON JS where
-    executeViaJSON cat param = do
+    executeJSON cat param = do
         let params ∷ [String]
             params = ["-e", "console.log(JSON.stringify(" <> BSL.unpack (renderStatement cat) <> "(" <> BSL.unpack (encode param) <> ")))"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params "")
@@ -178,7 +178,7 @@ instance ExecuteJSON JS where
                 Right ret -> pure ret
 
 instance ExecuteStdio JS where
-    executeViaStdio cat stdin = do
+    executeStdio cat stdin = do
         let params ∷ [String]
             params = ["-e", BSL.unpack (renderStatement cat) <> "()"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params (show stdin))

@@ -58,7 +58,7 @@ type FunctionTypeFrom = BSL.ByteString
 
 type FunctionTypeTo = BSL.ByteString
 
--- | A definition of an individual function to be imported.
+-- | A longhand of an individual function to be imported.
 -- e.g. (\x y z -> x (y z))
 type Definition = BSL.ByteString
 
@@ -66,7 +66,7 @@ type Definition = BSL.ByteString
 -- e.g. a(b(c))
 type Shorthand = BSL.ByteString
 
--- | Includes the definition to define the full (composed) function.
+-- | Includes the longhand to define the full (composed) function.
 -- e.g. (\x y z -> x (y z))(+1)(+ 1)(2)
 type Longhand = BSL.ByteString
 
@@ -217,7 +217,7 @@ toImports c = Imports [
             [
                 (
                     functionName',
-                    Just (definition c)
+                    Just (longhand c)
                 )
                 ]
         )

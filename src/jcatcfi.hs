@@ -11,7 +11,7 @@ import Data.ByteString.Lazy.Char8   qualified as BSL
 import Data.Code.Haskell
 import Data.Function.Free.Abstract
 import Data.Prims
-import Data.Render.File.WithImports
+import Data.Render.File.Imports
 import Prelude                      hiding (id, (.))
 import System.Executable
 
@@ -19,6 +19,6 @@ import System.Executable
 main ∷ IO ()
 main = readToOp (\bs ->
     compileHS =<<
-    (pure . renderFileWithImports :: HS () () → IO BSL.ByteString) =<<
+    (pure . renderFileImports :: HS () () → IO BSL.ByteString) =<<
     (pure . interpret :: FreeFunc Prims () () → IO (HS () ())) =<<
     (throwDecode :: BSL.ByteString → IO (FreeFunc Prims () ())) bs)

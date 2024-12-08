@@ -107,15 +107,15 @@ library
     Control.Category.Cochoice
     Control.Category.Costrong
     Control.Category.Curry
-    Control.Category.Execute.Haskell.WithLonghand
-    Control.Category.Execute.Haskell.WithImports
-    Control.Category.Execute.Haskell.WithShorthand
-    Control.Category.Execute.JSON.WithLonghand
-    Control.Category.Execute.JSON.WithImports
-    Control.Category.Execute.JSON.WithShorthand
-    Control.Category.Execute.Stdio.WithLonghand
-    Control.Category.Execute.Stdio.WithImports
-    Control.Category.Execute.Stdio.WithShorthand
+    Control.Category.Execute.Haskell.Longhand
+    Control.Category.Execute.Haskell.Imports
+    Control.Category.Execute.Haskell.Shorthand
+    Control.Category.Execute.JSON.Longhand
+    Control.Category.Execute.JSON.Imports
+    Control.Category.Execute.JSON.Shorthand
+    Control.Category.Execute.Stdio.Longhand
+    Control.Category.Execute.Stdio.Imports
+    Control.Category.Execute.Stdio.Shorthand
     Control.Category.Interpret
     Control.Category.LambdaCalculus.BCKW
     Control.Category.LambdaCalculus.SKI
@@ -125,8 +125,6 @@ library
     Control.Category.Primitive.Curried
     Control.Category.Primitive.Extra
     Control.Category.Primitive.File
-    Control.Category.Primitive.JSON
-    Control.Category.Primitive.Stdio
     Control.Category.Primitive.String
     Control.Category.Strong
     Control.Category.Symmetric
@@ -142,11 +140,11 @@ library
     Data.Function.Utilities
     Data.MapSet
     Data.Prims
-    Data.Render.File.WithLonghand
-    Data.Render.File.WithImports
-    Data.Render.File.WithShorthand
-    Data.Render.Statement.WithLonghand
-    Data.Render.Statement.WithShorthand
+    Data.Render.File.Longhand
+    Data.Render.File.Imports
+    Data.Render.File.Shorthand
+    Data.Render.Statement.Longhand
+    Data.Render.Statement.Shorthand
     System.Executable
 
 -- Control.Category.Generic
@@ -447,15 +445,15 @@ executable write-examples-dev
     Control.Category.Cochoice
     Control.Category.Costrong
     Control.Category.Curry
-    Control.Category.Execute.Haskell.WithLonghand
-    Control.Category.Execute.Haskell.WithImports
-    Control.Category.Execute.Haskell.WithShorthand
-    Control.Category.Execute.JSON.WithLonghand
-    Control.Category.Execute.JSON.WithImports
-    Control.Category.Execute.JSON.WithShorthand
-    Control.Category.Execute.Stdio.WithLonghand
-    Control.Category.Execute.Stdio.WithImports
-    Control.Category.Execute.Stdio.WithShorthand
+    Control.Category.Execute.Haskell.Longhand
+    Control.Category.Execute.Haskell.Imports
+    Control.Category.Execute.Haskell.Shorthand
+    Control.Category.Execute.JSON.Longhand
+    Control.Category.Execute.JSON.Imports
+    Control.Category.Execute.JSON.Shorthand
+    Control.Category.Execute.Stdio.Longhand
+    Control.Category.Execute.Stdio.Imports
+    Control.Category.Execute.Stdio.Shorthand
     Control.Category.Interpret
     Control.Category.LambdaCalculus.BCKW
     Control.Category.LambdaCalculus.SKI
@@ -465,8 +463,6 @@ executable write-examples-dev
     Control.Category.Primitive.Curried
     Control.Category.Primitive.Extra
     Control.Category.Primitive.File
-    Control.Category.Primitive.JSON
-    Control.Category.Primitive.Stdio
     Control.Category.Primitive.String
     Control.Category.Strong
     Control.Category.Symmetric
@@ -482,11 +478,11 @@ executable write-examples-dev
     Data.Function.Utilities
     Data.MapSet
     Data.Prims
-    Data.Render.File.WithLonghand
-    Data.Render.File.WithImports
-    Data.Render.File.WithShorthand
-    Data.Render.Statement.WithLonghand
-    Data.Render.Statement.WithShorthand
+    Data.Render.File.Longhand
+    Data.Render.File.Imports
+    Data.Render.File.Shorthand
+    Data.Render.Statement.Longhand
+    Data.Render.Statement.Shorthand
     System.Executable
 
   build-depends:

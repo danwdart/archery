@@ -9,7 +9,7 @@ import Data.ByteString.Lazy.Char8       qualified as BSL
 import Data.Code.Haskell
 import Data.Function.Free.Abstract
 import Data.Prims
-import Data.Render.File.WithDefinitions
+import Data.Render.File.Longhand
 import Data.Yaml                        qualified as Y
 import Prelude                          hiding (id, (.))
 import System.Executable
@@ -18,6 +18,6 @@ import System.Executable
 main ∷ IO ()
 main = readToOp (\bs ->
     compileHS =<<
-    (pure . renderFileWithDefinitions :: HS () () → IO BSL.ByteString) =<<
+    (pure . renderFileLonghand :: HS () () → IO BSL.ByteString) =<<
     (pure . interpret :: FreeFunc Prims () () → IO (HS () ())) =<<
     (Y.decodeThrow . BSL.toStrict :: BSL.ByteString → IO (FreeFunc Prims () ())) bs)

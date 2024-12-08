@@ -1,11 +1,11 @@
 module Data.Function.GreetSpec where
 
-import Control.Category.Execute.Haskell.WithDefinitions
-import Control.Category.Execute.Haskell.WithImports
-import Control.Category.Execute.Haskell.WithShorthand
-import Control.Category.Execute.JSON.WithDefinitions
-import Control.Category.Execute.JSON.WithImports
-import Control.Category.Execute.JSON.WithShorthand
+import Control.Category.Execute.Haskell.Longhand
+import Control.Category.Execute.Haskell.Imports
+import Control.Category.Execute.Haskell.Shorthand
+import Control.Category.Execute.JSON.Longhand
+import Control.Category.Execute.JSON.Imports
+import Control.Category.Execute.JSON.Shorthand
 import Data.Aeson
 import Data.Code.Haskell
 -- import Data.Code.JS
@@ -33,37 +33,37 @@ spec = do
     -- xdescribe "greetData" $ do
     --     describe "HS" $ do
     --         it "is correct" $
-    --             executeViaGHCi (greetData :: HS Person String) myPerson `shouldReturn` greetData myPerson
+    --             executeGHCi (greetData :: HS Person String) myPerson `shouldReturn` greetData myPerson
     --         it "is correct" $
-    --             executeViaGHCi (greetData :: HS Person String) myPerson `shouldReturn` greetData myPerson
+    --             executeGHCi (greetData :: HS Person String) myPerson `shouldReturn` greetData myPerson
     --     describe "JS" $ do
     --         it "is correct" $ do
-    --             executeViaJSON (greetData :: JS Person String) myPerson `shouldReturn` greetData myPerson
+    --             executeJSON (greetData :: JS Person String) myPerson `shouldReturn` greetData myPerson
     --     describe "PHP" $ do
     --         it "is correct" $ do
-    --             executeViaJSON (greetData :: PHP Person String) myPerson `shouldReturn` greetData myPerson
+    --             executeJSON (greetData :: PHP Person String) myPerson `shouldReturn` greetData myPerson
     describe "greetTuple" $ do
         describe "HS" $ do
-            describe "with definitions" $ do
+            describe "with Longhand" $ do
                 it "is correct" $ do
-                    executeViaGHCiWithDefinitions (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+                    executeGHCiLonghand (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
             xdescribe "with imports" $ do
                 it "is correct" $ do
-                    executeViaGHCiWithImports (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+                    executeGHCiImports (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
             xdescribe "with shorthand" $ do
                 it "is correct" $ do
-                    executeViaGHCiWithShorthand (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+                    executeGHCiShorthand (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
         -- xdescribe "JS" $ do
-        --     describe "with definitions" $ do
+        --     describe "with Longhand" $ do
         --         it "is correct" $ do
-        --             executeViaJSONWithDefinitions (greetTuple :: JS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+        --             executeJSONLonghand (greetTuple :: JS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
         --     describe "with imports" $ do
         --         it "is correct" $ do
-        --             executeViaJSONWithImports (greetTuple :: JS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+        --             executeJSONImports (greetTuple :: JS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
         -- xdescribe "PHP" $ do
-        --     describe "with definitions" $ do
+        --     describe "with Longhand" $ do
         --         it "is correct" $ do
-        --             executeViaJSONWithDefinitions (greetTuple :: PHP (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+        --             executeJSONLonghand (greetTuple :: PHP (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
         --     describe "with imports" $ do
         --         it "is correct" $ do
-        --             executeViaJSONWithImports (greetTuple :: PHP (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+        --             executeJSONImports (greetTuple :: PHP (String, Int) String) myTuple `shouldReturn` greetTuple myTuple

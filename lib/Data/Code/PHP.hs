@@ -23,11 +23,11 @@ import Data.ByteString.Lazy.Char8         qualified as BSL
 import Data.Code.Generic
 import Data.Map
 import Data.Map                           qualified as M
-import Data.Render.File.WithDefinitions
-import Data.Render.File.WithImports
-import Data.Render.File.WithShorthand
-import Data.Render.Statement.WithDefinitions
-import Data.Render.Statement.WithShorthand
+import Data.Render.File.Longhand
+import Data.Render.File.Imports
+import Data.Render.File.Shorthand
+import Data.Render.Statement.Longhand
+import Data.Render.Statement.Shorthand
 import Data.Set
 import Data.Set                           qualified as S
 import Data.String
@@ -67,8 +67,8 @@ instance MkCode PHP a b where
 -- instance RenderStatement (PHP a b) where
 --     renderStatement PHP { code = f } = f
 -- 
--- instance RenderFileWithImports (PHP a b) where
---     renderFileWithImports p =
+-- instance RenderFileImports (PHP a b) where
+--     renderFileImports p =
 --         "<?php\n" <>
 --         "require(\"vendor/autoload.php\");\n" <>
 --         BSL.unlines (toFileImports p) <>
@@ -160,7 +160,7 @@ instance MkCode PHP a b where
 -- @TODO escape shell - Text.ShellEscape?
 {-}
 instance ExecuteJSON PHP where
-    executeViaJSON cat param = do
+    executeJSON cat param = do
         let params ∷ [String]
             params = ["-e", "console.log(JSON.stringify(" <> BSL.unpack (renderStatement cat) <> "(" <> BSL.unpack (encode param) <> ")))"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params "")
@@ -171,7 +171,7 @@ instance ExecuteJSON PHP where
                 Right ret -> pure ret
 
 instance ExecuteStdio PHP where
-    executeViaStdio cat stdin = do
+    executeStdio cat stdin = do
         let params ∷ [String]
             params = ["-e", BSL.unpack (renderStatement cat) <> "()"]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params (show stdin))

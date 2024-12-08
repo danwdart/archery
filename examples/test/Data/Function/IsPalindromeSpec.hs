@@ -2,12 +2,12 @@
 
 module Data.Function.IsPalindromeSpec where
 
-import Control.Category.Execute.Haskell.WithDefinitions
-import Control.Category.Execute.Haskell.WithImports
-import Control.Category.Execute.Haskell.WithShorthand
-import Control.Category.Execute.JSON.WithDefinitions
-import Control.Category.Execute.JSON.WithImports
-import Control.Category.Execute.JSON.WithShorthand
+import Control.Category.Execute.Haskell.Longhand
+import Control.Category.Execute.Haskell.Imports
+import Control.Category.Execute.Haskell.Shorthand
+import Control.Category.Execute.JSON.Longhand
+import Control.Category.Execute.JSON.Imports
+import Control.Category.Execute.JSON.Shorthand
 import Control.Monad.IO.Class
 import Data.Aeson
 import Data.Code.Haskell
@@ -24,39 +24,39 @@ import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
 
-prop_HSIsCorrectWithDefinitions ∷ String → Property
-prop_HSIsCorrectWithDefinitions s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCiWithDefinitions (isPalindrome :: HS String Bool) s
+prop_HSIsCorrectLonghand ∷ String → Property
+prop_HSIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeGHCiLonghand (isPalindrome :: HS String Bool) s
     pure $ answer === isPalindrome s
 
-xprop_HSIsCorrectWithImports ∷ String → Property
-xprop_HSIsCorrectWithImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCiWithImports (isPalindrome :: HS String Bool) s
+xprop_HSIsCorrectImports ∷ String → Property
+xprop_HSIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeGHCiImports (isPalindrome :: HS String Bool) s
     pure $ answer === isPalindrome s
 
-xprop_HSIsCorrectWithShorthand ∷ String → Property
-xprop_HSIsCorrectWithShorthand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCiWithShorthand (isPalindrome :: HS String Bool) s
+xprop_HSIsCorrectShorthand ∷ String → Property
+xprop_HSIsCorrectShorthand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeGHCiShorthand (isPalindrome :: HS String Bool) s
     pure $ answer === isPalindrome s
 
--- prop_JSIsCorrectWithDefinitions ∷ String → Property
--- prop_JSIsCorrectWithDefinitions s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
---     answer <- executeViaJSONWithDefinitions (isPalindrome :: JS String Bool) s
+-- prop_JSIsCorrectLonghand ∷ String → Property
+-- prop_JSIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeJSONLonghand (isPalindrome :: JS String Bool) s
 --     pure $ answer === isPalindrome s
 --
--- prop_JSIsCorrectWithImports ∷ String → Property
--- prop_JSIsCorrectWithImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
---     answer <- executeViaJSONWithImports (isPalindrome :: JS String Bool) s
+-- prop_JSIsCorrectImports ∷ String → Property
+-- prop_JSIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeJSONImports (isPalindrome :: JS String Bool) s
 --     pure $ answer === isPalindrome s
 --
--- prop_PHPIsCorrectWithDefinitions ∷ String → Property
--- prop_PHPIsCorrectWithDefinitions s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
---     answer <- executeViaJSONWithDefinitions (isPalindrome :: PHP String Bool) s
+-- prop_PHPIsCorrectLonghand ∷ String → Property
+-- prop_PHPIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeJSONLonghand (isPalindrome :: PHP String Bool) s
 --     pure $ answer === isPalindrome s
 --
--- prop_PHPIsCorrectWithImports ∷ String → Property
--- prop_PHPIsCorrectWithImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
---     answer <- executeViaJSONWithImports (isPalindrome :: PHP String Bool) s
+-- prop_PHPIsCorrectImports ∷ String → Property
+-- prop_PHPIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeJSONImports (isPalindrome :: PHP String Bool) s
 --     pure $ answer === isPalindrome s
 
 {-}

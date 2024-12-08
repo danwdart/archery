@@ -2,12 +2,12 @@
 
 module Data.Function.CollatzStepSpec where
 
-import Control.Category.Execute.Haskell.WithDefinitions
-import Control.Category.Execute.Haskell.WithImports
-import Control.Category.Execute.Haskell.WithShorthand
-import Control.Category.Execute.JSON.WithDefinitions
-import Control.Category.Execute.JSON.WithImports
-import Control.Category.Execute.JSON.WithShorthand
+import Control.Category.Execute.Haskell.Longhand
+import Control.Category.Execute.Haskell.Imports
+import Control.Category.Execute.Haskell.Shorthand
+import Control.Category.Execute.JSON.Longhand
+import Control.Category.Execute.JSON.Imports
+import Control.Category.Execute.JSON.Shorthand
 import Control.Monad.IO.Class
 import Data.Aeson
 import Data.Code.Haskell
@@ -26,39 +26,39 @@ import Test.QuickCheck.Monadic
 
 -- @TODO random functions
 
-prop_HSIsCorrectWithDefinitions ∷ Int → Property
-prop_HSIsCorrectWithDefinitions i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCiWithDefinitions (collatzStep :: HS Int Int) i
+prop_HSIsCorrectLonghand ∷ Int → Property
+prop_HSIsCorrectLonghand i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeGHCiLonghand (collatzStep :: HS Int Int) i
     pure $ answer === collatzStep i
 
-xprop_HSIsCorrectWithImports ∷ Int → Property
-xprop_HSIsCorrectWithImports i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCiWithImports (collatzStep :: HS Int Int) i
+xprop_HSIsCorrectImports ∷ Int → Property
+xprop_HSIsCorrectImports i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeGHCiImports (collatzStep :: HS Int Int) i
     pure $ answer === collatzStep i
 
-xprop_HSIsCorrectWithShorthand ∷ Int → Property
-xprop_HSIsCorrectWithShorthand i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
-    answer <- executeViaGHCiWithShorthand (collatzStep :: HS Int Int) i
+xprop_HSIsCorrectShorthand ∷ Int → Property
+xprop_HSIsCorrectShorthand i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
+    answer <- executeGHCiShorthand (collatzStep :: HS Int Int) i
     pure $ answer === collatzStep i
 
--- prop_JSIsCorrectWithDefinitions ∷ Int → Property
--- prop_JSIsCorrectWithDefinitions i = withMaxSuccess 200 . monadicIO $ do
---     answer <- executeViaJSONWithDefinitions (collatzStep :: JS Int Int) i
+-- prop_JSIsCorrectLonghand ∷ Int → Property
+-- prop_JSIsCorrectLonghand i = withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeJSONLonghand (collatzStep :: JS Int Int) i
 --     pure $ answer === collatzStep i
 --
--- prop_JSIsCorrectWithImports ∷ Int → Property
--- prop_JSIsCorrectWithImports i = withMaxSuccess 200 . monadicIO $ do
---     answer <- executeViaJSONWithImports (collatzStep :: JS Int Int) i
+-- prop_JSIsCorrectImports ∷ Int → Property
+-- prop_JSIsCorrectImports i = withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeJSONImports (collatzStep :: JS Int Int) i
 --     pure $ answer === collatzStep i
 --
--- prop_PHPIsCorrectWithDefinitions ∷ Int → Property
--- prop_PHPIsCorrectWithDefinitions i = withMaxSuccess 200 . monadicIO $ do
---     answer <- executeViaJSONWithDefinitions (collatzStep :: PHP Int Int) i
+-- prop_PHPIsCorrectLonghand ∷ Int → Property
+-- prop_PHPIsCorrectLonghand i = withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeJSONLonghand (collatzStep :: PHP Int Int) i
 --     pure $ answer === collatzStep i
 --
--- prop_PHPIsCorrectWithImports ∷ Int → Property
--- prop_PHPIsCorrectWithImports i = withMaxSuccess 200 . monadicIO $ do
---     answer <- executeViaJSONWithImports (collatzStep :: PHP Int Int) i
+-- prop_PHPIsCorrectImports ∷ Int → Property
+-- prop_PHPIsCorrectImports i = withMaxSuccess 200 . monadicIO $ do
+--     answer <- executeJSONImports (collatzStep :: PHP Int Int) i
 --     pure $ answer === collatzStep i
 
 {-}
