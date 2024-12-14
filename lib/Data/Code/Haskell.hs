@@ -12,22 +12,22 @@ import Control.Category
 -- import Control.Category.Apply
 -- import Control.Category.Bracket
 import Control.Category.Cartesian
--- import Control.Category.Choice
+import Control.Category.Choice
 import Control.Category.Cocartesian
 import Control.Category.Execute.Haskell.Longhand
-import Control.Category.Execute.Haskell.Imports
+-- import Control.Category.Execute.Haskell.Imports
 import Control.Category.Execute.Haskell.Shorthand
 -- import Control.Category.Execute.Stdio.Longhand
 -- import Control.Category.Execute.Stdio.Imports
 -- import Control.Category.Execute.Stdio.Shorthand
--- import Control.Category.Numeric
--- import Control.Category.Primitive.Bool
--- import Control.Category.Primitive.Console
--- import Control.Category.Primitive.Extra
+import Control.Category.Numeric
+import Control.Category.Primitive.Bool
+import Control.Category.Primitive.Console
+import Control.Category.Primitive.Extra
 -- import Control.Category.Primitive.File
--- import Control.Category.Primitive.String
--- import Control.Category.Strong
--- import Control.Category.Symmetric
+import Control.Category.Primitive.String
+import Control.Category.Strong
+import Control.Category.Symmetric
 import Control.Exception                                hiding (bracket)
 import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8                       qualified as BSL
@@ -35,9 +35,9 @@ import Data.Code.Generic
 -- import Data.Map                                         (Map)
 -- import Data.Map                                         qualified as M
 -- import Data.Maybe
-import Data.Render.File.Longhand
-import Data.Render.File.Imports
-import Data.Render.File.Shorthand
+-- import Data.Render.File.Longhand
+-- import Data.Render.File.Imports
+-- import Data.Render.File.Shorthand
 import Data.Render.Statement.Longhand
 import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
@@ -123,9 +123,12 @@ instance (Typeable a, Typeable b) ⇒ RenderFileLonghand (HS a b) where
                 }
                 ) (export cat)
 
+-}
+
+{-}
 instance (Typeable a, Typeable b) ⇒ RenderFileImports (HS a b) where
     renderFileImports cat =
-        "\nmodule " <> module' <> " where\n\n" <>
+        "\nmodule " <> module' cat <> " where\n\n" <>
         BSL.unlines (toFileImports cat) <>
         "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         "\n" <> functionName' <> " = " <> renderStatementShorthand cat where
@@ -284,42 +287,111 @@ instance Cocartesian HS where
 
 -- >>> renderStatementLonghand (((Control.Category..) fst' copy) :: HS String String)
 
-
-{-}
 instance Strong HS where
-    -- @TODO apply? Bracket?
     first' f = HS $ Code {
-        _imports = [("Data.Bifunctor", [("first", Nothing)])] <> imports f,
-        _export = Nothing,
-        _shorthand = "(Data.Bifunctor.first (" <> renderStatementShorthand f <> "))",
-        _longhand = "(Data.Bifunctor.first (" <> renderStatementLonghand f <> "))"
+        _externalImports = [
+            ("Data.Bifunctor", ["first"])
+        ],
+        _internalImports = [],
+        _module = "Control.Category.Strong",
+        _function = Function {
+            _functionName = "first'",
+            _functionTypeFrom = "(a, x)",
+            _functionTypeTo = "(b, x)",
+            _shorthand = "first (" <> shorthand f <> ")",
+            _longhand = "first (" <> longhand f <> ")"
+        }
     }
     second' f = HS $ Code {
-        _imports = [("Data.Bifunctor", [("second", Nothing)])] <> imports f,
-        _export = Nothing,
-        _shorthand = "(Data.Bifunctor.second (" <> renderStatementShorthand f <> "))",
-        _longhand = "(Data.Bifunctor.second (" <> renderStatementLonghand f <> "))"
+        _externalImports = [
+            ("Data.Bifunctor", ["second"])
+        ],
+        _internalImports = [],
+        _module = "Control.Category.Strong",
+        _function = Function {
+            _functionName = "second'",
+            _functionTypeFrom = "(a, x)",
+            _functionTypeTo = "(a, y)",
+            _shorthand = "second (" <> shorthand f <> ")",
+            _longhand = "second (" <> longhand f <> ")"
+        }
     }
 
 instance Choice HS where
     left' f = HS $ Code {
-        _imports = imports f,
-        _export = Nothing,
-        _shorthand = "(\\case { Left a -> Left ((" <> renderStatementShorthand f <> ") a); Right a -> Right a; })",
-        _longhand = "(\\case { Left a -> Left ((" <> renderStatementLonghand f <> ") a); Right a -> Right a; })"
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Choice",
+        _function = Function {
+            _functionName = "left'",
+            _functionTypeFrom = "a",
+            _functionTypeTo = "Either a x",
+            _shorthand = "Left (" <> shorthand f <> ")",
+            _longhand = "Left (" <> longhand f <> ")"
+        }
     }
     right' f = HS $ Code {
-        _imports = imports f,
-        _export = Nothing,
-        _shorthand = "(\\case { Left a -> Left a; Right a -> Right ((" <> renderStatementShorthand f <> ") a); })",
-        _longhand = "(\\case { Left a -> Left a; Right a -> Right ((" <> renderStatementLonghand f <> ") a); })"
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Choice",
+        _function = Function {
+            _functionName = "right'",
+            _functionTypeFrom = "a",
+            _functionTypeTo = "Either x a",
+            _shorthand = "Right (" <> shorthand f <> ")",
+            _longhand = "Right (" <> longhand f <> ")"
+        }
     }
 
 instance Symmetric HS where
-    swap = mkCode [] (Just (Export { _module = "Control.Category.Symmetric", _functionName = "swap", _functionType = "" })) "swap" "\\(a, b) -> (b, a)"
-    swapEither = mkCode [] (Just (Export { _module = "Control.Category.Symmetric", _functionName = "swapEither", _functionType = "" })) "swapEither" "(\\case { Left a -> Right a; Right a -> Left a; })"
-    reassoc = mkCode [] (Just (Export { _module = "Control.Category.Symmetric", _functionName = "reassoc", _functionType = "" })) "reassoc" "(\\(a, (b, c)) -> ((a, b), c))"
-    reassocEither = mkCode [] (Just (Export { _module = "Control.Category.Symmetric", _functionName = "reassocEither", _functionType = "" })) "reassocEither" "(\\case { Left a -> Left (Left a); Right (Left b) -> Left (Right b); Right (Right c) -> Right c })"
+    swap = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Symmetric",
+        _function = Function {
+            _functionName = "swap",
+            _functionTypeFrom = "(a, b)",
+            _functionTypeTo = "(b, a)",
+            _shorthand = "\\(a, b) -> (b, a)",
+            _longhand = "\\(a, b) -> (b, a)"
+        }
+    }
+    swapEither = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Symmetric",
+        _function = Function {
+            _functionName = "swapEither",
+            _functionTypeFrom = "Either a a",
+            _functionTypeTo = "Either a a",
+            _shorthand = "\\case { Left a -> Right a; Right a -> Left a; }",
+            _longhand = "\\case { Left a -> Right a; Right a -> Left a; }"
+        }
+    }
+    reassoc = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Symmetric",
+        _function = Function {
+            _functionName = "reassoc",
+            _functionTypeFrom = "(a, (b, c))",
+            _functionTypeTo = "((a, b), c)",
+            _shorthand = "\\(a, (b, c)) -> ((a, b), c)",
+            _longhand = "\\(a, (b, c)) -> ((a, b), c)"
+        }
+    }
+    reassocEither = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Symmetric",
+        _function = Function {
+            _functionName = "reassocEither",
+            _functionTypeFrom = "Either a (Either b c)",
+            _functionTypeTo = "Either (Either a b) c",
+            _shorthand = "\\case { Left a -> Left (Left a); Right (Left b) -> Left (Right b); Right (Right c) -> Right c }",
+            _longhand = "\\case { Left a -> Left (Left a); Right (Left b) -> Left (Right b); Right (Right c) -> Right c }"
+        }
+    }
 
 -- instance Cochoice HS where
 
@@ -328,33 +400,188 @@ instance Symmetric HS where
 -- instance Apply HS where
 
 instance PrimitiveBool HS where
-    eq = mkCode [("Control.Arrow", [("arr", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.Bool", _functionName = "eq", _functionType = "" })) "eq" "(arr . uncurry $ (==))"
+    eq = HS $ Code {
+        _externalImports = [
+            ("Control.Arrow", ["arr"])
+        ],
+        _internalImports = [],
+        _module = "Control.Category.Primitive.Bool",
+        _function = Function {
+            _functionName = "eq",
+            _functionTypeFrom = "(a, a)",
+            _functionTypeTo = "Bool",
+            _shorthand = "(arr . uncurry $ (==))",
+            _longhand = "(arr . uncurry $ (==))"
+        }
+    }
 
 instance PrimitiveConsole HS where
-    outputString = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.Console", _functionName = "outputString", _functionType = "" })) "outputString" "(Kleisli putStr)"
-    inputString = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.Console", _functionName = "inputString", _functionType = "" })) "inputString" "(Kleisli (const getContents))"
+    outputString = HS $ Code {
+        _externalImports = [
+            ("Control.Arrow", ["Kleisli(..)"])
+        ],
+        _internalImports = [],
+        _module = "Control.Category.Primitive.Console",
+        _function = Function {
+            _functionName = "outputString",
+            _functionTypeFrom = "String",
+            _functionTypeTo = "IO ()",
+            _shorthand = "Kleisli putStr",
+            _longhand = "Kleisli putStr"
+        }
+    }
+    inputString = HS $ Code {
+        _externalImports = [
+            ("Control.Arrow", ["Kleisli(..)"])
+        ],
+        _internalImports = [],
+        _module = "Control.Category.Primitive.Console",
+        _function = Function {
+            _functionName = "inputString",
+            _functionTypeFrom = "()",
+            _functionTypeTo = "IO String",
+            _shorthand = "Kleisli (const getContents)",
+            _longhand = "Kleisli (const getContents)"
+        }
+    }
 
 instance PrimitiveExtra HS where
-    intToString :: HS Int String
-    intToString = "show"
-    concatString = mkCode [] (Just (Export { _module = "Control.Category.Primitive.Extra", _functionName = "concatString", _functionType = "" })) "concatString" "(uncurry (<>))"
-    constString s = fromString $ "(const \"" <> s <> "\")"
+    intToString = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Primitive.Extra",
+        _function = Function {
+            _functionName = "intToString",
+            _functionTypeFrom = "Int",
+            _functionTypeTo = "String",
+            _shorthand = "show",
+            _longhand = "show"
+        }
+    }
+    concatString = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Primitive.Extra",
+        _function = Function {
+            _functionName = "concatString",
+            _functionTypeFrom = "(String, String)",
+            _functionTypeTo = "String",
+            _shorthand = "uncurry (<>)",
+            _longhand = "uncurry (<>)"
+        }
+    }
+    constString s = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Primitive.Extra",
+        _function = Function {
+            _functionName = "constString",
+            _functionTypeFrom = "()",
+            _functionTypeTo = "String",
+            _shorthand = "const \"" <> BSL.pack s <> "\"",
+            _longhand = "const \"" <> BSL.pack s <> "\""
+        }
+    }
 
+{-}
 instance PrimitiveFile HS where
     readFile' = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.File", _functionName = "readFile'", _functionType = "" })) "readFile'" "(Kleisli $ liftIO . readFile)"
     writeFile' = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.File", _functionName = "writeFile'", _functionType = "" })) "writeFile'" "(Kleisli $ liftIO . uncurry writeFile)"
+-}
 
 instance PrimitiveString HS where
-    reverseString = mkCode [("Control.Arrow", [("arr", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.String", _functionName = "reverseString", _functionType = "" })) "reverseString" "(arr reverse)"
+    reverseString = HS $ Code {
+        _externalImports = [
+            ("Control.Arrow", ["arr"])
+        ],
+        _internalImports = [],
+        _module = "Control.Category.Primitive.String",
+        _function = Function {
+            _functionName = "reverseString",
+            _functionTypeFrom = "String",
+            _functionTypeTo = "String",
+            _shorthand = "arr reverse",
+            _longhand = "arr reverse"
+        }
+    }
+
+
 
 instance Numeric HS where
-    num n = fromString $ "(const " <> show n <> ")"
-    negate' = "negate"
-    add = mkCode [] (Just (Export { _module = "Control.Category.Numeric", _functionName = "add", _functionType = "" })) "add" "(uncurry (+))"
-    mult = mkCode [] (Just (Export { _module = "Control.Category.Numeric", _functionName = "mult", _functionType = "" })) "mult" "(uncurry (*))"
-    div' = mkCode [] (Just (Export { _module = "Control.Category.Numeric", _functionName = "div'", _functionType = "" })) "div'" "(uncurry div)"
-    mod' = mkCode [] (Just (Export { _module = "Control.Category.Numeric", _functionName = "mod'", _functionType = "" })) "mod'" "(uncurry mod)"
+    num n = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Numeric",
+        _function = Function {
+            _functionName = "fromString",
+            _functionTypeFrom = "()",
+            _functionTypeTo = "Int",
+            _shorthand = "const " <> BSL.pack (show n),
+            _longhand = "const " <> BSL.pack (show n)
+        }
+    }
+    negate' = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Numeric",
+        _function = Function {
+            _functionName = "negate",
+            _functionTypeFrom = "Int",
+            _functionTypeTo = "Int",
+            _shorthand = "negate",
+            _longhand = "negate"
+        }
+    }
+    add = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Numeric",
+        _function = Function {
+            _functionName = "add",
+            _functionTypeFrom = "(Int, Int)",
+            _functionTypeTo = "Int",
+            _shorthand = "uncurry (+)",
+            _longhand = "uncurry (+)"
+        }
+    }
+    mult = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Numeric",
+        _function = Function {
+            _functionName = "mult",
+            _functionTypeFrom = "(Int, Int)",
+            _functionTypeTo = "Int",
+            _shorthand = "uncurry (*)",
+            _longhand = "uncurry (*)"
+        }
+    }
+    div' = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Numeric",
+        _function = Function {
+            _functionName = "div'",
+            _functionTypeFrom = "(Int, Int)",
+            _functionTypeTo = "Int",
+            _shorthand = "uncurry div",
+            _longhand = "uncurry div"
+        }
+    }
+    mod' = HS $ Code {
+        _externalImports = [],
+        _internalImports = [],
+        _module = "Control.Category.Numeric",
+        _function = Function {
+            _functionName = "div'",
+            _functionTypeFrom = "(Int, Int)",
+            _functionTypeTo = "Int",
+            _shorthand = "uncurry mod",
+            _longhand = "uncurry mod"
+        }
+    }
 
+{-}
 -- I don't quite know how to call ghci or cabal repl to include the correct functions here, so the tests are skipped.
 
 -- @TODO escape shell - Text.ShellEscape?

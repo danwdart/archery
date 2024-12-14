@@ -50,28 +50,15 @@ instance MkCode JS a b where
 -- toFileImports ∷ JS a b → [BSL.ByteString]
 -- toFileImports js = (\(file, imports') -> "import { " <> BSL.intercalate ", " (S.toList imports') <> " } from \"" <> file <> "\";") <$> M.toList (_ $ imports js)
 
--- fromLib ∷ Module → FunctionName → RenderedStatement → JS a b
--- fromLib lib fnName = JS [(lib, [fnName])]
--- 
--- fromLibFn ∷ Module → FunctionName → JS a b
--- fromLibFn lib fnName = fromLib lib fnName $ "(" <> fnName <> ")"
--- 
--- addLib ∷ Module → FunctionName → (RenderedStatement → RenderedStatement) → JS a b → JS c d
--- addLib lib fnName wrapper p@JS { imports = is } = JS ([(lib, [fnName])] <> is) (wrapper (renderStatementLonghand p))
--- 
--- addLibWrapWith ∷ Module → FunctionName → JS a b → JS c d
--- addLibWrapWith lib fnName = addLib lib fnName ((("((" <> fnName <> ")") <>) . (<> ")"))
--- 
 -- instance IsString (JS a b) where
 --     fromString = JS [] . BSL.pack
 
--- instance RenderStatementShorthand (JS a b) where
---     renderStatement JS { code = f } = f
+instance RenderStatementShorthand (JS a b) where
+    renderStatementShorthand = shorthand
 
-{-}
 instance RenderStatementLonghand (JS a b) where
     renderStatementLonghand = longhand
--}
+
 -- instance RenderFileImports (JS a b) where
 --     renderFileImports p =
 --         BSL.unlines (toFileImports p) <>
