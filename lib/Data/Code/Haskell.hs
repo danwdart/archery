@@ -35,9 +35,9 @@ import Data.Code.Generic
 -- import Data.Map                                         (Map)
 -- import Data.Map                                         qualified as M
 -- import Data.Maybe
--- import Data.Render.File.Longhand
--- import Data.Render.File.Imports
--- import Data.Render.File.Shorthand
+import Data.Render.File.Longhand
+import Data.Render.File.Imports
+import Data.Render.File.Shorthand
 import Data.Render.Statement.Longhand
 import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
@@ -45,7 +45,7 @@ import Data.Render.Statement.Shorthand
 -- import Data.String
 -- import Data.Typeable
 import GHC.IO.Exception
-import GHC.IsList
+-- import GHC.IsList
 import Prelude                                          hiding (id, (.))
 import System.Process
 import Text.Read
@@ -65,14 +65,15 @@ toCLIImports ∷ HS a b → [String]
 toCLIImports hs = M.toList (unImports . imports $ hs) >>= \(moduleName, _imports') -> [{-}"-e", ":l", BSL.unpack moduleName,-}"-e", BSL.unpack $ "import " <> moduleName {-<> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")\""-}]
 -}
 toExternalCLIImports ∷ HS a b → [String]
-toExternalCLIImports hs = GHC.IsList.toList (externalImports hs) >>= \(moduleName, _imports' ) -> [{-}"-e", ":l", BSL.unpack moduleName,-} "-e", BSL.unpack $ "import " <> moduleName {-<> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")\""-}]
-{-}
+toExternalCLIImports _ = [] --  GHC.IsList.toList (externalImports hs) >>= \(moduleName, _imports' ) -> [{-}"-e", ":l", BSL.unpack moduleName,-} "-e", BSL.unpack $ "import " <> moduleName {-<> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")\""-}]
+
 toFileImports ∷ HS a b → [BSL.ByteString]
-toFileImports hs = (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")") <$> M.toList (unImports $ imports hs)
+toFileImports _ = [] --  (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")") <$> M.toList (unImports $ imports hs)
 
 toExternalFileImports ∷ HS a b → [BSL.ByteString]
-toExternalFileImports hs = (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")") <$> M.toList (unImports $ filterExternal (imports hs))
+toExternalFileImports _ = []  --  (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")") <$> M.toList (unImports $ filterExternal (imports hs))
 
+{-}
 renderLonghand ∷ HS a b → [BSL.ByteString]
 renderLonghand hs = M.toList (unImports $ imports hs) >>= (fmap (\(fnName', mDefinition) -> case mDefinition of
     Nothing          -> ""
@@ -87,62 +88,28 @@ instance RenderStatementLonghand (HS a b) where
 instance RenderStatementShorthand (HS a b) where
     renderStatementShorthand = shorthand
 
-{-}
--- TODO name this
-instance (Typeable a, Typeable b) ⇒ RenderFileShorthand (HS a b) where
+instance {- (Typeable a, Typeable b) ⇒ -} RenderFileShorthand (HS a b) where
     renderFileShorthand cat =
-        "\nmodule " <> module' <> " where\n\n" <>
-        BSL.unlines (renderLonghand cat) <>
-        "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\n" <> functionName' <> " = " <> renderStatementShorthand cat where
-            Export {
-                _module = module',
-                _functionName = functionName'
-            } = fromMaybe (
-                Export {
-                    _module = "Main",
-                    _functionName = "main",
-                    _functionType = "IO ()"
-                }
-                ) (export cat)
+        "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
+        {- BSL.unlines (renderLonghand cat) <> -}
+        "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
 
-instance (Typeable a, Typeable b) ⇒ RenderFileLonghand (HS a b) where
+instance {- (Typeable a, Typeable b) ⇒ -} RenderFileLonghand (HS a b) where
     renderFileLonghand cat =
-        "\nmodule " <> module' <> " where\n\n" <>
-        BSL.unlines (toExternalFileImports cat) <>
-        "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\n" <> functionName' <> " = " <> renderStatementLonghand cat where
-            Export {
-                _module = module',
-                _functionName = functionName'
-            } = fromMaybe (
-                Export {
-                    _module = "Main",
-                    _functionName = "main",
-                    _functionType = "IO ()"
-                }
-                ) (export cat)
+        "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
+        -- BSL.unlines (toExternalFileImports cat) <>
+        "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\n" <> functionName cat <> " = " <> renderStatementLonghand cat
 
--}
+instance {- (Typeable a, Typeable b) ⇒ -}  RenderFileImports (HS a b) where
+    renderFileImports cat =
+        "\nmodule " <> module' cat <> " (" <> functionName cat <> ") where\n\n" <>
+        -- BSL.unlines (toFileImports cat) <>
+        "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
 
 {-}
-instance (Typeable a, Typeable b) ⇒ RenderFileImports (HS a b) where
-    renderFileImports cat =
-        "\nmodule " <> module' cat <> " where\n\n" <>
-        BSL.unlines (toFileImports cat) <>
-        "\n" <> functionName' <> " :: " <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\n" <> functionName' <> " = " <> renderStatementShorthand cat where
-            Export {
-                _module = module',
-                _functionName = functionName'
-            } = fromMaybe (
-                Export {
-                    _module = "Main",
-                    _functionName = "main",
-                    _functionType = "IO ()"
-                }
-                ) (export cat)
-
 instance Bracket HS where
     bracket hs@(HS s) = HS $ s {
         _shorthand = "(" <> renderStatementShorthand hs <> ")",

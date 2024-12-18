@@ -8,7 +8,7 @@ import Data.Aeson                            qualified as A
 -- import Data.ByteString.Char8      qualified as BS
 import Data.ByteString.Lazy.Char8            qualified as BSL
 import Data.Code.Haskell
-import Data.Code.JS
+-- import Data.Code.JS
 -- import Data.Code.PHP
 -- import Data.Code.TS
 import Data.Function.AskName
@@ -103,6 +103,7 @@ main = do
         BSL.writeFile "data/examples/programs/Shorthand/haskell/greetTuple.hs" $ renderFileShorthand (greetTuple :: HS (String, Int) String)
         BSL.writeFile "data/examples/programs/Shorthand/haskell/reverseInput.hs" $ renderFileShorthand (revInputProgram :: HS () ())
 
+    {-
     do
         createDirectoryIfMissing True "data/examples/statements/Longhand/js"
 
@@ -149,7 +150,7 @@ main = do
         BSL.writeFile "data/examples/programs/Shorthand/js/greetTuple.js" $ renderFileShorthand (greetTuple :: JS (String, Int) String)
         BSL.writeFile "data/examples/programs/Shorthand/js/reverseInput.js" $ renderFileShorthand (revInputProgram :: JS () ())
 
-    {-}
+    
     do
         createDirectoryIfMissing True "data/examples/statements/Longhand/ts"
 
