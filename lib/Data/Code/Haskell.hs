@@ -15,16 +15,16 @@ import Control.Category.Cartesian
 import Control.Category.Choice
 import Control.Category.Cocartesian
 import Control.Category.Execute.Haskell.Longhand
--- import Control.Category.Execute.Haskell.Imports
+import Control.Category.Execute.Haskell.Imports
 import Control.Category.Execute.Haskell.Shorthand
--- import Control.Category.Execute.Stdio.Longhand
--- import Control.Category.Execute.Stdio.Imports
--- import Control.Category.Execute.Stdio.Shorthand
+import Control.Category.Execute.Stdio.Longhand
+import Control.Category.Execute.Stdio.Imports
+import Control.Category.Execute.Stdio.Shorthand
 import Control.Category.Numeric
 import Control.Category.Primitive.Bool
 import Control.Category.Primitive.Console
 import Control.Category.Primitive.Extra
--- import Control.Category.Primitive.File
+import Control.Category.Primitive.File
 import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
@@ -34,6 +34,7 @@ import Data.ByteString.Lazy.Char8                       qualified as BSL
 import Data.Code.Generic
 -- import Data.Map                                         (Map)
 -- import Data.Map                                         qualified as M
+-- import Data.MapSet
 -- import Data.Maybe
 import Data.Render.File.Longhand
 import Data.Render.File.Imports
@@ -71,11 +72,11 @@ toFileImports ∷ HS a b → [BSL.ByteString]
 toFileImports _ = [] --  (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")") <$> M.toList (unImports $ imports hs)
 
 toExternalFileImports ∷ HS a b → [BSL.ByteString]
-toExternalFileImports _ = []  --  (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")") <$> M.toList (unImports $ filterExternal (imports hs))
+toExternalFileImports _ = [] -- (\(moduleName, fns) -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (S.toList fns) <> ")") <$> getMapSet (externalImports hs)
 
 {-}
-renderLonghand ∷ HS a b → [BSL.ByteString]
-renderLonghand hs = M.toList (unImports $ imports hs) >>= (fmap (\(fnName', mDefinition) -> case mDefinition of
+renderDependencies ∷ HS a b → [BSL.ByteString]
+renderDependencies hs = M.toList (unImports $ imports hs) >>= (fmap (\(fnName', mDefinition) -> case mDefinition of
     Nothing          -> ""
     Just longhand' -> "\n" <> fnName' <> " = " <> longhand' -- TODO types
     ) . S.toList . snd)
@@ -90,24 +91,33 @@ instance RenderStatementShorthand (HS a b) where
 
 instance {- (Typeable a, Typeable b) ⇒ -} RenderFileShorthand (HS a b) where
     renderFileShorthand cat =
-        "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
-        {- BSL.unlines (renderLonghand cat) <> -}
-        "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
+        -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
+        "\nmodule Main (main) where\n\n" <>
+        {- BSL.unlines (renderDependencies cat) <> -}
+        -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\nmain :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        -- "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
+        "\nmain = " <> renderStatementShorthand cat
 
 instance {- (Typeable a, Typeable b) ⇒ -} RenderFileLonghand (HS a b) where
     renderFileLonghand cat =
-        "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
+        -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
+        "\nmodule Main (main)  where\n\n" <>
         -- BSL.unlines (toExternalFileImports cat) <>
-        "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\n" <> functionName cat <> " = " <> renderStatementLonghand cat
+        -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\nmain :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        -- "\n" <> functionName cat <> " = " <> renderStatementLonghand cat
+        "\nmain = " <> renderStatementLonghand cat
 
 instance {- (Typeable a, Typeable b) ⇒ -}  RenderFileImports (HS a b) where
     renderFileImports cat =
-        "\nmodule " <> module' cat <> " (" <> functionName cat <> ") where\n\n" <>
+        -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ") where\n\n" <>
+        "\nmodule Main (main) where\n\n" <>
         -- BSL.unlines (toFileImports cat) <>
-        "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
+        -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\nmain :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        -- "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
+        "\nmain = " <> renderStatementShorthand cat
 
 {-}
 instance Bracket HS where
@@ -450,11 +460,36 @@ instance PrimitiveExtra HS where
         }
     }
 
-{-}
+
 instance PrimitiveFile HS where
-    readFile' = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.File", _functionName = "readFile'", _functionType = "" })) "readFile'" "(Kleisli $ liftIO . readFile)"
-    writeFile' = mkCode [("Control.Arrow", [("Kleisli(..)", Nothing)])] (Just (Export { _module = "Control.Category.Primitive.File", _functionName = "writeFile'", _functionType = "" })) "writeFile'" "(Kleisli $ liftIO . uncurry writeFile)"
--}
+    readFile' = HS $ Code {
+        _externalImports = [
+            ("Control.Arrow", ["Kleisli(..)"])
+        ],
+        _internalImports = [],
+        _module = "Control.Category.Primitive.File",
+        _function = Function {
+            _functionName = "readFile'",
+            _functionTypeFrom = "String",
+            _functionTypeTo = "IO String",
+            _shorthand = "(Kleisli $ liftIO . readFile)",
+            _longhand = "(Kleisli $ liftIO . readFile)"
+        }
+    }
+    writeFile' = HS $ Code {
+        _externalImports = [
+            ("Control.Arrow", ["Kleisli(..)"])
+        ],
+        _internalImports = [],
+        _module = "Control.Category.Primitive.File",
+        _function = Function {
+            _functionName = "writeFile'",
+            _functionTypeFrom = "(String, String)",
+            _functionTypeTo = "IO ()",
+            _shorthand = "(Kleisli $ liftIO . uncurry writeFile)",
+            _longhand = "(Kleisli $ liftIO . uncurry writeFile)"
+        }
+    }
 
 instance PrimitiveString HS where
     reverseString = HS $ Code {
@@ -588,17 +623,16 @@ instance ExecuteHaskellShorthand HS where
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
 
-{-
 instance ExecuteHaskellImports HS where
     executeGHCiImports cat param = do
         let params ∷ [String]
             params = [
                 "-e", ":set -ilibrary",
-                "-e", ":set -XGHC2024"
+                "-e", ":set -XGHC2024",
                 -- "-e", "import Prelude hiding ((.), id)"
-                ] <>
-                toCLIImports cat <>
-                [
+                -- ] <>
+                -- toCLIImports cat <>
+                -- [
                 "-e", "(" <> BSL.unpack (renderStatementShorthand cat) <> ") (" <> show param <> ")"
                 ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
@@ -632,11 +666,11 @@ instance ExecuteStdioImports HS where
         let params ∷ [String]
             params = [
                 "-e", ":cd library",
-                "-e", ":set -XGHC2024"
+                "-e", ":set -XGHC2024",
                 -- "-e", "import Prelude hiding ((.), id)"
-                ] <>
-                toCLIImports cat <>
-                [
+                -- ] <>
+                -- toCLIImports cat <>
+                -- [
                 "-e", BSL.unpack (renderStatementShorthand cat) <> " ()"
                 ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
@@ -662,4 +696,3 @@ instance ExecuteStdioShorthand HS where
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
 
 -- @ TODO JSON
--}

@@ -26,8 +26,8 @@ import Test.QuickCheck.Monadic
 spec ∷ Spec
 spec = describe "HS" $ do
     describe "with Longhand" $ do
-        describe "bracket" . it "is idempotent" $ (do
-                executeGHCiLonghand (bracket id :: HS String String) "1" `shouldReturn` "1")
+        -- describe "bracket" . it "is idempotent" $ (do
+        --         executeGHCiLonghand (bracket id :: HS String String) "1" `shouldReturn` "1")
         describe "category" $ do
             it "composes" $
                 executeGHCiLonghand (id :: HS String String) "1" `shouldReturn` "1"
@@ -143,9 +143,9 @@ spec = describe "HS" $ do
                 executeGHCiLonghand (id :: HS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
             it "returns a Just" $
                 executeGHCiLonghand (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
-    xdescribe "with imports" $ do
-        describe "bracket" . it "is idempotent" $ (do
-                executeGHCiImports (bracket id :: HS String String) "1" `shouldReturn` "1")
+    describe "with imports" $ do
+        -- describe "bracket" . it "is idempotent" $ (do
+        --         executeGHCiImports (bracket id :: HS String String) "1" `shouldReturn` "1")
         describe "category" $ do
             it "composes" $
                 executeGHCiImports (id :: HS String String) "1" `shouldReturn` "1"
