@@ -90,34 +90,34 @@ instance RenderStatementShorthand (HS a b) where
     renderStatementShorthand = shorthand
 
 instance {- (Typeable a, Typeable b) ⇒ -} RenderFileShorthand (HS a b) where
-    renderFileShorthand cat =
+    renderFileShorthand newModule' newFunctionName cat =
         -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
-        "\nmodule Main (main) where\n\n" <>
+        "\nmodule " <> newModule' <> " (" <> newFunctionName <> ") where\n\n" <>
         {- BSL.unlines (renderDependencies cat) <> -}
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\nmain :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\n" <> newFunctionName <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         -- "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
-        "\nmain = " <> renderStatementShorthand cat
+        "\n" <> newFunctionName <> " = " <> renderStatementShorthand cat
 
 instance {- (Typeable a, Typeable b) ⇒ -} RenderFileLonghand (HS a b) where
-    renderFileLonghand cat =
+    renderFileLonghand newModule' newFunctionName cat =
         -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
-        "\nmodule Main (main)  where\n\n" <>
+        "\nmodule " <> newModule' <> " (" <> newFunctionName <> ")  where\n\n" <>
         -- BSL.unlines (toExternalFileImports cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\nmain :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\n" <> newFunctionName <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         -- "\n" <> functionName cat <> " = " <> renderStatementLonghand cat
-        "\nmain = " <> renderStatementLonghand cat
+        "\n" <> newFunctionName <> " = " <> renderStatementLonghand cat
 
 instance {- (Typeable a, Typeable b) ⇒ -}  RenderFileImports (HS a b) where
-    renderFileImports cat =
+    renderFileImports newModule' newFunctionName cat =
         -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ") where\n\n" <>
-        "\nmodule Main (main) where\n\n" <>
+        "\nmodule " <> newModule' <> " (" <> newFunctionName <> ") where\n\n" <>
         -- BSL.unlines (toFileImports cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\nmain :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\n" <> newFunctionName <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         -- "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
-        "\nmain = " <> renderStatementShorthand cat
+        "\n" <> newFunctionName <> " = " <> renderStatementShorthand cat
 
 {-}
 instance Bracket HS where

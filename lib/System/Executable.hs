@@ -109,7 +109,7 @@ compileHS fileContents = do
             ]
     (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghc" params "")
     case exitCode of
-        ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
+        ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghc with params: " <> unwords params <> " Output: " <> stderr
         ExitSuccess -> case readEither stdout of
             Left err -> liftIO . throwIO . userError $ "Can't parse response: " <> err
             Right ret -> pure ret

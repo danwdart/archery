@@ -1,8 +1,9 @@
-{-# LANGUAGE Safe #-}
+{-# LANGUAGE Unsafe #-}
 
 module Data.Render.File.Longhand where
 
 import Data.ByteString.Lazy.Char8 qualified as BSL
+import Data.Code.Generic
 
 class RenderFileLonghand a where
-    renderFileLonghand :: a → BSL.ByteString
+    renderFileLonghand :: Module → FunctionName → a → BSL.ByteString

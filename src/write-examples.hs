@@ -1,4 +1,5 @@
 {-# LANGUAGE Unsafe #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-unsafe -Wwarn #-}
 
 module Main (main) where
@@ -78,30 +79,30 @@ main = do
 
         createDirectoryIfMissing True "data/examples/programs/Imports/haskell"
 
-        BSL.writeFile "data/examples/programs/Imports/haskell/askName.hs" $ renderFileImports (askName :: HS () ())
-        BSL.writeFile "data/examples/programs/Imports/haskell/collatzStep.hs" $ renderFileImports (collatzStep :: HS Int Int)
-        BSL.writeFile "data/examples/programs/Imports/haskell/helloWorld.hs" $ renderFileImports (helloWorld :: HS () ())
-        BSL.writeFile "data/examples/programs/Imports/haskell/isPalindrome.hs" $ renderFileImports (isPalindrome :: HS String Bool)
-        BSL.writeFile "data/examples/programs/Imports/haskell/greetTuple.hs" $ renderFileImports (greetTuple :: HS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Imports/haskell/reverseInput.hs" $ renderFileImports (revInputProgram :: HS () ())
+        BSL.writeFile "data/examples/programs/Imports/haskell/askName.hs" $ renderFileImports "Main" "main" (askName :: HS () ())
+        BSL.writeFile "data/examples/programs/Imports/haskell/CollatzStep.hs" $ renderFileImports "CollatzStep" "collatzStep" (collatzStep :: HS Int Int)
+        BSL.writeFile "data/examples/programs/Imports/haskell/HelloWorld.hs" $ renderFileImports "Main" "main" (helloWorld :: HS () ())
+        BSL.writeFile "data/examples/programs/Imports/haskell/IsPalindrome.hs" $ renderFileImports "IsPalindrome" "isPalindrome" (isPalindrome :: HS String Bool)
+        BSL.writeFile "data/examples/programs/Imports/haskell/GreetTuple.hs" $ renderFileImports "GreetTuple" "greetTuple" (greetTuple :: HS (String, Int) String)
+        BSL.writeFile "data/examples/programs/Imports/haskell/reverseInput.hs" $ renderFileImports "Main" "main" (revInputProgram :: HS () ())
 
         createDirectoryIfMissing True "data/examples/programs/Longhand/haskell"
 
-        BSL.writeFile "data/examples/programs/Longhand/haskell/askName.hs" $ renderFileLonghand (askName :: HS () ())
-        BSL.writeFile "data/examples/programs/Longhand/haskell/collatzStep.hs" $ renderFileLonghand (collatzStep :: HS Int Int)
-        BSL.writeFile "data/examples/programs/Longhand/haskell/helloWorld.hs" $ renderFileLonghand (helloWorld :: HS () ())
-        BSL.writeFile "data/examples/programs/Longhand/haskell/isPalindrome.hs" $ renderFileLonghand (isPalindrome :: HS String Bool)
-        BSL.writeFile "data/examples/programs/Longhand/haskell/greetTuple.hs" $ renderFileLonghand (greetTuple :: HS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Longhand/haskell/reverseInput.hs" $ renderFileLonghand (revInputProgram :: HS () ())
+        BSL.writeFile "data/examples/programs/Longhand/haskell/askName.hs" $ renderFileLonghand "Main" "main" (askName :: HS () ())
+        BSL.writeFile "data/examples/programs/Longhand/haskell/CollatzStep.hs" $ renderFileLonghand "CollatzStep" "collatzStep" (collatzStep :: HS Int Int)
+        BSL.writeFile "data/examples/programs/Longhand/haskell/helloWorld.hs" $ renderFileLonghand "Main" "main" (helloWorld :: HS () ())
+        BSL.writeFile "data/examples/programs/Longhand/haskell/IsPalindrome.hs" $ renderFileLonghand "IsPalindrome" "isPalindrome" (isPalindrome :: HS String Bool)
+        BSL.writeFile "data/examples/programs/Longhand/haskell/GreetTuple.hs" $ renderFileLonghand "GreetTuple" "greetTuple" (greetTuple :: HS (String, Int) String)
+        BSL.writeFile "data/examples/programs/Longhand/haskell/reverseInput.hs" $ renderFileLonghand "Main" "main" (revInputProgram :: HS () ())
 
         createDirectoryIfMissing True "data/examples/programs/Shorthand/haskell"
 
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/askName.hs" $ renderFileShorthand (askName :: HS () ())
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/collatzStep.hs" $ renderFileShorthand (collatzStep :: HS Int Int)
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/helloWorld.hs" $ renderFileShorthand (helloWorld :: HS () ())
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/isPalindrome.hs" $ renderFileShorthand (isPalindrome :: HS String Bool)
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/greetTuple.hs" $ renderFileShorthand (greetTuple :: HS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/reverseInput.hs" $ renderFileShorthand (revInputProgram :: HS () ())
+        BSL.writeFile "data/examples/programs/Shorthand/haskell/askName.hs" $ renderFileShorthand "Main" "main" (askName :: HS () ())
+        BSL.writeFile "data/examples/programs/Shorthand/haskell/CollatzStep.hs" $ renderFileShorthand "CollatzStep" "collatzStep" (collatzStep :: HS Int Int)
+        BSL.writeFile "data/examples/programs/Shorthand/haskell/helloWorld.hs" $ renderFileShorthand "Main" "main" (helloWorld :: HS () ())
+        BSL.writeFile "data/examples/programs/Shorthand/haskell/IsPalindrome.hs" $ renderFileShorthand "IsPalindrome" "isPalindrome" (isPalindrome :: HS String Bool)
+        BSL.writeFile "data/examples/programs/Shorthand/haskell/GreetTuple.hs" $ renderFileShorthand "GreetTuple" "greetTuple" (greetTuple :: HS (String, Int) String)
+        BSL.writeFile "data/examples/programs/Shorthand/haskell/reverseInput.hs" $ renderFileShorthand "Main" "main" (revInputProgram :: HS () ())
 
     {-
     do
