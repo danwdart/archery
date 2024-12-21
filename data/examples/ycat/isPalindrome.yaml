@@ -1,8 +1,0 @@
-- Compose
-- - - Lift
-    - - Equal
-  - - Compose
-    - - - First
-        - - - Lift
-            - - ReverseString
-      - Copy

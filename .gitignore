@@ -12,7 +12,7 @@ hie.yaml
 jwt.secret
 .hie
 stan.html
-data/examples
+data/examples/
 library
 phpbits
 jsbits
