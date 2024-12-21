@@ -1,4 +1,5 @@
 {-# LANGUAGE Unsafe #-}
+{-# OPTIONS_GHC -Wno-unsafe -Wno-safe #-}
 
 module Data.Render.File.Shorthand where
 

@@ -46,7 +46,7 @@ import Data.Render.Statement.Shorthand
 -- import Data.String
 -- import Data.Typeable
 import GHC.IO.Exception
--- import GHC.IsList
+import GHC.IsList
 import Prelude                                          hiding (id, (.))
 import System.Process
 import Text.Read
@@ -61,12 +61,21 @@ instance HasCode HS a b where
 instance MkCode HS a b where
     mkCode ei ii m f = HS $ mkCode ei ii m f
 
-{-}
-toCLIImports ∷ HS a b → [String]
-toCLIImports hs = M.toList (unImports . imports $ hs) >>= \(moduleName, _imports') -> [{-}"-e", ":l", BSL.unpack moduleName,-}"-e", BSL.unpack $ "import " <> moduleName {-<> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")\""-}]
--}
 toExternalCLIImports ∷ HS a b → [String]
-toExternalCLIImports _ = [] --  GHC.IsList.toList (externalImports hs) >>= \(moduleName, _imports' ) -> [{-}"-e", ":l", BSL.unpack moduleName,-} "-e", BSL.unpack $ "import " <> moduleName {-<> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")\""-}]
+toExternalCLIImports hs = GHC.IsList.toList (externalImports hs) >>=
+    \(moduleName', _) -> [{-}"-e", ":l", BSL.unpack moduleName,-} "-e", BSL.unpack $ "import " <> moduleName' {-<> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")\""-}]
+
+toInternalCLIImports :: HS a b -> [String]
+toInternalCLIImports hs = GHC.IsList.toList (internalImports hs) >>=
+    \(moduleName', _) -> ["-e", BSL.unpack $ "import " <> moduleName']
+
+toShorthandCLIDefinitions :: HS a b -> [String]
+toShorthandCLIDefinitions hs = GHC.IsList.toList (internalImports hs) >>=
+    \(_, functions) -> GHC.IsList.toList functions >>= 
+    \function' -> [
+        "-e", BSL.unpack $ functionName function' <> " :: " <> functionTypeFrom function' <> " -> " <> functionTypeTo function',
+        "-e", BSL.unpack $ functionName function' <> " = " <> longhand function'
+        ]
 
 toFileImports ∷ HS a b → [BSL.ByteString]
 toFileImports _ = [] --  (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")") <$> M.toList (unImports $ imports hs)
@@ -161,19 +170,41 @@ instance Category HS where
 instance Cartesian HS where
     copy = HS $ Code {
         _externalImports = [],
-        _internalImports = [],
+        _internalImports = [
+            ("Control.Category.Cartesian", [
+                Function {
+                    _functionName = "copy",
+                    _functionTypeFrom = "a",
+                    _functionTypeTo = "(a, a)",
+                    _shorthand = "copy",
+                    _longhand = "\\x -> (x, x)"
+                }
+                ]
+            )
+        ],
         _module = "Control.Category.Cartesian",
         _function = Function {
             _functionName = "copy",
             _functionTypeFrom = "a",
             _functionTypeTo = "(a, a)",
-            _shorthand = "\\x -> (x, x)",
+            _shorthand = "copy",
             _longhand = "\\x -> (x, x)"
         }
     }
     consume = HS $ Code {
         _externalImports = [],
-        _internalImports = [],
+        _internalImports = [
+            ("Control.Category.Cartesian", [
+                Function {
+                    _functionName = "consume",
+                    _functionTypeFrom = "a",
+                    _functionTypeTo = "()",
+                    _shorthand = "consume",
+                    _longhand = "\\x -> ()"
+                }
+                ]
+            )
+        ],
         _module = "Control.Category.Cartesian",
         _function = Function {
             _functionName = "consume",
@@ -185,10 +216,21 @@ instance Cartesian HS where
     }
     fst' = HS $ Code {
         _externalImports = [],
-        _internalImports = [],
+        _internalImports = [
+            ("Control.Category.Cartesian", [
+                Function {
+                    _functionName = "fst'",
+                    _functionTypeFrom = "(a, b)",
+                    _functionTypeTo = "a",
+                    _shorthand = "fst",
+                    _longhand = "\\(a, b) -> a"
+                }
+                ]
+            )
+        ],
         _module = "Control.Category.Cartesian",
         _function = Function {
-            _functionName = "fst",
+            _functionName = "fst'",
             _functionTypeFrom = "(a, b)",
             _functionTypeTo = "a",
             _shorthand = "fst",
@@ -197,10 +239,21 @@ instance Cartesian HS where
     }
     snd' = HS $ Code {
         _externalImports = [],
-        _internalImports = [],
+        _internalImports = [
+            ("Control.Category.Cartesian", [
+                Function {
+                    _functionName = "snd'",
+                    _functionTypeFrom = "(a, b)",
+                    _functionTypeTo = "a",
+                    _shorthand = "snd",
+                    _longhand = "\\(a, b) -> b"
+                }
+                ]
+            )
+        ],
         _module = "Control.Category.Cartesian",
         _function = Function {
-            _functionName = "snd",
+            _functionName = "snd'",
             _functionTypeFrom = "(a, b)",
             _functionTypeTo = "a",
             _shorthand = "snd",
@@ -211,31 +264,64 @@ instance Cartesian HS where
 instance Cocartesian HS where
     injectL = HS $ Code {
         _externalImports = [],
-        _internalImports = [],
+        _internalImports = [
+            ("Control.Category.Cocartesian", [
+                Function {
+                    _functionName = "injectL",
+                    _functionTypeFrom = "a",
+                    _functionTypeTo = "Either a b",
+                    _shorthand = "injectL",
+                    _longhand = "\\a -> Left a"
+                }
+                ]
+            )
+        ],
         _module = "Control.Category.Cocartesian",
         _function = Function {
             _functionName = "injectL",
             _functionTypeFrom = "a",
             _functionTypeTo = "Either a b",
-            _shorthand = "Left",
+            _shorthand = "injectL",
             _longhand = "\\a -> Left a"
         }
     }
     injectR = HS $ Code {
         _externalImports = [],
-        _internalImports = [],
+        _internalImports = [
+            ("Control.Category.Cocartesian", [
+                Function {
+                    _functionName = "injectR",
+                    _functionTypeFrom = "b",
+                    _functionTypeTo = "Either a b",
+                    _shorthand = "injectR",
+                    _longhand = "\\b -> Right b"
+                }
+                ]
+            )
+        ],
         _module = "Control.Category.Cocartesian",
         _function = Function {
             _functionName = "injectR",
             _functionTypeFrom = "b",
             _functionTypeTo = "Either a b",
-            _shorthand = "Right",
+            _shorthand = "injectR",
             _longhand = "\\b -> Right b"
         }
     }
     unify = HS $ Code {
         _externalImports = [],
-        _internalImports = [],
+        _internalImports = [
+            ("Control.Category.Cocartesian", [
+                Function {
+                    _functionName = "unify",
+                    _functionTypeFrom = "Either a a",
+                    _functionTypeTo = "a",
+                    _shorthand = "unify",
+                    _longhand = "\\case { Left a -> a; Right a -> a; }"
+                }
+                ]
+            )
+        ],
         _module = "Control.Category.Cocartesian",
         _function = Function {
             _functionName = "unify",
@@ -247,7 +333,18 @@ instance Cocartesian HS where
     }
     tag = HS $ Code {
         _externalImports = [],
-        _internalImports = [],
+        _internalImports = [
+            ("Control.Category.Cocartesian", [
+                Function {
+                    _functionName = "unify",
+                    _functionTypeFrom = "(Bool, a)",
+                    _functionTypeTo = "Either a a",
+                    _shorthand = "tag",
+                    _longhand = "\\case { (False, a) -> Left a; (True, a) -> Right a; }"
+                }
+                ]
+            )
+        ],
         _module = "Control.Category.Cocartesian",
         _function = Function {
             _functionName = "unify",
@@ -273,6 +370,7 @@ instance Strong HS where
         _module = "Control.Category.Strong",
         _function = Function {
             _functionName = "first'",
+            -- TODO!
             _functionTypeFrom = "(a, x)",
             _functionTypeTo = "(b, x)",
             _shorthand = "first (" <> shorthand f <> ")",
@@ -296,27 +394,31 @@ instance Strong HS where
 
 instance Choice HS where
     left' f = HS $ Code {
-        _externalImports = [],
+        _externalImports = [
+            ("Data.Bifunctor", ["first"])
+        ],
         _internalImports = [],
         _module = "Control.Category.Choice",
         _function = Function {
             _functionName = "left'",
-            _functionTypeFrom = "a",
-            _functionTypeTo = "Either a x",
-            _shorthand = "Left (" <> shorthand f <> ")",
-            _longhand = "Left (" <> longhand f <> ")"
+            _functionTypeFrom = "Either a x",
+            _functionTypeTo = "Either b x",
+            _shorthand = "left' (" <> shorthand f <> ")",
+            _longhand = "first (" <> longhand f <> ")"
         }
     }
     right' f = HS $ Code {
-        _externalImports = [],
+        _externalImports = [
+            ("Data.Bifunctor", ["second"])
+        ],
         _internalImports = [],
         _module = "Control.Category.Choice",
         _function = Function {
             _functionName = "right'",
-            _functionTypeFrom = "a",
-            _functionTypeTo = "Either x a",
-            _shorthand = "Right (" <> shorthand f <> ")",
-            _longhand = "Right (" <> longhand f <> ")"
+            _functionTypeFrom = "Either x a",
+            _functionTypeTo = "Either x b",
+            _shorthand = "right' (" <> shorthand f <> ")",
+            _longhand = "second (" <> longhand f <> ")"
         }
     }
 
@@ -385,7 +487,7 @@ instance PrimitiveBool HS where
         _module = "Control.Category.Primitive.Bool",
         _function = Function {
             _functionName = "eq",
-            _functionTypeFrom = "(a, a)",
+            _functionTypeFrom = "Eq a => (a, a)",
             _functionTypeTo = "Bool",
             _shorthand = "(arr . uncurry $ (==))",
             _longhand = "(arr . uncurry $ (==))"
@@ -594,8 +696,8 @@ instance ExecuteHaskellLonghand HS where
         let params ∷ [String]
             params = [
                 -- "-e", ":set -ilibrary",
-                "-e", ":set -XGHC2024"
-                -- "-e", "import Prelude hiding ((.), id)"
+                "-e", ":set -XGHC2024",
+                "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toExternalCLIImports cat <>
                 [
@@ -615,6 +717,7 @@ instance ExecuteHaskellShorthand HS where
                 -- "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toExternalCLIImports cat <>
+                toShorthandCLIDefinitions cat <>
                 [
                 "-e", "(" <> BSL.unpack (renderStatementShorthand cat) <> ") (" <> show param <> ")"
                 ]
@@ -631,7 +734,8 @@ instance ExecuteHaskellImports HS where
                 "-e", ":set -XGHC2024",
                 -- "-e", "import Prelude hiding ((.), id)"
                 -- ] <>
-                -- toCLIImports cat <>
+                toExternalCLIImports cat <>
+                toInternalCLIImports cat <>
                 -- [
                 "-e", "(" <> BSL.unpack (renderStatementShorthand cat) <> ") (" <> show param <> ")"
                 ]
