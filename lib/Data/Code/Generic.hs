@@ -44,12 +44,8 @@ internalImports = [
         longhand = "(\(x, y) -> x <> y)"
     )
 ]
-module = Main
-functionName = printStrings
-functionTypeFrom = (String, String)
-functionTypeTo = ()
-functionShorthand = putStrLn . concatStrings
-functionLonghand = putStrLn . (\(x, y) -> x <> y)
+shorthand = putStrLn . concatStrings
+longhand = putStrLn . (\(x, y) -> x <> y)
 -}
 
 type FunctionName = BSL.ByteString
@@ -58,17 +54,19 @@ type FunctionTypeFrom = BSL.ByteString
 
 type FunctionTypeTo = BSL.ByteString
 
--- | A longhand of an individual function to be imported.
--- e.g. (\x y z -> x (y z))
-type Definition = BSL.ByteString
-
 -- | Includes the function name to define the full (composed) function.
 -- e.g. a(b(c))
 type Shorthand = BSL.ByteString
 
+-- For functions
+type ShorthandDefinition = BSL.ByteString
+
 -- | Includes the longhand to define the full (composed) function.
 -- e.g. (\x y z -> x (y z))(+1)(+ 1)(2)
 type Longhand = BSL.ByteString
+
+-- For functions
+type LonghandDefinition = BSL.ByteString
 
 class HasExternalImports a where
     externalImports :: a → ExternalImports
@@ -97,13 +95,19 @@ class HasShorthand a where
 class HasLonghand a where
     longhand :: a → Longhand
 
+class HasShorthandDefinition a where
+    functionShorthand :: a → ShorthandDefinition
+
+class HasLonghandDefinition a where
+    functionLonghand :: a → LonghandDefinition
+
 -- | A single function to be imported.
 data Function = Function {
     _functionName     :: FunctionName,
     _functionTypeFrom :: FunctionTypeFrom,
     _functionTypeTo   :: FunctionTypeTo,
-    _shorthand        :: Shorthand,
-    _longhand         :: Longhand
+    _functionShorthand        :: ShorthandDefinition,
+    _functionLonghand         :: LonghandDefinition
 } deriving (Eq, Show, Ord)
 
 instance HasFunctionName Function where
@@ -115,11 +119,11 @@ instance HasFunctionTypeFrom Function where
 instance HasFunctionTypeTo Function where
     functionTypeTo = _functionTypeTo
 
-instance HasShorthand Function where
-    shorthand = _shorthand
+instance HasShorthandDefinition Function where
+    functionShorthand = _functionShorthand
 
-instance HasLonghand Function where
-    longhand = _longhand
+instance HasLonghandDefinition Function where
+    functionLonghand = _functionLonghand
 
 instance HasFunction Function where
     function = id
@@ -154,9 +158,9 @@ data Code a b = Code {
     -- @TODO Figure out whether we should be using Module here or in function
     -- it depends because we need to know whether to map Module to Set of Functions, or just have Set of Functions,
     -- when defining internal imports.
-    _module          :: Module,
-    -- | The name of the current function.
-    _function        :: Function
+    -- TODO
+    _shorthand :: Shorthand,
+    _longhand :: Longhand
 } deriving (Eq, Show)
 
 -- instance IsString (Code a b) where
@@ -165,15 +169,6 @@ data Code a b = Code {
 class HasCode f a b where
     code :: f a b → Code a b
     -- wrap :: Code a b -> f a b
-
-class MkCode f a b where
-    mkCode :: ExternalImports → InternalImports → Module → Function → f a b
-
--- instance MkCode f a b ⇒ IsString (f a b) where
---     fromString s = mkCode [] Nothing (BSL.pack s) (BSL.pack s)
-
-instance MkCode Code a b where
-    mkCode = Code
 
 instance HasCode Code a b where
     code :: Code a b → Code a b
@@ -185,14 +180,14 @@ instance HasCode f a b ⇒ HasExternalImports (f a b) where
 instance HasCode f a b ⇒ HasInternalImports (f a b) where
     internalImports = _internalImports . code
 
-instance HasCode f a b ⇒ HasModule (f a b) where
-    module' = _module . code
-
 -- instance HasCode f a b ⇒ HasExport (f a b) where
 --     export = export . code
 
-instance HasCode f a b ⇒ HasFunction (f a b) where
-    function = _function . code
+instance HasCode f a b => HasShorthand (f a b) where
+    shorthand = shorthand . code
+
+instance HasCode f a b => HasLonghand (f a b) where
+    longhand = longhand . code
 
 instance HasFunction (f a b) ⇒ HasFunctionName (f a b) where
     functionName = functionName . function
@@ -203,11 +198,11 @@ instance HasFunction (f a b) ⇒ HasFunctionTypeFrom (f a b) where
 instance HasFunction (f a b) ⇒ HasFunctionTypeTo (f a b) where
     functionTypeTo = functionTypeTo . function
 
-instance HasFunction (f a b) ⇒ HasShorthand (f a b) where
-    shorthand = shorthand . function
+instance HasFunction (f a b) ⇒ HasShorthandDefinition (f a b) where
+    functionShorthand = functionShorthand . function
 
-instance HasFunction (f a b) ⇒ HasLonghand (f a b) where
-    longhand = longhand . function
+instance HasFunction (f a b) ⇒ HasLonghandDefinition (f a b) where
+    functionLonghand = functionLonghand . function
 
 {-
 toImports ∷ (HasDefinition c) ⇒ c → Imports

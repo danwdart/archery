@@ -7,4 +7,4 @@ import Data.ByteString.Lazy.Char8 qualified as BSL
 import Data.Code.Generic
 
 class RenderFileLonghand a where
-    renderFileLonghand :: Module → FunctionName → a → BSL.ByteString
+    renderFileLonghand :: Module → FunctionName → FunctionTypeFrom -> FunctionTypeTo -> a → BSL.ByteString
