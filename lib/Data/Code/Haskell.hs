@@ -528,7 +528,8 @@ instance PrimitiveFile HS where
     readFile' = HS $ Code {
         _externalImports = [
             ("Control.Arrow", ["Kleisli(..)"]),
-            ("Control.Category", ["(.)"])
+            ("Control.Category", ["(.)"]),
+            ("Control.Monad.IO.Class", ["liftIO"])
         ],
         _internalImports = [
             ("Control.Category.Primitive.File", [
@@ -548,7 +549,8 @@ instance PrimitiveFile HS where
     writeFile' = HS $ Code {
         _externalImports = [
             ("Control.Arrow", ["Kleisli(..)"]),
-            ("Control.Category", ["(.)"])
+            ("Control.Category", ["(.)"]),
+            ("Control.Monad.IO.Class", ["liftIO"])
         ],
         _internalImports = [
             ("Control.Category.Primitive.File", [
