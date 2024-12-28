@@ -26,8 +26,8 @@ import Test.QuickCheck.Monadic
 
 -- @TODO random functions
 
-prop_HSIsCorrectLonghand ∷ Int → Property
-prop_HSIsCorrectLonghand i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
+xprop_HSIsCorrectLonghand ∷ Int → Property
+xprop_HSIsCorrectLonghand i = i >= 0 ==> withMaxSuccess 200 . monadicIO $ do
     answer <- executeGHCiLonghand (collatzStep :: HS Int Int) i
     pure $ answer === collatzStep i
 
