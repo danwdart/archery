@@ -33,8 +33,8 @@ import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8                 qualified as BSL
 import Data.Code.Generic
 -- import Data.Map                                         (Map)
--- import Data.Map                                         qualified as M
--- import Data.MapSet
+import Data.Map                                         qualified as M
+import Data.MapSet
 -- import Data.Maybe
 import Data.Render.File.Imports
 import Data.Render.File.Longhand
@@ -42,7 +42,7 @@ import Data.Render.File.Shorthand
 import Data.Render.Statement.Longhand
 import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
--- import Data.Set                                         qualified as S
+import Data.Set                                         qualified as S
 -- import Data.String
 -- import Data.Typeable
 import GHC.IO.Exception
@@ -75,20 +75,26 @@ toShorthandCLIDefinitions hs = GHC.IsList.toList (internalImports hs) >>=
             functionName function' <> " = " <> functionLonghand function'
         ]
 
-toFileImports ∷ HS a b → [BSL.ByteString]
-toFileImports _ = [] --  (\(moduleName, imports') -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (fst <$> S.toList imports') <> ")") <$> M.toList (unImports $ imports hs)
+toInternalFileImports ∷ HS a b → [BSL.ByteString]
+toInternalFileImports hs = (
+    \(moduleName, functions) ->
+        "import " <> moduleName <> " (" <> BSL.intercalate ", " (functionName <$> S.toList functions) <> ")"
+    ) <$> M.toList (getMapSet (internalImports hs))
+
+toShorthandFileDefinitions ∷ HS a b → [BSL.ByteString]
+toShorthandFileDefinitions hs = foldMap (\(_, functions) ->
+    foldMap (\fn ->
+        [functionName fn <> " :: " <> functionTypeFrom fn <> " -> " <> functionTypeTo fn <> "\n" <>
+            functionName fn <> " = " <> functionLonghand fn <> "\n"]
+    )
+    functions
+    ) $ M.toList (getMapSet (internalImports hs))
 
 toExternalFileImports ∷ HS a b → [BSL.ByteString]
-toExternalFileImports _ = [] -- (\(moduleName, fns) -> "import " <> moduleName <> " (" <> BSL.intercalate ", " (S.toList fns) <> ")") <$> getMapSet (externalImports hs)
-
-{-}
-renderDependencies ∷ HS a b → [BSL.ByteString]
-renderDependencies hs = M.toList (unImports $ imports hs) >>= (fmap (\(fnName', mDefinition) -> case mDefinition of
-    Nothing          -> ""
-    Just longhand' -> "\n" <> fnName' <> " = " <> longhand' -- TODO types
-    ) . S.toList . snd)
-
--}
+toExternalFileImports hs = (
+    \(moduleName, functions) ->
+        "import " <> moduleName <> " (" <> BSL.intercalate ", " (S.toList functions) <> ")"
+    ) <$> M.toList (getMapSet (externalImports hs))
 
 instance RenderStatementLonghand (HS a b) where
     renderStatementLonghand = longhand
@@ -101,7 +107,8 @@ instance {- (Typeable a, Typeable b) ⇒ -} RenderFileShorthand (HS a b) where
     renderFileShorthand newModule' newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
         -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
         "\nmodule " <> newModule' <> " (" <> newFunctionName <> ") where\n\n" <>
-        {- BSL.unlines (renderDependencies cat) <> -}
+        BSL.unlines (toExternalFileImports cat) <>
+        BSL.unlines (toShorthandFileDefinitions cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         "\n" <> newFunctionName <> " :: " <> newFunctionTypeFrom <> " -> " <> newFunctionTypeTo <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         -- "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
@@ -112,7 +119,7 @@ instance {- (Typeable a, Typeable b) ⇒ -} RenderFileLonghand (HS a b) where
     renderFileLonghand newModule' newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
         -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
         "\nmodule " <> newModule' <> " (" <> newFunctionName <> ")  where\n\n" <>
-        -- BSL.unlines (toExternalFileImports cat) <>
+        BSL.unlines (toExternalFileImports cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         "\n" <> newFunctionName <> " :: " <> newFunctionTypeFrom <> " -> " <> newFunctionTypeTo <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         -- "\n" <> functionName cat <> " = " <> renderStatementLonghand cat
@@ -123,7 +130,8 @@ instance {- (Typeable a, Typeable b) ⇒ -}  RenderFileImports (HS a b) where
     renderFileImports newModule' newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
         -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ") where\n\n" <>
         "\nmodule " <> newModule' <> " (" <> newFunctionName <> ") where\n\n" <>
-        -- BSL.unlines (toFileImports cat) <>
+        BSL.unlines (toExternalFileImports cat) <>
+        BSL.unlines (toInternalFileImports cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         "\n" <> newFunctionName <> " :: " <> newFunctionTypeFrom  <> " -> " <> newFunctionTypeTo <> -- <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         -- "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
