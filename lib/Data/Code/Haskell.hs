@@ -326,7 +326,7 @@ instance Choice HS where
         ] <> externalImports f,
         _internalImports = internalImports f,
         _shorthand = "first (" <> shorthand f <> ")",
-        _longhand = "\\case { Left x -> (" <> longhand f <> ") x; Right x -> x; }"
+        _longhand = "\\case { Left x -> Left ((" <> longhand f <> ") x); Right x -> Right x; }"
     }
     right' f = HS $ Code {
         _externalImports = [
@@ -334,7 +334,7 @@ instance Choice HS where
         ] <> externalImports f,
         _internalImports = internalImports f,
         _shorthand = "second (" <> shorthand f <> ")",
-        _longhand = "\\case { Left x -> x; Right x -> (" <> longhand f <> ") x; }"
+        _longhand = "\\case { Left x -> Left x; Right x -> Right ((" <> longhand f <> ") x); }"
     }
 
 instance Symmetric HS where
