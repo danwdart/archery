@@ -677,7 +677,6 @@ instance ExecuteHaskellLonghand HS where
                 [
                 "-e", "(" <> BSL.unpack (renderStatementLonghand cat) <> ") (" <> show param <> ")"
                 ]
-        liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
