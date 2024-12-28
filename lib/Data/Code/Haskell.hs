@@ -418,7 +418,8 @@ instance Symmetric HS where
 instance PrimitiveBool HS where
     eq = HS $ Code {
         _externalImports = [
-            ("Control.Arrow", ["arr"])
+            ("Control.Arrow", ["arr"]),
+            ("Control.Category", ["(.)"])
         ],
         _internalImports = [
             ("Control.Category.Primitive.Bool", [
@@ -518,7 +519,8 @@ instance PrimitiveExtra HS where
 instance PrimitiveFile HS where
     readFile' = HS $ Code {
         _externalImports = [
-            ("Control.Arrow", ["Kleisli(..)"])
+            ("Control.Arrow", ["Kleisli(..)"]),
+            ("Control.Category", ["(.)"])
         ],
         _internalImports = [
             ("Control.Category.Primitive.File", [
@@ -537,7 +539,8 @@ instance PrimitiveFile HS where
     }
     writeFile' = HS $ Code {
         _externalImports = [
-            ("Control.Arrow", ["Kleisli(..)"])
+            ("Control.Arrow", ["Kleisli(..)"]),
+            ("Control.Category", ["(.)"])
         ],
         _internalImports = [
             ("Control.Category.Primitive.File", [
@@ -682,13 +685,13 @@ instance ExecuteHaskellLonghand HS where
                 [
                 "-e", "(" <> BSL.unpack (renderStatementLonghand cat) <> ") (" <> show param <> ")"
                 ]
-        liftIO . putStrLn $ "Params"
-        liftIO . print $ params
+        -- liftIO . putStrLn $ "Params"
+        -- liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
-        liftIO . putStrLn $ "Stdout"
-        liftIO . putStrLn $ stdout
-        liftIO . putStrLn $ "Stderr"
-        liftIO . putStrLn $ stderr
+        -- liftIO . putStrLn $ "Stdout"
+        -- liftIO . putStrLn $ stdout
+        -- liftIO . putStrLn $ "Stderr"
+        -- liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
@@ -698,21 +701,21 @@ instance ExecuteHaskellShorthand HS where
         let params ∷ [String]
             params = [
                 "-e", ":set -ilibrary",
-                "-e", ":set -XGHC2024"
-                -- "-e", "import Prelude hiding ((.), id)"
+                "-e", ":set -XGHC2024",
+                "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toExternalCLIImports cat <>
                 toShorthandCLIDefinitions cat <>
                 [
                 "-e", "(" <> BSL.unpack (renderStatementShorthand cat) <> ") (" <> show param <> ")"
                 ]
-        liftIO . putStrLn $ "Params"
-        liftIO . print $ params
+        -- liftIO . putStrLn $ "Params"
+        -- liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
-        liftIO . putStrLn $ "Stdout"
-        liftIO . putStrLn $ stdout
-        liftIO . putStrLn $ "Stderr"
-        liftIO . putStrLn $ stderr
+        -- liftIO . putStrLn $ "Stdout"
+        -- liftIO . putStrLn $ stdout
+        -- liftIO . putStrLn $ "Stderr"
+        -- liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
@@ -722,23 +725,21 @@ instance ExecuteHaskellImports HS where
         let params ∷ [String]
             params = [
                 "-e", ":set -ilibrary",
-                "-e", ":set -XGHC2024"
+                "-e", ":set -XGHC2024",
+                "-e", "import Prelude hiding ((.), id)"
                 ] <>
-                -- "-e", "import Prelude hiding ((.), id)"
-                -- ] <>
                 toExternalCLIImports cat <>
                 toInternalCLIImports cat <>
-                -- [
                 [
                 "-e", "(" <> BSL.unpack (renderStatementShorthand cat) <> ") (" <> show param <> ")"
                 ]
-        liftIO . putStrLn $ "Params"
-        liftIO . print $ params
+        -- liftIO . putStrLn $ "Params"
+        -- liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
-        liftIO . putStrLn $ "Stdout"
-        liftIO . putStrLn $ stdout
-        liftIO . putStrLn $ "Stderr"
-        liftIO . putStrLn $ stderr
+        -- liftIO . putStrLn $ "Stdout"
+        -- liftIO . putStrLn $ stdout
+        -- liftIO . putStrLn $ "Stderr"
+        -- liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
@@ -752,20 +753,20 @@ instance ExecuteStdioLonghand HS where
         let params ∷ [String]
             params = [
                 "-e", ":cd library",
-                "-e", ":set -XGHC2024"
-                -- "-e", "import Prelude hiding ((.), id)"
+                "-e", ":set -XGHC2024",
+                "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toExternalCLIImports cat <>
                 [
                 "-e", BSL.unpack (renderStatementLonghand cat) <> " ()"
                 ]
-        liftIO . putStrLn $ "Params"
-        liftIO . print $ params
+        -- liftIO . putStrLn $ "Params"
+        -- liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
-        liftIO . putStrLn $ "Stdout"
-        liftIO . putStrLn $ stdout
-        liftIO . putStrLn $ "Stderr"
-        liftIO . putStrLn $ stderr
+        -- liftIO . putStrLn $ "Stdout"
+        -- liftIO . putStrLn $ stdout
+        -- liftIO . putStrLn $ "Stderr"
+        -- liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
@@ -776,19 +777,19 @@ instance ExecuteStdioImports HS where
             params = [
                 "-e", ":cd library",
                 "-e", ":set -XGHC2024",
-                -- "-e", "import Prelude hiding ((.), id)"
+                "-e", "import Prelude hiding ((.), id)",
                 -- ] <>
                 -- toCLIImports cat <>
                 -- [
                 "-e", BSL.unpack (renderStatementShorthand cat) <> " ()"
                 ]
-        liftIO . putStrLn $ "Params"
-        liftIO . print $ params
+        -- liftIO . putStrLn $ "Params"
+        -- liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
-        liftIO . putStrLn $ "Stdout"
-        liftIO . putStrLn $ stdout
-        liftIO . putStrLn $ "Stderr"
-        liftIO . putStrLn $ stderr
+        -- liftIO . putStrLn $ "Stdout"
+        -- liftIO . putStrLn $ stdout
+        -- liftIO . putStrLn $ "Stderr"
+        -- liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
@@ -798,20 +799,20 @@ instance ExecuteStdioShorthand HS where
         let params ∷ [String]
             params = [
                 "-e", ":cd library",
-                "-e", ":set -XGHC2024"
-                -- "-e", "import Prelude hiding ((.), id)"
+                "-e", ":set -XGHC2024",
+                "-e", "import Prelude hiding ((.), id)"
                 ] <>
                 toExternalCLIImports cat <>
                 [
                 "-e", BSL.unpack (renderStatementShorthand cat) <> " ()"
                 ]
-        liftIO . putStrLn $ "Params"
-        liftIO . print $ params
+        -- liftIO . putStrLn $ "Params"
+        -- liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
-        liftIO . putStrLn $ "Stdout"
-        liftIO . putStrLn $ stdout
-        liftIO . putStrLn $ "Stderr"
-        liftIO . putStrLn $ stderr
+        -- liftIO . putStrLn $ "Stdout"
+        -- liftIO . putStrLn $ stdout
+        -- liftIO . putStrLn $ "Stderr"
+        -- liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
