@@ -65,9 +65,11 @@ spec = describe "HS" $ do
             it "runs on second" $
                 executeGHCiLonghand (second' copy :: HS (String, String) (String, (String, String))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
         describe "choice" $ do
-            describe "left'" $ pure ()
-                -- it "runs on left" $
-                --     executeGHCiLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1")))it "doesn't run on right" $ (executeGHCi (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1))
+            describe "left'" $ do
+                it "runs on left" $
+                    executeGHCiLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1"))
+                it "doesn't run on right" $
+                    executeGHCiLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
             describe "right'" $ do
                 it "doesn't run on left" $
                     executeGHCiLonghand (right' copy :: HS (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
@@ -185,9 +187,11 @@ spec = describe "HS" $ do
             it "runs on second" $
                 executeGHCiShorthand (second' copy :: HS (String, String) (String, (String, String))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
         describe "choice" $ do
-            describe "left'" $ pure ()
-                -- it "runs on left" $
-                --     executeGHCiLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1")))it "doesn't run on right" $ (executeGHCi (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1))
+            describe "left'" $ do
+                it "runs on left" $
+                    executeGHCiShorthand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1"))
+                it "doesn't run on right" $
+                    executeGHCiShorthand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
             describe "right'" $ do
                 it "doesn't run on left" $
                     executeGHCiShorthand (right' copy :: HS (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
@@ -305,9 +309,11 @@ spec = describe "HS" $ do
             it "runs on second" $
                 executeGHCiImports (second' copy :: HS (String, String) (String, (String, String))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
         describe "choice" $ do
-            describe "left'" $ pure ()
-                -- it "runs on left" $
-                --     executeGHCiImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1")))it "doesn't run on right" $ (executeGHCi (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1))
+            describe "left'" $ do
+                it "runs on left" $
+                    executeGHCiImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1"))
+                it "doesn't run on right" $
+                    executeGHCiImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
             describe "right'" $ do
                 it "doesn't run on left" $
                     executeGHCiImports (right' copy :: HS (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
