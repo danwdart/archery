@@ -1,6 +1,6 @@
-{-# LANGUAGE TypeFamilies               #-}
-{-# LANGUAGE UndecidableInstances       #-}
-{-# LANGUAGE Unsafe                     #-}
+{-# LANGUAGE TypeFamilies         #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE Unsafe               #-}
 {-# OPTIONS_GHC -Wno-safe -Wno-unsafe #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
@@ -17,36 +17,6 @@ import Data.MapSet
 -- import GHC.IsList
 
 type Module = BSL.ByteString
-
-{-
-e.g. HS
-
-print a concatenated version of two strings
-
-module = Main
-externalImports = [
-    (
-        module = Prelude
-        functionName = putStrLn
-    )
-    (
-        module = Prelude
-        functionName = (.)
-    )
-    ]
-internalImports = [
-    (
-        module = Primitive.Concat
-        functionName = concatStrings
-        functionTypeFrom = (String, String)
-        functionTypeTo = String
-        shorthand = "uncurry (<>)"
-        longhand = "(\(x, y) -> x <> y)"
-    )
-]
-shorthand = putStrLn . concatStrings
-longhand = putStrLn . (\(x, y) -> x <> y)
--}
 
 type FunctionName = BSL.ByteString
 
@@ -103,11 +73,11 @@ class HasLonghandDefinition a where
 
 -- | A single function to be imported.
 data Function = Function {
-    _functionName     :: FunctionName,
-    _functionTypeFrom :: FunctionTypeFrom,
-    _functionTypeTo   :: FunctionTypeTo,
-    _functionShorthand        :: ShorthandDefinition,
-    _functionLonghand         :: LonghandDefinition
+    _functionName      :: FunctionName,
+    _functionTypeFrom  :: FunctionTypeFrom,
+    _functionTypeTo    :: FunctionTypeTo,
+    _functionShorthand :: ShorthandDefinition,
+    _functionLonghand  :: LonghandDefinition
 } deriving (Eq, Show, Ord)
 
 instance HasFunctionName Function where
@@ -142,11 +112,9 @@ type InternalImports = MapSet Module Function
 -- >>> [("a", ["b"])] <> [("a", ["c"])] <> [("b", ["a", "b"]), ("c", ["a", "b"])] <> [("c", ["a", "c"]), ("a", ["a"])] :: MapSet Module FunctionName
 -- MapSet {getMapSet = fromList [("a",fromList ["a","b","c"]),("b",fromList ["a","b"]),("c",fromList ["a","b","c"])]}
 
-
 -- TODO makeClassy
 -- TODO capabilities?
 -- class Has i a where
-
 
 -- | Internal implementation of any programming language's code.
 data Code a b = Code {
@@ -159,8 +127,8 @@ data Code a b = Code {
     -- it depends because we need to know whether to map Module to Set of Functions, or just have Set of Functions,
     -- when defining internal imports.
     -- TODO
-    _shorthand :: Shorthand,
-    _longhand :: Longhand
+    _shorthand       :: Shorthand,
+    _longhand        :: Longhand
 } deriving (Eq, Show)
 
 -- instance IsString (Code a b) where
@@ -183,10 +151,10 @@ instance HasCode f a b ⇒ HasInternalImports (f a b) where
 -- instance HasCode f a b ⇒ HasExport (f a b) where
 --     export = export . code
 
-instance HasCode f a b => HasShorthand (f a b) where
+instance HasCode f a b ⇒ HasShorthand (f a b) where
     shorthand = _shorthand . code
 
-instance HasCode f a b => HasLonghand (f a b) where
+instance HasCode f a b ⇒ HasLonghand (f a b) where
     longhand = _longhand . code
 
 instance HasFunction (f a b) ⇒ HasFunctionName (f a b) where

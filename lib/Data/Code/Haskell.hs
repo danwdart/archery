@@ -33,7 +33,7 @@ import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8                 qualified as BSL
 import Data.Code.Generic
 -- import Data.Map                                         (Map)
-import Data.Map                                         qualified as M
+import Data.Map                                   qualified as M
 import Data.MapSet
 -- import Data.Maybe
 import Data.Render.File.Imports
@@ -42,7 +42,7 @@ import Data.Render.File.Shorthand
 import Data.Render.Statement.Longhand
 import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
-import Data.Set                                         qualified as S
+import Data.Set                                   qualified as S
 -- import Data.String
 -- import Data.Typeable
 import GHC.IO.Exception
