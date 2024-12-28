@@ -214,14 +214,14 @@ instance Cartesian HS where
                 Function {
                     _functionName = "snd'",
                     _functionTypeFrom = "(a, b)",
-                    _functionTypeTo = "a",
+                    _functionTypeTo = "b",
                     _functionShorthand = "snd",
                     _functionLonghand = "\\(a, b) -> b"
                 }
                 ]
             )
         ],
-        _shorthand = "snd",
+        _shorthand = "snd'",
         _longhand = "\\(a, b) -> b"
     }
 
@@ -282,7 +282,7 @@ instance Cocartesian HS where
         _internalImports = [
             ("Control.Category.Cocartesian", [
                 Function {
-                    _functionName = "unify",
+                    _functionName = "tag",
                     _functionTypeFrom = "(Bool, a)",
                     _functionTypeTo = "Either a a",
                     _functionShorthand = "tag",
@@ -307,7 +307,7 @@ instance Strong HS where
             ("Data.Bifunctor", ["first"])
         ] <> externalImports f,
         _internalImports = internalImports f,
-        _shorthand = "first' (" <> shorthand f <> ")",
+        _shorthand = "first (" <> shorthand f <> ")",
         _longhand = "\\(a, b) -> ((" <> longhand f <> ") a, b)"
     }
     second' f = HS $ Code {
