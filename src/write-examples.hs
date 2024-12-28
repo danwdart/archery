@@ -68,13 +68,13 @@ main = do
         BSL.writeFile "data/examples/statements/Longhand/haskell/greetTuple.hs" $ renderStatementLonghand (greetTuple :: HS (String, Int) String)
         BSL.writeFile "data/examples/statements/Longhand/haskell/reverseInput.hs" $ renderStatementLonghand (revInputProgram :: HS () ())
 
-        createDirectoryIfMissing True "data/examples/statements/shorthand/haskell"
+        createDirectoryIfMissing True "data/examples/statements/Shorthand/haskell"
 
-        BSL.writeFile "data/examples/statements/shorthand/haskell/askName.hs" $ renderStatementShorthand (askName :: HS () ())
-        BSL.writeFile "data/examples/statements/shorthand/haskell/collatzStep.hs" $ renderStatementShorthand (collatzStep :: HS Int Int)
-        BSL.writeFile "data/examples/statements/shorthand/haskell/helloWorld.hs" $ renderStatementShorthand (helloWorld :: HS () ())
-        BSL.writeFile "data/examples/statements/shorthand/haskell/isPalindrome.hs" $ renderStatementShorthand (isPalindrome :: HS String Bool)
-        BSL.writeFile "data/examples/statements/shorthand/haskell/greetTuple.hs" $ renderStatementShorthand (greetTuple :: HS (String, Int) String)
+        BSL.writeFile "data/examples/statements/Shorthand/haskell/askName.hs" $ renderStatementShorthand (askName :: HS () ())
+        BSL.writeFile "data/examples/statements/Shorthand/haskell/collatzStep.hs" $ renderStatementShorthand (collatzStep :: HS Int Int)
+        BSL.writeFile "data/examples/statements/Shorthand/haskell/helloWorld.hs" $ renderStatementShorthand (helloWorld :: HS () ())
+        BSL.writeFile "data/examples/statements/Shorthand/haskell/isPalindrome.hs" $ renderStatementShorthand (isPalindrome :: HS String Bool)
+        BSL.writeFile "data/examples/statements/Shorthand/haskell/greetTuple.hs" $ renderStatementShorthand (greetTuple :: HS (String, Int) String)
         BSL.writeFile "data/examples/statements/Longhand/haskell/reverseInput.hs" $ renderStatementShorthand (revInputProgram :: HS () ())
 
         createDirectoryIfMissing True "data/examples/programs/Imports/haskell"
@@ -115,14 +115,14 @@ main = do
         BSL.writeFile "data/examples/statements/Longhand/js/greetTuple.js" $ renderStatementLonghand (greetTuple :: JS (String, Int) String)
         BSL.writeFile "data/examples/statements/Longhand/js/reverseInput.js" $ renderStatementLonghand (revInputProgram :: JS () ())
 
-        createDirectoryIfMissing True "data/examples/statements/shorthand/js"
+        createDirectoryIfMissing True "data/examples/statements/Shorthand/js"
 
-        BSL.writeFile "data/examples/statements/shorthand/js/askName.js" $ renderStatementShorthand (askName :: JS () ())
-        BSL.writeFile "data/examples/statements/shorthand/js/collatzStep.js" $ renderStatementShorthand (collatzStep :: JS Int Int)
-        BSL.writeFile "data/examples/statements/shorthand/js/helloWorld.js" $ renderStatementShorthand (helloWorld :: JS () ())
-        BSL.writeFile "data/examples/statements/shorthand/js/isPalindrome.js" $ renderStatementShorthand (isPalindrome :: JS String Bool)
-        BSL.writeFile "data/examples/statements/shorthand/js/greetTuple.js" $ renderStatementShorthand (greetTuple :: JS (String, Int) String)
-        BSL.writeFile "data/examples/statements/shorthand/js/reverseInput.js" $ renderStatementShorthand (revInputProgram :: JS () ())
+        BSL.writeFile "data/examples/statements/Shorthand/js/askName.js" $ renderStatementShorthand (askName :: JS () ())
+        BSL.writeFile "data/examples/statements/Shorthand/js/collatzStep.js" $ renderStatementShorthand (collatzStep :: JS Int Int)
+        BSL.writeFile "data/examples/statements/Shorthand/js/helloWorld.js" $ renderStatementShorthand (helloWorld :: JS () ())
+        BSL.writeFile "data/examples/statements/Shorthand/js/isPalindrome.js" $ renderStatementShorthand (isPalindrome :: JS String Bool)
+        BSL.writeFile "data/examples/statements/Shorthand/js/greetTuple.js" $ renderStatementShorthand (greetTuple :: JS (String, Int) String)
+        BSL.writeFile "data/examples/statements/Shorthand/js/reverseInput.js" $ renderStatementShorthand (revInputProgram :: JS () ())
 
         createDirectoryIfMissing True "data/examples/programs/Imports/js"
 
@@ -162,14 +162,14 @@ main = do
         BSL.writeFile "data/examples/statements/Longhand/ts/greetTuple.ts" $ renderStatementLonghand (greetTuple :: TS (String, Int) String)
         BSL.writeFile "data/examples/statements/Longhand/ts/reverseInput.ts" $ renderStatementLonghand (revInputProgram :: TS () ())
 
-        createDirectoryIfMissing True "data/examples/statements/shorthand/ts"
+        createDirectoryIfMissing True "data/examples/statements/Shorthand/ts"
 
-        BSL.writeFile "data/examples/statements/shorthand/ts/askName.ts" $ renderStatementShorthand (askName :: TS () ())
-        BSL.writeFile "data/examples/statements/shorthand/ts/collatzStep.ts" $ renderStatementShorthand (collatzStep :: TS Int Int)
-        BSL.writeFile "data/examples/statements/shorthand/ts/helloWorld.ts" $ renderStatementShorthand (helloWorld :: TS () ())
-        BSL.writeFile "data/examples/statements/shorthand/ts/isPalindrome.ts" $ renderStatementShorthand (isPalindrome :: TS String Bool)
-        BSL.writeFile "data/examples/statements/shorthand/ts/greetTuple.ts" $ renderStatementShorthand (greetTuple :: TS (String, Int) String)
-        BSL.writeFile "data/examples/statements/shorthand/ts/reverseInput.ts" $ renderStatementShorthand (revInputProgram :: TS () ())
+        BSL.writeFile "data/examples/statements/Shorthand/ts/askName.ts" $ renderStatementShorthand (askName :: TS () ())
+        BSL.writeFile "data/examples/statements/Shorthand/ts/collatzStep.ts" $ renderStatementShorthand (collatzStep :: TS Int Int)
+        BSL.writeFile "data/examples/statements/Shorthand/ts/helloWorld.ts" $ renderStatementShorthand (helloWorld :: TS () ())
+        BSL.writeFile "data/examples/statements/Shorthand/ts/isPalindrome.ts" $ renderStatementShorthand (isPalindrome :: TS String Bool)
+        BSL.writeFile "data/examples/statements/Shorthand/ts/greetTuple.ts" $ renderStatementShorthand (greetTuple :: TS (String, Int) String)
+        BSL.writeFile "data/examples/statements/Shorthand/ts/reverseInput.ts" $ renderStatementShorthand (revInputProgram :: TS () ())
 
         createDirectoryIfMissing True "data/examples/programs/Imports/ts"
 
@@ -208,14 +208,14 @@ main = do
         BSL.writeFile "data/examples/statements/Longhand/php/greetTuple.php" $ renderStatementLonghand (greetTuple :: PHP (String, Int) String)
         BSL.writeFile "data/examples/statements/Longhand/php/reverseInput.php" $ renderStatementLonghand (revInputProgram :: PHP () ())
 
-        createDirectoryIfMissing True "data/examples/statements/shorthand/php"
+        createDirectoryIfMissing True "data/examples/statements/Shorthand/php"
 
-        BSL.writeFile "data/examples/statements/shorthand/php/askName.php" $ renderStatementShorthand (askName :: PHP () ())
-        BSL.writeFile "data/examples/statements/shorthand/php/collatzStep.php" $ renderStatementShorthand (collatzStep :: PHP Int Int)
-        BSL.writeFile "data/examples/statements/shorthand/php/helloWorld.php" $ renderStatementShorthand (helloWorld :: PHP () ())
-        BSL.writeFile "data/examples/statements/shorthand/php/isPalindrome.php" $ renderStatementShorthand (isPalindrome :: PHP String Bool)
-        BSL.writeFile "data/examples/statements/shorthand/php/greetTuple.php" $ renderStatementShorthand (greetTuple :: PHP (String, Int) String)
-        BSL.writeFile "data/examples/statements/shorthand/php/reverseInput.php" $ renderStatementShorthand (revInputProgram :: PHP () ())
+        BSL.writeFile "data/examples/statements/Shorthand/php/askName.php" $ renderStatementShorthand (askName :: PHP () ())
+        BSL.writeFile "data/examples/statements/Shorthand/php/collatzStep.php" $ renderStatementShorthand (collatzStep :: PHP Int Int)
+        BSL.writeFile "data/examples/statements/Shorthand/php/helloWorld.php" $ renderStatementShorthand (helloWorld :: PHP () ())
+        BSL.writeFile "data/examples/statements/Shorthand/php/isPalindrome.php" $ renderStatementShorthand (isPalindrome :: PHP String Bool)
+        BSL.writeFile "data/examples/statements/Shorthand/php/greetTuple.php" $ renderStatementShorthand (greetTuple :: PHP (String, Int) String)
+        BSL.writeFile "data/examples/statements/Shorthand/php/reverseInput.php" $ renderStatementShorthand (revInputProgram :: PHP () ())
 
         createDirectoryIfMissing True "data/examples/programs/Imports/php"
 
