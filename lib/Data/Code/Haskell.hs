@@ -70,8 +70,9 @@ toShorthandCLIDefinitions ∷ HS a b → [String]
 toShorthandCLIDefinitions hs = GHC.IsList.toList (internalImports hs) >>=
     \(_, functions) -> GHC.IsList.toList functions >>=
     \function' -> [
-        "-e", BSL.unpack $ functionName function' <> " :: " <> functionTypeFrom function' <> " -> " <> functionTypeTo function',
-        "-e", BSL.unpack $ functionName function' <> " = " <> functionLonghand function'
+        "-e", BSL.unpack $
+            functionName function' <> " :: " <> functionTypeFrom function' <> " -> " <> functionTypeTo function' <> "; " <>
+            functionName function' <> " = " <> functionLonghand function'
         ]
 
 toFileImports ∷ HS a b → [BSL.ByteString]
@@ -138,13 +139,17 @@ instance Bracket HS where
 
 instance Category HS where
     id = HS $ Code {
-        _externalImports = [],
+        _externalImports = [
+            ("Control.Category", ["id"])
+        ],
         _internalImports = [],
         _shorthand = "id",
         _longhand = "\\x -> x"
     }
     a . b = HS $ Code {
-        _externalImports = externalImports a <> externalImports b,
+        _externalImports = externalImports a <> externalImports b <> [
+            ("Control.Category", ["(.)"])
+        ],
         _internalImports = internalImports a <> internalImports b,
         _shorthand = "(" <> shorthand a <> " . " <> shorthand b <> ")",
         _longhand = "(\\x y z -> x (y z))(" <> longhand a <> ")(" <> longhand b <> ")"
@@ -300,36 +305,36 @@ instance Strong HS where
     first' f = HS $ Code {
         _externalImports = [
             ("Data.Bifunctor", ["first"])
-        ],
-        _internalImports = [],
+        ] <> externalImports f,
+        _internalImports = internalImports f,
         _shorthand = "first' (" <> shorthand f <> ")",
-        _longhand = "\\(a, b) -> (" <> longhand f <> " a, b)"
+        _longhand = "\\(a, b) -> ((" <> longhand f <> ") a, b)"
     }
     second' f = HS $ Code {
         _externalImports = [
             ("Data.Bifunctor", ["second"])
-        ],
-        _internalImports = [],
+        ] <> externalImports f,
+        _internalImports = internalImports f,
         _shorthand = "second (" <> shorthand f <> ")",
-        _longhand = "\\(a, b) -> (a, " <> longhand f <> " b)"
+        _longhand = "\\(a, b) -> (a, (" <> longhand f <> ") b)"
     }
 
 instance Choice HS where
     left' f = HS $ Code {
         _externalImports = [
             ("Data.Bifunctor", ["first"])
-        ],
-        _internalImports = [],
+        ] <> externalImports f,
+        _internalImports = internalImports f,
         _shorthand = "first (" <> shorthand f <> ")",
-        _longhand = "\\case { Left x -> " <> longhand f <> " x; Right x -> x; }"
+        _longhand = "\\case { Left x -> (" <> longhand f <> ") x; Right x -> x; }"
     }
     right' f = HS $ Code {
         _externalImports = [
             ("Data.Bifunctor", ["second"])
-        ],
-        _internalImports = [],
+        ] <> externalImports f,
+        _internalImports = internalImports f,
         _shorthand = "second (" <> shorthand f <> ")",
-        _longhand = "\\case { Left x -> x; Right x -> " <> longhand f <> " x; }"
+        _longhand = "\\case { Left x -> x; Right x -> (" <> longhand f <> ") x; }"
     }
 
 instance Symmetric HS where
@@ -677,7 +682,13 @@ instance ExecuteHaskellLonghand HS where
                 [
                 "-e", "(" <> BSL.unpack (renderStatementLonghand cat) <> ") (" <> show param <> ")"
                 ]
+        liftIO . putStrLn $ "Params"
+        liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
+        liftIO . putStrLn $ "Stdout"
+        liftIO . putStrLn $ stdout
+        liftIO . putStrLn $ "Stderr"
+        liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
@@ -695,7 +706,13 @@ instance ExecuteHaskellShorthand HS where
                 [
                 "-e", "(" <> BSL.unpack (renderStatementShorthand cat) <> ") (" <> show param <> ")"
                 ]
+        liftIO . putStrLn $ "Params"
+        liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
+        liftIO . putStrLn $ "Stdout"
+        liftIO . putStrLn $ stdout
+        liftIO . putStrLn $ "Stderr"
+        liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
@@ -715,7 +732,13 @@ instance ExecuteHaskellImports HS where
                 [
                 "-e", "(" <> BSL.unpack (renderStatementShorthand cat) <> ") (" <> show param <> ")"
                 ]
+        liftIO . putStrLn $ "Params"
+        liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
+        liftIO . putStrLn $ "Stdout"
+        liftIO . putStrLn $ stdout
+        liftIO . putStrLn $ "Stderr"
+        liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
@@ -736,7 +759,13 @@ instance ExecuteStdioLonghand HS where
                 [
                 "-e", BSL.unpack (renderStatementLonghand cat) <> " ()"
                 ]
+        liftIO . putStrLn $ "Params"
+        liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
+        liftIO . putStrLn $ "Stdout"
+        liftIO . putStrLn $ stdout
+        liftIO . putStrLn $ "Stderr"
+        liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
@@ -753,7 +782,13 @@ instance ExecuteStdioImports HS where
                 -- [
                 "-e", BSL.unpack (renderStatementShorthand cat) <> " ()"
                 ]
+        liftIO . putStrLn $ "Params"
+        liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
+        liftIO . putStrLn $ "Stdout"
+        liftIO . putStrLn $ stdout
+        liftIO . putStrLn $ "Stderr"
+        liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
@@ -770,7 +805,13 @@ instance ExecuteStdioShorthand HS where
                 [
                 "-e", BSL.unpack (renderStatementShorthand cat) <> " ()"
                 ]
+        liftIO . putStrLn $ "Params"
+        liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
+        liftIO . putStrLn $ "Stdout"
+        liftIO . putStrLn $ stdout
+        liftIO . putStrLn $ "Stderr"
+        liftIO . putStrLn $ stderr
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . ("Can't parse response: " <>)) pure (readEither stdout)
