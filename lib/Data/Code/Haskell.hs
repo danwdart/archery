@@ -147,7 +147,7 @@ instance Category HS where
         _externalImports = externalImports a <> externalImports b,
         _internalImports = internalImports a <> internalImports b,
         _shorthand = "(" <> shorthand a <> " . " <> shorthand b <> ")",
-        _longhand = "(" <> longhand a <> " . " <> longhand b <> ")"
+        _longhand = "(\\x y z -> x (y z))(" <> longhand a <> ")(" <> longhand b <> ")"
     }
 
 instance Cartesian HS where
@@ -677,6 +677,7 @@ instance ExecuteHaskellLonghand HS where
                 [
                 "-e", "(" <> BSL.unpack (renderStatementLonghand cat) <> ") (" <> show param <> ")"
                 ]
+        liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr

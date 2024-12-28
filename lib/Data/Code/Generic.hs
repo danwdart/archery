@@ -184,10 +184,10 @@ instance HasCode f a b ⇒ HasInternalImports (f a b) where
 --     export = export . code
 
 instance HasCode f a b => HasShorthand (f a b) where
-    shorthand = shorthand . code
+    shorthand = _shorthand . code
 
 instance HasCode f a b => HasLonghand (f a b) where
-    longhand = longhand . code
+    longhand = _longhand . code
 
 instance HasFunction (f a b) ⇒ HasFunctionName (f a b) where
     functionName = functionName . function
