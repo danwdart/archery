@@ -11,7 +11,7 @@ import Control.Category.Execute.JSON.Shorthand
 import Control.Monad.IO.Class
 import Data.Aeson
 import Data.Code.Haskell
--- import Data.Code.JS
+import Data.Code.JS
 -- import Data.Code.PHP
 import Data.Function.CollatzStep
 import Data.Function.Free.Abstract
@@ -54,15 +54,21 @@ xprop_HSJSONIsCorrectShorthand s = length s > 1 && all (`notElem` "$") s ==> wit
     answer <- executeJSONShorthand (isPalindrome :: HS String Bool) s
     pure $ answer === isPalindrome s
 
--- prop_JSIsCorrectLonghand ∷ String → Property
--- prop_JSIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
---     answer <- executeJSONLonghand (isPalindrome :: JS String Bool) s
---     pure $ answer === isPalindrome s
---
--- prop_JSIsCorrectImports ∷ String → Property
--- prop_JSIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
---     answer <- executeJSONImports (isPalindrome :: JS String Bool) s
---     pure $ answer === isPalindrome s
+-- TODO bad control characters
+xprop_JSIsCorrectLonghand ∷ String → Property
+xprop_JSIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
+    answer <- executeJSONLonghand (isPalindrome :: JS String Bool) s
+    pure $ answer === isPalindrome s
+
+xprop_JSIsCorrectImports ∷ String → Property
+xprop_JSIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
+    answer <- executeJSONImports (isPalindrome :: JS String Bool) s
+    pure $ answer === isPalindrome s
+
+xprop_JSIsCorrectShorthand ∷ String → Property
+xprop_JSIsCorrectShorthand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
+    answer <- executeJSONShorthand (isPalindrome :: JS String Bool) s
+    pure $ answer === isPalindrome s
 --
 -- prop_PHPIsCorrectLonghand ∷ String → Property
 -- prop_PHPIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do

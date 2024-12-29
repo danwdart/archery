@@ -11,7 +11,7 @@ import Control.Category.Execute.JSON.Shorthand
 import Control.Monad.IO.Class
 import Data.Aeson
 import Data.Code.Haskell
--- import Data.Code.JS
+import Data.Code.JS
 -- import Data.Code.PHP
 import Data.Function.CollatzStep
 import Data.Function.Free.Abstract
@@ -60,16 +60,20 @@ xprop_HSJSONIsCorrectShorthand i = i >= 0 ==> withMaxSuccess 50 . monadicIO $ do
     answer <- executeJSONShorthand (collatzStep :: HS Natural Natural) i
     pure $ answer === collatzStep i
 
+prop_JSIsCorrectLonghand ∷ Natural → Property
+prop_JSIsCorrectLonghand i = withMaxSuccess 50 . monadicIO $ do
+    answer <- executeJSONLonghand (collatzStep :: JS Natural Natural) i
+    pure $ answer === collatzStep i
 
--- prop_JSIsCorrectLonghand ∷ Natural → Property
--- prop_JSIsCorrectLonghand i = withMaxSuccess 50 . monadicIO $ do
---     answer <- executeJSONLonghand (collatzStep :: JS Natural Natural) i
---     pure $ answer === collatzStep i
---
--- prop_JSIsCorrectImports ∷ Natural → Property
--- prop_JSIsCorrectImports i = withMaxSuccess 50 . monadicIO $ do
---     answer <- executeJSONImports (collatzStep :: JS Natural Natural) i
---     pure $ answer === collatzStep i
+xprop_JSIsCorrectImports ∷ Natural → Property
+xprop_JSIsCorrectImports i = withMaxSuccess 50 . monadicIO $ do
+    answer <- executeJSONImports (collatzStep :: JS Natural Natural) i
+    pure $ answer === collatzStep i
+
+prop_JSIsCorrectShorthand ∷ Natural → Property
+prop_JSIsCorrectShorthand i = withMaxSuccess 50 . monadicIO $ do
+    answer <- executeJSONShorthand (collatzStep :: JS Natural Natural) i
+    pure $ answer === collatzStep i
 --
 -- prop_PHPIsCorrectLonghand ∷ Natural → Property
 -- prop_PHPIsCorrectLonghand i = withMaxSuccess 50 . monadicIO $ do

@@ -9,7 +9,7 @@ import Data.Aeson                            qualified as A
 -- import Data.ByteString.Char8      qualified as BS
 import Data.ByteString.Lazy.Char8            qualified as BSL
 import Data.Code.Haskell
--- import Data.Code.JS
+import Data.Code.JS
 -- import Data.Code.PHP
 -- import Data.Code.TS
 import Data.Function.AskName
@@ -59,188 +59,92 @@ main = do
     -- removeDirectoryRecursive "data/examples/statements"
 
     do
-        createDirectoryIfMissing True "data/examples/statements/Longhand/haskell"
+        createDirectoryIfMissing True "data/examples/statements/longhand/haskell"
 
-        BSL.writeFile "data/examples/statements/Longhand/haskell/askName.hs" $ renderStatementLonghand (askName :: HS () ())
-        BSL.writeFile "data/examples/statements/Longhand/haskell/collatzStep.hs" $ renderStatementLonghand (collatzStep :: HS Int Int)
-        BSL.writeFile "data/examples/statements/Longhand/haskell/helloWorld.hs" $ renderStatementLonghand (helloWorld :: HS () ())
-        BSL.writeFile "data/examples/statements/Longhand/haskell/isPalindrome.hs" $ renderStatementLonghand (isPalindrome :: HS String Bool)
-        BSL.writeFile "data/examples/statements/Longhand/haskell/greetTuple.hs" $ renderStatementLonghand (greetTuple :: HS (String, Int) String)
-        BSL.writeFile "data/examples/statements/Longhand/haskell/reverseInput.hs" $ renderStatementLonghand (revInputProgram :: HS () ())
+        BSL.writeFile "data/examples/statements/longhand/haskell/askName.hs" $ renderStatementLonghand (askName :: HS () ())
+        BSL.writeFile "data/examples/statements/longhand/haskell/collatzStep.hs" $ renderStatementLonghand (collatzStep :: HS Int Int)
+        BSL.writeFile "data/examples/statements/longhand/haskell/helloWorld.hs" $ renderStatementLonghand (helloWorld :: HS () ())
+        BSL.writeFile "data/examples/statements/longhand/haskell/isPalindrome.hs" $ renderStatementLonghand (isPalindrome :: HS String Bool)
+        BSL.writeFile "data/examples/statements/longhand/haskell/greetTuple.hs" $ renderStatementLonghand (greetTuple :: HS (String, Int) String)
+        BSL.writeFile "data/examples/statements/longhand/haskell/reverseInput.hs" $ renderStatementLonghand (revInputProgram :: HS () ())
 
-        createDirectoryIfMissing True "data/examples/statements/Shorthand/haskell"
+        createDirectoryIfMissing True "data/examples/statements/shorthand/haskell"
 
-        BSL.writeFile "data/examples/statements/Shorthand/haskell/askName.hs" $ renderStatementShorthand (askName :: HS () ())
-        BSL.writeFile "data/examples/statements/Shorthand/haskell/collatzStep.hs" $ renderStatementShorthand (collatzStep :: HS Int Int)
-        BSL.writeFile "data/examples/statements/Shorthand/haskell/helloWorld.hs" $ renderStatementShorthand (helloWorld :: HS () ())
-        BSL.writeFile "data/examples/statements/Shorthand/haskell/isPalindrome.hs" $ renderStatementShorthand (isPalindrome :: HS String Bool)
-        BSL.writeFile "data/examples/statements/Shorthand/haskell/greetTuple.hs" $ renderStatementShorthand (greetTuple :: HS (String, Int) String)
-        BSL.writeFile "data/examples/statements/Longhand/haskell/reverseInput.hs" $ renderStatementShorthand (revInputProgram :: HS () ())
+        BSL.writeFile "data/examples/statements/shorthand/haskell/askName.hs" $ renderStatementShorthand (askName :: HS () ())
+        BSL.writeFile "data/examples/statements/shorthand/haskell/collatzStep.hs" $ renderStatementShorthand (collatzStep :: HS Int Int)
+        BSL.writeFile "data/examples/statements/shorthand/haskell/helloWorld.hs" $ renderStatementShorthand (helloWorld :: HS () ())
+        BSL.writeFile "data/examples/statements/shorthand/haskell/isPalindrome.hs" $ renderStatementShorthand (isPalindrome :: HS String Bool)
+        BSL.writeFile "data/examples/statements/shorthand/haskell/greetTuple.hs" $ renderStatementShorthand (greetTuple :: HS (String, Int) String)
+        BSL.writeFile "data/examples/statements/longhand/haskell/reverseInput.hs" $ renderStatementShorthand (revInputProgram :: HS () ())
 
-        createDirectoryIfMissing True "data/examples/programs/Imports/haskell"
+        createDirectoryIfMissing True "data/examples/programs/imports/haskell"
 
-        BSL.writeFile "data/examples/programs/Imports/haskell/askName.hs" $ renderFileImports "Main" "main" "()" "IO ()" (askName :: HS () ())
-        BSL.writeFile "data/examples/programs/Imports/haskell/CollatzStep.hs" $ renderFileImports "CollatzStep" "collatzStep" "Int" "Int" (collatzStep :: HS Int Int)
-        BSL.writeFile "data/examples/programs/Imports/haskell/HelloWorld.hs" $ renderFileImports "Main" "main" "()" "IO ()" (helloWorld :: HS () ())
-        BSL.writeFile "data/examples/programs/Imports/haskell/IsPalindrome.hs" $ renderFileImports "IsPalindrome" "isPalindrome" "String" "Bool" (isPalindrome :: HS String Bool)
-        BSL.writeFile "data/examples/programs/Imports/haskell/GreetTuple.hs" $ renderFileImports "GreetTuple" "greetTuple" "(String, Int)" "String" (greetTuple :: HS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Imports/haskell/reverseInput.hs" $ renderFileImports "Main" "main" "()" "IO ()" (revInputProgram :: HS () ())
+        BSL.writeFile "data/examples/programs/imports/haskell/askName.hs" $ renderFileImports "Main" "main" "()" "IO ()" (askName :: HS () ())
+        BSL.writeFile "data/examples/programs/imports/haskell/CollatzStep.hs" $ renderFileImports "CollatzStep" "collatzStep" "Int" "Int" (collatzStep :: HS Int Int)
+        BSL.writeFile "data/examples/programs/imports/haskell/HelloWorld.hs" $ renderFileImports "Main" "main" "()" "IO ()" (helloWorld :: HS () ())
+        BSL.writeFile "data/examples/programs/imports/haskell/IsPalindrome.hs" $ renderFileImports "IsPalindrome" "isPalindrome" "String" "Bool" (isPalindrome :: HS String Bool)
+        BSL.writeFile "data/examples/programs/imports/haskell/GreetTuple.hs" $ renderFileImports "GreetTuple" "greetTuple" "(String, Int)" "String" (greetTuple :: HS (String, Int) String)
+        BSL.writeFile "data/examples/programs/imports/haskell/reverseInput.hs" $ renderFileImports "Main" "main" "()" "IO ()" (revInputProgram :: HS () ())
 
-        createDirectoryIfMissing True "data/examples/programs/Longhand/haskell"
+        createDirectoryIfMissing True "data/examples/programs/longhand/haskell"
 
-        BSL.writeFile "data/examples/programs/Longhand/haskell/askName.hs" $ renderFileLonghand "Main" "main" "()" "IO ()" (askName :: HS () ())
-        BSL.writeFile "data/examples/programs/Longhand/haskell/CollatzStep.hs" $ renderFileLonghand "CollatzStep" "collatzStep" "Int" "Int" (collatzStep :: HS Int Int)
-        BSL.writeFile "data/examples/programs/Longhand/haskell/helloWorld.hs" $ renderFileLonghand "Main" "main" "()" "IO ()" (helloWorld :: HS () ())
-        BSL.writeFile "data/examples/programs/Longhand/haskell/IsPalindrome.hs" $ renderFileLonghand "IsPalindrome" "isPalindrome" "String" "Bool" (isPalindrome :: HS String Bool)
-        BSL.writeFile "data/examples/programs/Longhand/haskell/GreetTuple.hs" $ renderFileLonghand "GreetTuple" "greetTuple" "(String, Int)" "String" (greetTuple :: HS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Longhand/haskell/reverseInput.hs" $ renderFileLonghand "Main" "main" "()" "IO ()" (revInputProgram :: HS () ())
+        BSL.writeFile "data/examples/programs/longhand/haskell/askName.hs" $ renderFileLonghand "Main" "main" "()" "IO ()" (askName :: HS () ())
+        BSL.writeFile "data/examples/programs/longhand/haskell/CollatzStep.hs" $ renderFileLonghand "CollatzStep" "collatzStep" "Int" "Int" (collatzStep :: HS Int Int)
+        BSL.writeFile "data/examples/programs/longhand/haskell/helloWorld.hs" $ renderFileLonghand "Main" "main" "()" "IO ()" (helloWorld :: HS () ())
+        BSL.writeFile "data/examples/programs/longhand/haskell/IsPalindrome.hs" $ renderFileLonghand "IsPalindrome" "isPalindrome" "String" "Bool" (isPalindrome :: HS String Bool)
+        BSL.writeFile "data/examples/programs/longhand/haskell/GreetTuple.hs" $ renderFileLonghand "GreetTuple" "greetTuple" "(String, Int)" "String" (greetTuple :: HS (String, Int) String)
+        BSL.writeFile "data/examples/programs/longhand/haskell/reverseInput.hs" $ renderFileLonghand "Main" "main" "()" "IO ()" (revInputProgram :: HS () ())
 
-        createDirectoryIfMissing True "data/examples/programs/Shorthand/haskell"
+        createDirectoryIfMissing True "data/examples/programs/shorthand/haskell"
 
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/askName.hs" $ renderFileShorthand "Main" "main" "()" "IO ()" (askName :: HS () ())
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/CollatzStep.hs" $ renderFileShorthand "CollatzStep" "collatzStep" "Int" "Int" (collatzStep :: HS Int Int)
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/helloWorld.hs" $ renderFileShorthand "Main" "main" "()" "IO ()" (helloWorld :: HS () ())
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/IsPalindrome.hs" $ renderFileShorthand "IsPalindrome" "isPalindrome" "String" "Bool" (isPalindrome :: HS String Bool)
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/GreetTuple.hs" $ renderFileShorthand "GreetTuple" "greetTuple" "(String, Int)" "String" (greetTuple :: HS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Shorthand/haskell/reverseInput.hs" $ renderFileShorthand "Main" "main" "()" "IO ()" (revInputProgram :: HS () ())
-
-    {-
+        BSL.writeFile "data/examples/programs/shorthand/haskell/askName.hs" $ renderFileShorthand "Main" "main" "()" "IO ()" (askName :: HS () ())
+        BSL.writeFile "data/examples/programs/shorthand/haskell/CollatzStep.hs" $ renderFileShorthand "CollatzStep" "collatzStep" "Int" "Int" (collatzStep :: HS Int Int)
+        BSL.writeFile "data/examples/programs/shorthand/haskell/helloWorld.hs" $ renderFileShorthand "Main" "main" "()" "IO ()" (helloWorld :: HS () ())
+        BSL.writeFile "data/examples/programs/shorthand/haskell/IsPalindrome.hs" $ renderFileShorthand "IsPalindrome" "isPalindrome" "String" "Bool" (isPalindrome :: HS String Bool)
+        BSL.writeFile "data/examples/programs/shorthand/haskell/GreetTuple.hs" $ renderFileShorthand "GreetTuple" "greetTuple" "(String, Int)" "String" (greetTuple :: HS (String, Int) String)
+        BSL.writeFile "data/examples/programs/shorthand/haskell/reverseInput.hs" $ renderFileShorthand "Main" "main" "()" "IO ()" (revInputProgram :: HS () ())
     do
-        createDirectoryIfMissing True "data/examples/statements/Longhand/js"
+        createDirectoryIfMissing True "data/examples/statements/longhand/js"
 
-        BSL.writeFile "data/examples/statements/Longhand/js/askName.js" $ renderStatementLonghand (askName :: JS () ())
-        BSL.writeFile "data/examples/statements/Longhand/js/collatzStep.js" $ renderStatementLonghand (collatzStep :: JS Int Int)
-        BSL.writeFile "data/examples/statements/Longhand/js/helloWorld.js" $ renderStatementLonghand (helloWorld :: JS () ())
-        BSL.writeFile "data/examples/statements/Longhand/js/isPalindrome.js" $ renderStatementLonghand (isPalindrome :: JS String Bool)
-        BSL.writeFile "data/examples/statements/Longhand/js/greetTuple.js" $ renderStatementLonghand (greetTuple :: JS (String, Int) String)
-        BSL.writeFile "data/examples/statements/Longhand/js/reverseInput.js" $ renderStatementLonghand (revInputProgram :: JS () ())
+        BSL.writeFile "data/examples/statements/longhand/js/askName.js" $ renderStatementLonghand (askName :: JS () ())
+        BSL.writeFile "data/examples/statements/longhand/js/collatzStep.js" $ renderStatementLonghand (collatzStep :: JS Int Int)
+        BSL.writeFile "data/examples/statements/longhand/js/helloWorld.js" $ renderStatementLonghand (helloWorld :: JS () ())
+        BSL.writeFile "data/examples/statements/longhand/js/isPalindrome.js" $ renderStatementLonghand (isPalindrome :: JS String Bool)
+        BSL.writeFile "data/examples/statements/longhand/js/greetTuple.js" $ renderStatementLonghand (greetTuple :: JS (String, Int) String)
+        BSL.writeFile "data/examples/statements/longhand/js/reverseInput.js" $ renderStatementLonghand (revInputProgram :: JS () ())
 
-        createDirectoryIfMissing True "data/examples/statements/Shorthand/js"
+        createDirectoryIfMissing True "data/examples/statements/shorthand/js"
 
-        BSL.writeFile "data/examples/statements/Shorthand/js/askName.js" $ renderStatementShorthand (askName :: JS () ())
-        BSL.writeFile "data/examples/statements/Shorthand/js/collatzStep.js" $ renderStatementShorthand (collatzStep :: JS Int Int)
-        BSL.writeFile "data/examples/statements/Shorthand/js/helloWorld.js" $ renderStatementShorthand (helloWorld :: JS () ())
-        BSL.writeFile "data/examples/statements/Shorthand/js/isPalindrome.js" $ renderStatementShorthand (isPalindrome :: JS String Bool)
-        BSL.writeFile "data/examples/statements/Shorthand/js/greetTuple.js" $ renderStatementShorthand (greetTuple :: JS (String, Int) String)
-        BSL.writeFile "data/examples/statements/Shorthand/js/reverseInput.js" $ renderStatementShorthand (revInputProgram :: JS () ())
+        BSL.writeFile "data/examples/statements/shorthand/js/askName.js" $ renderStatementShorthand (askName :: JS () ())
+        BSL.writeFile "data/examples/statements/shorthand/js/collatzStep.js" $ renderStatementShorthand (collatzStep :: JS Int Int)
+        BSL.writeFile "data/examples/statements/shorthand/js/helloWorld.js" $ renderStatementShorthand (helloWorld :: JS () ())
+        BSL.writeFile "data/examples/statements/shorthand/js/isPalindrome.js" $ renderStatementShorthand (isPalindrome :: JS String Bool)
+        BSL.writeFile "data/examples/statements/shorthand/js/greetTuple.js" $ renderStatementShorthand (greetTuple :: JS (String, Int) String)
+        BSL.writeFile "data/examples/statements/longhand/js/reverseInput.js" $ renderStatementShorthand (revInputProgram :: JS () ())
 
-        createDirectoryIfMissing True "data/examples/programs/Imports/js"
+        createDirectoryIfMissing True "data/examples/programs/imports/js"
 
-        BSL.writeFile "data/examples/programs/Imports/js/askName.js" $ renderFileImports (askName :: JS () ())
-        BSL.writeFile "data/examples/programs/Imports/js/collatzStep.js" $ renderFileImports (collatzStep :: JS Int Int)
-        BSL.writeFile "data/examples/programs/Imports/js/helloWorld.js" $ renderFileImports (helloWorld :: JS () ())
-        BSL.writeFile "data/examples/programs/Imports/js/isPalindrome.js" $ renderFileImports (isPalindrome :: JS String Bool)
-        BSL.writeFile "data/examples/programs/Imports/js/greetTuple.js" $ renderFileImports (greetTuple :: JS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Imports/js/reverseInput.js" $ renderFileImports (revInputProgram :: JS () ())
+        BSL.writeFile "data/examples/programs/imports/js/askName.js" $ renderFileImports "main" "main" "void" "void" (askName :: JS () ())
+        BSL.writeFile "data/examples/programs/imports/js/collatzStep.js" $ renderFileImports "collatzStep" "collatzStep" "number" "number" (collatzStep :: JS Int Int)
+        BSL.writeFile "data/examples/programs/imports/js/helloWorld.js" $ renderFileImports "main" "main" "void" "void" (helloWorld :: JS () ())
+        BSL.writeFile "data/examples/programs/imports/js/isPalindrome.js" $ renderFileImports "isPalindrome" "isPalindrome" "string" "boolean" (isPalindrome :: JS String Bool)
+        BSL.writeFile "data/examples/programs/imports/js/greetTuple.js" $ renderFileImports "greetTuple" "greetTuple" "[string, number]" "string" (greetTuple :: JS (String, Int) String)
+        BSL.writeFile "data/examples/programs/imports/js/reverseInput.js" $ renderFileImports "main" "main" "void" "void" (revInputProgram :: JS () ())
 
-        createDirectoryIfMissing True "data/examples/programs/Longhand/js"
+        createDirectoryIfMissing True "data/examples/programs/longhand/js"
 
-        BSL.writeFile "data/examples/programs/Longhand/js/askName.js" $ renderFileLonghand (askName :: JS () ())
-        BSL.writeFile "data/examples/programs/Longhand/js/collatzStep.js" $ renderFileLonghand (collatzStep :: JS Int Int)
-        BSL.writeFile "data/examples/programs/Longhand/js/helloWorld.js" $ renderFileLonghand (helloWorld :: JS () ())
-        BSL.writeFile "data/examples/programs/Longhand/js/isPalindrome.js" $ renderFileLonghand (isPalindrome :: JS String Bool)
-        BSL.writeFile "data/examples/programs/Longhand/js/greetTuple.js" $ renderFileLonghand (greetTuple :: JS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Longhand/js/reverseInput.js" $ renderFileLonghand (revInputProgram :: JS () ())
+        BSL.writeFile "data/examples/programs/longhand/js/askName.js" $ renderFileLonghand "main" "main" "void" "void" (askName :: JS () ())
+        BSL.writeFile "data/examples/programs/longhand/js/collatzStep.js" $ renderFileLonghand "collatzStep" "collatzStep" "number" "number" (collatzStep :: JS Int Int)
+        BSL.writeFile "data/examples/programs/longhand/js/helloWorld.js" $ renderFileLonghand "main" "main" "void" "void" (helloWorld :: JS () ())
+        BSL.writeFile "data/examples/programs/longhand/js/isPalindrome.js" $ renderFileLonghand "isPalindrome" "isPalindrome" "string" "boolean" (isPalindrome :: JS String Bool)
+        BSL.writeFile "data/examples/programs/longhand/js/greetTuple.js" $ renderFileLonghand "greetTuple" "greetTuple" "[string, number]" "string" (greetTuple :: JS (String, Int) String)
+        BSL.writeFile "data/examples/programs/longhand/js/reverseInput.js" $ renderFileLonghand "main" "main" "void" "void" (revInputProgram :: JS () ())
 
-        createDirectoryIfMissing True "data/examples/programs/witjshorthand/js"
+        createDirectoryIfMissing True "data/examples/programs/shorthand/js"
 
-        BSL.writeFile "data/examples/programs/Shorthand/js/askName.js" $ renderFileShorthand (askName :: JS () ())
-        BSL.writeFile "data/examples/programs/Shorthand/js/collatzStep.js" $ renderFileShorthand (collatzStep :: JS Int Int)
-        BSL.writeFile "data/examples/programs/Shorthand/js/helloWorld.js" $ renderFileShorthand (helloWorld :: JS () ())
-        BSL.writeFile "data/examples/programs/Shorthand/js/isPalindrome.js" $ renderFileShorthand (isPalindrome :: JS String Bool)
-        BSL.writeFile "data/examples/programs/Shorthand/js/greetTuple.js" $ renderFileShorthand (greetTuple :: JS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Shorthand/js/reverseInput.js" $ renderFileShorthand (revInputProgram :: JS () ())
-
-    
-    do
-        createDirectoryIfMissing True "data/examples/statements/Longhand/ts"
-
-        BSL.writeFile "data/examples/statements/Longhand/ts/askName.ts" $ renderStatementLonghand (askName :: TS () ())
-        BSL.writeFile "data/examples/statements/Longhand/ts/collatzStep.ts" $ renderStatementLonghand (collatzStep :: TS Int Int)
-        BSL.writeFile "data/examples/statements/Longhand/ts/helloWorld.ts" $ renderStatementLonghand (helloWorld :: TS () ())
-        BSL.writeFile "data/examples/statements/Longhand/ts/isPalindrome.ts" $ renderStatementLonghand (isPalindrome :: TS String Bool)
-        BSL.writeFile "data/examples/statements/Longhand/ts/greetTuple.ts" $ renderStatementLonghand (greetTuple :: TS (String, Int) String)
-        BSL.writeFile "data/examples/statements/Longhand/ts/reverseInput.ts" $ renderStatementLonghand (revInputProgram :: TS () ())
-
-        createDirectoryIfMissing True "data/examples/statements/Shorthand/ts"
-
-        BSL.writeFile "data/examples/statements/Shorthand/ts/askName.ts" $ renderStatementShorthand (askName :: TS () ())
-        BSL.writeFile "data/examples/statements/Shorthand/ts/collatzStep.ts" $ renderStatementShorthand (collatzStep :: TS Int Int)
-        BSL.writeFile "data/examples/statements/Shorthand/ts/helloWorld.ts" $ renderStatementShorthand (helloWorld :: TS () ())
-        BSL.writeFile "data/examples/statements/Shorthand/ts/isPalindrome.ts" $ renderStatementShorthand (isPalindrome :: TS String Bool)
-        BSL.writeFile "data/examples/statements/Shorthand/ts/greetTuple.ts" $ renderStatementShorthand (greetTuple :: TS (String, Int) String)
-        BSL.writeFile "data/examples/statements/Shorthand/ts/reverseInput.ts" $ renderStatementShorthand (revInputProgram :: TS () ())
-
-        createDirectoryIfMissing True "data/examples/programs/Imports/ts"
-
-        BSL.writeFile "data/examples/programs/Imports/ts/askName.ts" $ renderFileImports (askName :: TS () ())
-        BSL.writeFile "data/examples/programs/Imports/ts/collatzStep.ts" $ renderFileImports (collatzStep :: TS Int Int)
-        BSL.writeFile "data/examples/programs/Imports/ts/helloWorld.ts" $ renderFileImports (helloWorld :: TS () ())
-        BSL.writeFile "data/examples/programs/Imports/ts/isPalindrome.ts" $ renderFileImports (isPalindrome :: TS String Bool)
-        BSL.writeFile "data/examples/programs/Imports/ts/greetTuple.ts" $ renderFileImports (greetTuple :: TS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Imports/ts/reverseInput.ts" $ renderFileImports (revInputProgram :: TS () ())
-
-        createDirectoryIfMissing True "data/examples/programs/Longhand/ts"
-
-        BSL.writeFile "data/examples/programs/Longhand/ts/askName.ts" $ renderFileLonghand (askName :: TS () ())
-        BSL.writeFile "data/examples/programs/Longhand/ts/collatzStep.ts" $ renderFileLonghand (collatzStep :: TS Int Int)
-        BSL.writeFile "data/examples/programs/Longhand/ts/helloWorld.ts" $ renderFileLonghand (helloWorld :: TS () ())
-        BSL.writeFile "data/examples/programs/Longhand/ts/isPalindrome.ts" $ renderFileLonghand (isPalindrome :: TS String Bool)
-        BSL.writeFile "data/examples/programs/Longhand/ts/greetTuple.ts" $ renderFileLonghand (greetTuple :: TS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Longhand/ts/reverseInput.ts" $ renderFileLonghand (revInputProgram :: TS () ())
-
-        createDirectoryIfMissing True "data/examples/programs/witjshorthand/ts"
-
-        BSL.writeFile "data/examples/programs/Shorthand/ts/askName.ts" $ renderFileShorthand (askName :: TS () ())
-        BSL.writeFile "data/examples/programs/Shorthand/ts/collatzStep.ts" $ renderFileShorthand (collatzStep :: TS Int Int)
-        BSL.writeFile "data/examples/programs/Shorthand/ts/helloWorld.ts" $ renderFileShorthand (helloWorld :: TS () ())
-        BSL.writeFile "data/examples/programs/Shorthand/ts/isPalindrome.ts" $ renderFileShorthand (isPalindrome :: TS String Bool)
-        BSL.writeFile "data/examples/programs/Shorthand/ts/greetTuple.ts" $ renderFileShorthand (greetTuple :: TS (String, Int) String)
-        BSL.writeFile "data/examples/programs/Shorthand/ts/reverseInput.ts" $ renderFileShorthand (revInputProgram :: TS () ())
-
-    do
-        createDirectoryIfMissing True "data/examples/statements/Longhand/php"
-
-        BSL.writeFile "data/examples/statements/Longhand/php/askName.php" $ renderStatementLonghand (askName :: PHP () ())
-        BSL.writeFile "data/examples/statements/Longhand/php/collatzStep.php" $ renderStatementLonghand (collatzStep :: PHP Int Int)
-        BSL.writeFile "data/examples/statements/Longhand/php/helloWorld.php" $ renderStatementLonghand (helloWorld :: PHP () ())
-        BSL.writeFile "data/examples/statements/Longhand/php/isPalindrome.php" $ renderStatementLonghand (isPalindrome :: PHP String Bool)
-        BSL.writeFile "data/examples/statements/Longhand/php/greetTuple.php" $ renderStatementLonghand (greetTuple :: PHP (String, Int) String)
-        BSL.writeFile "data/examples/statements/Longhand/php/reverseInput.php" $ renderStatementLonghand (revInputProgram :: PHP () ())
-
-        createDirectoryIfMissing True "data/examples/statements/Shorthand/php"
-
-        BSL.writeFile "data/examples/statements/Shorthand/php/askName.php" $ renderStatementShorthand (askName :: PHP () ())
-        BSL.writeFile "data/examples/statements/Shorthand/php/collatzStep.php" $ renderStatementShorthand (collatzStep :: PHP Int Int)
-        BSL.writeFile "data/examples/statements/Shorthand/php/helloWorld.php" $ renderStatementShorthand (helloWorld :: PHP () ())
-        BSL.writeFile "data/examples/statements/Shorthand/php/isPalindrome.php" $ renderStatementShorthand (isPalindrome :: PHP String Bool)
-        BSL.writeFile "data/examples/statements/Shorthand/php/greetTuple.php" $ renderStatementShorthand (greetTuple :: PHP (String, Int) String)
-        BSL.writeFile "data/examples/statements/Shorthand/php/reverseInput.php" $ renderStatementShorthand (revInputProgram :: PHP () ())
-
-        createDirectoryIfMissing True "data/examples/programs/Imports/php"
-
-        BSL.writeFile "data/examples/programs/Imports/php/askName.php" $ renderFileImports (askName :: PHP () ())
-        BSL.writeFile "data/examples/programs/Imports/php/collatzStep.php" $ renderFileImports (collatzStep :: PHP Int Int)
-        BSL.writeFile "data/examples/programs/Imports/php/helloWorld.php" $ renderFileImports (helloWorld :: PHP () ())
-        BSL.writeFile "data/examples/programs/Imports/php/isPalindrome.php" $ renderFileImports (isPalindrome :: PHP String Bool)
-        BSL.writeFile "data/examples/programs/Imports/php/greetTuple.php" $ renderFileImports (greetTuple :: PHP (String, Int) String)
-        BSL.writeFile "data/examples/programs/Imports/php/reverseInput.php" $ renderFileImports (revInputProgram :: PHP () ())
-
-        createDirectoryIfMissing True "data/examples/programs/Longhand/php"
-
-        BSL.writeFile "data/examples/programs/Longhand/php/askName.php" $ renderFileLonghand (askName :: PHP () ())
-        BSL.writeFile "data/examples/programs/Longhand/php/collatzStep.php" $ renderFileLonghand (collatzStep :: PHP Int Int)
-        BSL.writeFile "data/examples/programs/Longhand/php/helloWorld.php" $ renderFileLonghand (helloWorld :: PHP () ())
-        BSL.writeFile "data/examples/programs/Longhand/php/isPalindrome.php" $ renderFileLonghand (isPalindrome :: PHP String Bool)
-        BSL.writeFile "data/examples/programs/Longhand/php/greetTuple.php" $ renderFileLonghand (greetTuple :: PHP (String, Int) String)
-        BSL.writeFile "data/examples/programs/Longhand/php/reverseInput.php" $ renderFileLonghand (revInputProgram :: PHP () ())
-
-        createDirectoryIfMissing True "data/examples/programs/witjshorthand/php"
-
-        BSL.writeFile "data/examples/programs/Shorthand/php/askName.php" $ renderFileShorthand (askName :: PHP () ())
-        BSL.writeFile "data/examples/programs/Shorthand/php/collatzStep.php" $ renderFileShorthand (collatzStep :: PHP Int Int)
-        BSL.writeFile "data/examples/programs/Shorthand/php/helloWorld.php" $ renderFileShorthand (helloWorld :: PHP () ())
-        BSL.writeFile "data/examples/programs/Shorthand/php/isPalindrome.php" $ renderFileShorthand (isPalindrome :: PHP String Bool)
-        BSL.writeFile "data/examples/programs/Shorthand/php/greetTuple.php" $ renderFileShorthand (greetTuple :: PHP (String, Int) String)
-        BSL.writeFile "data/examples/programs/Shorthand/php/reverseInput.php" $ renderFileShorthand (revInputProgram :: PHP () ())
-    -}
+        BSL.writeFile "data/examples/programs/shorthand/js/askName.js" $ renderFileShorthand "main" "main" "void" "void" (askName :: JS () ())
+        BSL.writeFile "data/examples/programs/shorthand/js/collatzStep.js" $ renderFileShorthand "collatzStep" "collatzStep" "number" "number" (collatzStep :: JS Int Int)
+        BSL.writeFile "data/examples/programs/shorthand/js/helloWorld.js" $ renderFileShorthand "main" "main" "void" "void" (helloWorld :: JS () ())
+        BSL.writeFile "data/examples/programs/shorthand/js/isPalindrome.js" $ renderFileShorthand "isPalindrome" "isPalindrome" "string" "boolean" (isPalindrome :: JS String Bool)
+        BSL.writeFile "data/examples/programs/shorthand/js/greetTuple.js" $ renderFileShorthand "greetTuple" "greetTuple" "[string, number]" "string" (greetTuple :: JS (String, Int) String)
+        BSL.writeFile "data/examples/programs/shorthand/js/reverseInput.js" $ renderFileShorthand "main" "main" "void" "void" (revInputProgram :: JS () ())
