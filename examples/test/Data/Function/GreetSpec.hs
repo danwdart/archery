@@ -44,15 +44,26 @@ spec = do
     --             executeJSON (greetData :: PHP Person String) myPerson `shouldReturn` greetData myPerson
     describe "greetTuple" $ do
         describe "HS" $ do
-            describe "with Longhand" $ do
-                it "is correct" $ do
-                    executeGHCiLonghand (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
-            xdescribe "with imports" $ do
-                it "is correct" $ do
-                    executeGHCiImports (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
-            xdescribe "with shorthand" $ do
-                it "is correct" $ do
-                    executeGHCiShorthand (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+            describe "GHCi" $ do
+                describe "with Longhand" $ do
+                    it "is correct" $ do
+                        executeGHCiLonghand (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+                xdescribe "with imports" $ do
+                    it "is correct" $ do
+                        executeGHCiImports (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+                xdescribe "with shorthand" $ do
+                    it "is correct" $ do
+                        executeGHCiShorthand (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+            describe "JSON" $ do
+                describe "with Longhand" $ do
+                    it "is correct" $ do
+                        executeJSONLonghand (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+                xdescribe "with imports" $ do
+                    it "is correct" $ do
+                        executeJSONImports (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
+                xdescribe "with shorthand" $ do
+                    it "is correct" $ do
+                        executeJSONShorthand (greetTuple :: HS (String, Int) String) myTuple `shouldReturn` greetTuple myTuple
         -- xdescribe "JS" $ do
         --     describe "with Longhand" $ do
         --         it "is correct" $ do

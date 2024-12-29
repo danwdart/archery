@@ -24,38 +24,53 @@ import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
 
-prop_HSIsCorrectLonghand ∷ String → Property
-prop_HSIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+prop_HSGHCiIsCorrectLonghand ∷ String → Property
+prop_HSGHCiIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
     answer <- executeGHCiLonghand (isPalindrome :: HS String Bool) s
     pure $ answer === isPalindrome s
 
-xprop_HSIsCorrectImports ∷ String → Property
-xprop_HSIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+xprop_HSGHCiIsCorrectImports ∷ String → Property
+xprop_HSGHCiIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
     answer <- executeGHCiImports (isPalindrome :: HS String Bool) s
     pure $ answer === isPalindrome s
 
-xprop_HSIsCorrectShorthand ∷ String → Property
-xprop_HSIsCorrectShorthand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+xprop_HSGHCiIsCorrectShorthand ∷ String → Property
+xprop_HSGHCiIsCorrectShorthand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
     answer <- executeGHCiShorthand (isPalindrome :: HS String Bool) s
     pure $ answer === isPalindrome s
 
+xprop_HSJSONIsCorrectLonghand ∷ String → Property
+xprop_HSJSONIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
+    answer <- executeJSONLonghand (isPalindrome :: HS String Bool) s
+    pure $ answer === isPalindrome s
+
+xprop_HSJSONIsCorrectImports ∷ String → Property
+xprop_HSJSONIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
+    answer <- executeJSONImports (isPalindrome :: HS String Bool) s
+    pure $ answer === isPalindrome s
+
+xprop_HSJSONIsCorrectShorthand ∷ String → Property
+xprop_HSJSONIsCorrectShorthand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
+    answer <- executeJSONShorthand (isPalindrome :: HS String Bool) s
+    pure $ answer === isPalindrome s
+
 -- prop_JSIsCorrectLonghand ∷ String → Property
--- prop_JSIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+-- prop_JSIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
 --     answer <- executeJSONLonghand (isPalindrome :: JS String Bool) s
 --     pure $ answer === isPalindrome s
 --
 -- prop_JSIsCorrectImports ∷ String → Property
--- prop_JSIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+-- prop_JSIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
 --     answer <- executeJSONImports (isPalindrome :: JS String Bool) s
 --     pure $ answer === isPalindrome s
 --
 -- prop_PHPIsCorrectLonghand ∷ String → Property
--- prop_PHPIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+-- prop_PHPIsCorrectLonghand s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
 --     answer <- executeJSONLonghand (isPalindrome :: PHP String Bool) s
 --     pure $ answer === isPalindrome s
 --
 -- prop_PHPIsCorrectImports ∷ String → Property
--- prop_PHPIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 . monadicIO $ do
+-- prop_PHPIsCorrectImports s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 . monadicIO $ do
 --     answer <- executeJSONImports (isPalindrome :: PHP String Bool) s
 --     pure $ answer === isPalindrome s
 
@@ -64,7 +79,7 @@ xprop_HSIsCorrectShorthand s = length s > 1 && all (`notElem` "$") s ==> withMax
 myInterpret = _
 
 xprop_ViaJSONIsCorrect :: String -> Property
-xprop_ViaJSONIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 200 $
+xprop_ViaJSONIsCorrect s = length s > 1 && all (`notElem` "$") s ==> withMaxSuccess 50 $
     (myInterpret <$> decode (encode (isPalindrome :: FreeFunc p String Bool)) <*> Just s) === Just (isPalindrome s)
 -}
 

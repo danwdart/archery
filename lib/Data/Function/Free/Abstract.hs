@@ -37,12 +37,12 @@ data FreeFunc p a b where
     {- Unleft :: FreeFunc p (Either a x) (Either b x) -> FreeFunc p a b -}
     Unify :: FreeFunc p (Either a a) a
     Tag :: FreeFunc p (Bool, a) (Either a a)
-    Num :: Int -> FreeFunc p a Int
-    Negate :: FreeFunc p Int Int
-    Add :: FreeFunc p (Int, Int) Int
-    Mult :: FreeFunc p (Int, Int) Int
-    Div :: FreeFunc p (Int, Int) Int
-    Mod :: FreeFunc p (Int, Int) Int
+    Num :: (Num n, Show n, ToJSON n) => n -> FreeFunc p a n
+    Negate :: Num n => FreeFunc p n n
+    Add :: Num n => FreeFunc p (n, n) n
+    Mult :: Num n => FreeFunc p (n, n) n
+    Div :: Integral n => FreeFunc p (n, n) n
+    Mod :: Integral n => FreeFunc p (n, n) n
     Swap :: FreeFunc p (a, b) (b, a)
     SwapEither :: FreeFunc p (Either a b) (Either b a)
     Reassoc :: FreeFunc p (a, (b, c)) ((a, b), c)
