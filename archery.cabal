@@ -110,6 +110,9 @@ library
     Control.Category.Execute.Haskell.Longhand
     Control.Category.Execute.Haskell.Imports
     Control.Category.Execute.Haskell.Shorthand
+    Control.Category.Execute.JS.Longhand
+    Control.Category.Execute.JS.Imports
+    Control.Category.Execute.JS.Shorthand
     Control.Category.Execute.JSON.Longhand
     Control.Category.Execute.JSON.Imports
     Control.Category.Execute.JSON.Shorthand
@@ -448,6 +451,9 @@ executable write-examples-dev
     Control.Category.Execute.Haskell.Longhand
     Control.Category.Execute.Haskell.Imports
     Control.Category.Execute.Haskell.Shorthand
+    Control.Category.Execute.JS.Longhand
+    Control.Category.Execute.JS.Imports
+    Control.Category.Execute.JS.Shorthand
     Control.Category.Execute.JSON.Longhand
     Control.Category.Execute.JSON.Imports
     Control.Category.Execute.JSON.Shorthand
