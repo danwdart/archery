@@ -364,25 +364,21 @@ instance Strong JS where
         _shorthand = "second (" <> shorthand f <> ")",
         _longhand = "\\(a, b) -> (a, (" <> longhand f <> ") b)"
     }
-{-}
+
 instance Choice JS where
     left' f = JS $ Code {
-        _externalImports = [
-            ("Data.Bifunctor", ["first"])
-        ] <> externalImports f,
+        _externalImports = externalImports f,
         _internalImports = internalImports f,
-        _shorthand = "first (" <> shorthand f <> ")",
-        _longhand = "\\case { Left x -> Left ((" <> longhand f <> ") x); Right x -> Right x; }"
+        _shorthand = "({tag, val}) => ({tag, val: tag === \"Left\" ? (" <> shorthand f <> ")(val) : val })",
+        _longhand = "({tag, val}) => ({tag, val: tag === \"Left\" ? (" <> longhand f <> ")(val) : val })"
     }
     right' f = JS $ Code {
-        _externalImports = [
-            ("Data.Bifunctor", ["second"])
-        ] <> externalImports f,
+        _externalImports = externalImports f,
         _internalImports = internalImports f,
-        _shorthand = "second (" <> shorthand f <> ")",
-        _longhand = "\\case { Left x -> Left x; Right x -> Right ((" <> longhand f <> ") x); }"
+        _shorthand = "({tag, val}) => ({tag, val: tag === \"Right\" ? (" <> shorthand f <> ")(val) : val })",
+        _longhand = "({tag, val}) => ({tag, val: tag === \"Right\" ? (" <> longhand f <> ")(val) : val })"
     }
-
+{-
 instance Symmetric JS where
     swap = JS $ Code {
         _externalImports = [],
