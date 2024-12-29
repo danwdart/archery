@@ -24,8 +24,8 @@ let
       gen-hie > hie.yaml
       for i in $(find -type f | grep -v dist-newstyle); do krank $i; done
     '';
-    buildInputs = tools.defaultBuildTools ++ [ nixpkgs.gettext nixpkgs.nodejs_23 nixpkgs.php83 /* nixpkgs.tinycc */ ];
-    nativeBuildInputs = tools.defaultBuildTools ++ [ nixpkgs.gettext nixpkgs.nodejs_23 nixpkgs.php83 /* nixpkgs.tinycc */ ];
+    buildInputs = tools.defaultBuildTools ++ [ nixpkgs.gettext nixpkgs.nodejs_23 nixpkgs.php84 /* nixpkgs.tinycc */ ];
+    nativeBuildInputs = tools.defaultBuildTools ++ [ nixpkgs.gettext nixpkgs.nodejs_23 nixpkgs.php84 /* nixpkgs.tinycc */ ];
     withHoogle = false;
   };
   in
