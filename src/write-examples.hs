@@ -4,6 +4,9 @@
 
 module Main (main) where
 
+-- import Control.Category.Compile.Imports
+-- import Control.Category.Compile.Longhand
+-- import Control.Category.Compile.Shorthand
 -- import Control.Category.Interpret
 import Data.Aeson                            qualified as A
 -- import Data.ByteString.Char8      qualified as BS
@@ -103,6 +106,9 @@ main = do
         BSL.writeFile "data/examples/programs/shorthand/haskell/IsPalindrome.hs" $ renderFileShorthand "IsPalindrome" "isPalindrome" "String" "Bool" (isPalindrome :: HS String Bool)
         BSL.writeFile "data/examples/programs/shorthand/haskell/GreetTuple.hs" $ renderFileShorthand "GreetTuple" "greetTuple" "(String, Int)" "String" (greetTuple :: HS (String, Int) String)
         BSL.writeFile "data/examples/programs/shorthand/haskell/reverseInput.hs" $ renderFileShorthand "Main" "main" "()" "IO ()" (revInputProgram :: HS () ())
+    -- do
+    --     compileLonghand "/home/dwd/code/mine/haskell/archery/data/examples/programs/longhand/haskell/" (askName :: HS () ())
+    
     do
         createDirectoryIfMissing True "data/examples/statements/longhand/js"
 

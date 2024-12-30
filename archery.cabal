@@ -105,6 +105,9 @@ library
     Control.Category.Choice
     Control.Category.Cocartesian
     Control.Category.Cochoice
+    Control.Category.Compile.Imports
+    Control.Category.Compile.Longhand
+    Control.Category.Compile.Shorthand
     Control.Category.Costrong
     Control.Category.Curry
     Control.Category.Execute.Haskell.Longhand
@@ -152,260 +155,6 @@ library
 
 -- Control.Category.Generic
 
-executable jcat2hsfd
-  import:        shared-properties-unsafe
-  main-is:       jcat2hsfd.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
-executable jcat2hsfi
-  import:        shared-properties-unsafe
-  main-is:       jcat2hsfi.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
-executable jcat2hsfs
-  import:        shared-properties-unsafe
-  main-is:       jcat2hsfs.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
-executable jcat2hssd
-  import:        shared-properties-unsafe
-  main-is:       jcat2hssd.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
-executable jcat2hsss
-  import:        shared-properties-unsafe
-  main-is:       jcat2hsss.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
--- executable jcat2jsp
---   import:        shared-properties-unsafe
---   main-is:       jcat2jsp.hs
---   build-depends:
---     , aeson
---     , archery
---     , base        >= 4.19.1.0 && <5
---     , bytestring
--- 
--- executable jcat2php
---   import:        shared-properties-unsafe
---   main-is:       jcat2php.hs
---   build-depends:
---     , aeson
---     , archery
---     , base        >= 4.19.1.0 && <5
---     , bytestring
-
-executable jcat2ycat
-  import:        shared-properties-unsafe
-  main-is:       jcat2ycat.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable jcatcfd
-  import:        shared-properties-unsafe
-  main-is:       jcatcfd.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
-executable jcatcfi
-  import:        shared-properties-unsafe
-  main-is:       jcatcfi.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
-executable jcatcfs
-  import:        shared-properties-unsafe
-  main-is:       jcatcfs.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
-executable jcatcsd
-  import:        shared-properties-unsafe
-  main-is:       jcatcsd.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
-executable jcatcss
-  import:        shared-properties-unsafe
-  main-is:       jcatcss.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
-executable runjcat
-  import:        shared-properties-unsafe
-  main-is:       runjcat.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-
-executable runycat
-  import:        shared-properties-unsafe
-  main-is:       runycat.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable ycat2hsfd
-  import:        shared-properties-unsafe
-  main-is:       ycat2hsfd.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable ycat2hsfi
-  import:        shared-properties-unsafe
-  main-is:       ycat2hsfi.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable ycat2hsfs
-  import:        shared-properties-unsafe
-  main-is:       ycat2hsfs.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable ycat2hssd
-  import:        shared-properties-unsafe
-  main-is:       ycat2hssd.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable ycat2hsss
-  import:        shared-properties-unsafe
-  main-is:       ycat2hsss.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable ycat2jcat
-  import:        shared-properties-unsafe
-  main-is:       ycat2jcat.hs
-  build-depends:
-    , aeson
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
--- executable ycat2js
---   import:        shared-properties-unsafe
---   main-is:       ycat2js.hs
---   build-depends:
---     , archery
---     , base        >= 4.19.1.0 && <5
---     , bytestring
---     , yaml
-
--- executable ycat2php
---   import:        shared-properties-unsafe
---   main-is:       ycat2php.hs
---   build-depends:
---     , archery
---     , base        >= 4.19.1.0 && <5
---     , bytestring
---     , yaml
-
-executable ycatcfd
-  import:        shared-properties-unsafe
-  main-is:       ycatcfd.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable ycatcfi
-  import:        shared-properties-unsafe
-  main-is:       ycatcfi.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable ycatcfs
-  import:        shared-properties-unsafe
-  main-is:       ycatcfs.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable ycatcsd
-  import:        shared-properties-unsafe
-  main-is:       ycatcsd.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
-executable ycatcss
-  import:        shared-properties-unsafe
-  main-is:       ycatcss.hs
-  build-depends:
-    , archery
-    , base        >=4.20.0.0 && <5
-    , bytestring
-    , yaml
-
 executable write-examples
   import:         shared-properties-unsafe
   main-is:        write-examples.hs
@@ -439,13 +188,15 @@ executable write-examples-dev
     Data.Function.IsPalindrome
     Data.Function.ReverseInput
     Data.Person
-
     Control.Category.Apply
     Control.Category.Bracket
     Control.Category.Cartesian
     Control.Category.Choice
     Control.Category.Cocartesian
     Control.Category.Cochoice
+    Control.Category.Compile.Imports
+    Control.Category.Compile.Longhand
+    Control.Category.Compile.Shorthand
     Control.Category.Costrong
     Control.Category.Curry
     Control.Category.Execute.Haskell.Longhand

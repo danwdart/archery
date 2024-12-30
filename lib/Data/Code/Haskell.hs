@@ -14,6 +14,9 @@ import Control.Category
 import Control.Category.Cartesian
 import Control.Category.Choice
 import Control.Category.Cocartesian
+import Control.Category.Compile.Imports
+import Control.Category.Compile.Longhand
+import Control.Category.Compile.Shorthand
 import Control.Category.Execute.Haskell.Imports
 import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Shorthand
@@ -753,10 +756,8 @@ instance ExecuteStdioLonghand HS where
                 ] <>
                 toExternalCLIImports cat <>
                 [
-                "-e", BSL.unpack (renderStatementLonghand cat) <> " ()"
+                "-e", "runKleisli (" <> BSL.unpack (renderStatementLonghand cat) <> ") ()"
                 ]
-        -- liftIO . putStrLn $ "Params"
-        -- liftIO . print $ params
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
@@ -772,7 +773,7 @@ instance ExecuteStdioImports HS where
                 -- ] <>
                 -- toCLIImports cat <>
                 -- [
-                "-e", BSL.unpack (renderStatementShorthand cat) <> " ()"
+                "-e", "runKleisli (" <> BSL.unpack (renderStatementShorthand cat) <> ") ()"
                 ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of
@@ -789,7 +790,7 @@ instance ExecuteStdioShorthand HS where
                 ] <>
                 toExternalCLIImports cat <>
                 [
-                "-e", BSL.unpack (renderStatementShorthand cat) <> " ()"
+                "-e", "runKleisli (" <> BSL.unpack (renderStatementShorthand cat) <> ") ()"
                 ]
         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params (show stdin))
         case exitCode of
@@ -839,7 +840,7 @@ instance ExecuteJSONImports HS where
     executeJSONImports cat param = do
         let params ∷ [String]
             params = [
-                "-e", ":set -ilibrary",
+                -- "-e", ":set -ilibrary",
                 "-e", ":set -XGHC2024",
                 "-e", "import Prelude hiding ((.), id)",
                 "-e", "import Data.Aeson",
@@ -854,3 +855,63 @@ instance ExecuteJSONImports HS where
         case exitCode of
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
+
+instance CompileLonghand HS where
+    compileLonghand file cat = do
+        let params ∷ [String]
+            params = [
+                -- "-e", ":cd library",
+                "-e", ":set -XGHC2024",
+                "-e", "import Prelude hiding ((.), id)"
+                ] <>
+                toExternalCLIImports cat <>
+                [
+                "-e", "runKleisli (" <> BSL.unpack (renderStatementLonghand cat) <> ") ()",
+                "-o", file
+                ]
+        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghc" params "")
+        case exitCode of
+            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
+            ExitSuccess -> do
+                liftIO $ putStrLn stdout
+                liftIO $ putStrLn stderr
+
+instance CompileImports HS where
+    compileImports file cat = do
+        let params ∷ [String]
+            params = [
+                -- "-e", ":cd library",
+                "-e", ":set -XGHC2024",
+                "-e", "import Prelude hiding ((.), id)",
+                -- ] <>
+                -- toCLIImports cat <>
+                -- [
+                "-e", "runKleisli (" <> BSL.unpack (renderStatementShorthand cat) <> ") ()",
+                "-o", file
+                ]
+        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghc" params "")
+        case exitCode of
+            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
+            ExitSuccess -> do
+                liftIO $ putStrLn stdout
+                liftIO $ putStrLn stderr
+
+instance CompileShorthand HS where
+    compileShorthand file cat = do
+        let params ∷ [String]
+            params = [
+                "-e", ":cd library",
+                "-e", ":set -XGHC2024",
+                "-e", "import Prelude hiding ((.), id)"
+                ] <>
+                toExternalCLIImports cat <>
+                [
+                "-e", "runKleisli (" <> BSL.unpack (renderStatementShorthand cat) <> ") ()",
+                "-o", file
+                ]
+        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghc" params "")
+        case exitCode of
+            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
+            ExitSuccess -> do
+                liftIO $ putStrLn stdout
+                liftIO $ putStrLn stderr

@@ -17,23 +17,23 @@ import Control.Category.Cocartesian
 -- import Control.Category.Execute.PHP.Imports
 -- import Control.Category.Execute.PHP.Longhand
 -- import Control.Category.Execute.PHP.Shorthand
-import Control.Category.Execute.JSON.Imports
-import Control.Category.Execute.JSON.Longhand
-import Control.Category.Execute.JSON.Shorthand
-import Control.Category.Execute.Stdio.Imports
-import Control.Category.Execute.Stdio.Longhand
-import Control.Category.Execute.Stdio.Shorthand
-import Control.Category.Numeric
+-- import Control.Category.Execute.JSON.Imports
+-- import Control.Category.Execute.JSON.Longhand
+-- import Control.Category.Execute.JSON.Shorthand
+-- import Control.Category.Execute.Stdio.Imports
+-- import Control.Category.Execute.Stdio.Longhand
+-- import Control.Category.Execute.Stdio.Shorthand
+-- import Control.Category.Numeric
 import Control.Category.Primitive.Bool
-import Control.Category.Primitive.Console
-import Control.Category.Primitive.Extra
--- import Control.Category.Primitive.File
-import Control.Category.Primitive.String
+-- import Control.Category.Primitive.Console
+-- -- import Control.Category.Primitive.Extra
+-- -- import Control.Category.Primitive.File
+-- -- import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
-import Control.Exception                          hiding (bracket)
-import Control.Monad.IO.Class
-import Data.Aeson
+-- import Control.Exception                          hiding (bracket)
+-- import Control.Monad.IO.Class
+-- import Data.Aeson
 import Data.ByteString.Lazy.Char8                 qualified as BSL
 import Data.Code.Generic
 -- import Data.Map                                         (Map)
@@ -46,14 +46,14 @@ import Data.Render.File.Shorthand
 import Data.Render.Statement.Longhand
 import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
-import Data.Set                                   qualified as S
+-- import Data.Set                                   qualified as S
 -- import Data.String
 -- import Data.Typeable
-import GHC.IO.Exception
+-- import GHC.IO.Exception
 import GHC.IsList
 import Prelude                                    hiding (id, (.))
-import System.Process
-import Text.Read
+-- import System.Process
+-- import Text.Read
 
 newtype PHP a b = PHP {
     _code :: Code a b

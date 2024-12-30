@@ -2,14 +2,9 @@
 
 module System.Executable where
 
-import Control.Exception
-import Control.Monad.IO.Class
 import Data.ByteString.Lazy.Char8 qualified as BSL
-import GHC.IO.Exception
 import System.Console.GetOpt
 import System.Environment
-import System.Process
-import Text.Read
 
 data CLIOptionsWithOutput = CLIOptionsWithOutput {
     input  :: Maybe String,
@@ -59,7 +54,7 @@ parseAllProducingOutput = do
     argv <- getArgs
     case getOpt Permute optionsProducingOutput argv of
         (o, n, []) -> do
-            let parsed = foldl (flip id) defaultOptionsWithOutput o
+            let parsed = foldl' (flip id) defaultOptionsWithOutput o
                 includingUnparsed = insertOptionsWithOutputFromList n parsed
             pure includingUnparsed
         (_, _, errs) -> do
@@ -72,7 +67,7 @@ parseAllNotProducingOutput = do
     argv <- getArgs
     case getOpt Permute optionsNotProducingOutput argv of
         (o, n, []) -> do
-            let parsed = foldl (flip id) defaultOptionsWithoutOutput o
+            let parsed = foldl' (flip id) defaultOptionsWithoutOutput o
                 includingUnparsed = insertOptionsWithoutOutputFromList n parsed
             pure includingUnparsed
         (_, _, errs) -> do
@@ -98,18 +93,17 @@ readToOp transformer = do
 
     getFileOrContents (singleInput parsed) >>= transformer
 
-compileHS ∷ BSL.ByteString → IO ()
-compileHS fileContents = do
-    let params ∷ [String]
-        params = [
-            "-e", "import Control.Arrow",
-            -- "-e", "import Prelude hiding ((.), id)",
-            "-e", "import Control.Category",
-            "-e", "runKleisli (" <> BSL.unpack fileContents <> ") ()"
-            ]
-    (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghc" params "")
-    case exitCode of
-        ExitFailure code -> liftIO . throwIO . userError $ "Exit code " <> show code <> " when attempting to run ghc with params: " <> unwords params <> " Output: " <> stderr
-        ExitSuccess -> case readEither stdout of
-            Left err -> liftIO . throwIO . userError $ "Can't parse response: " <> err
-            Right ret -> pure ret
+{-}
+codec :: Category cat => (BSL.ByteString → IO (FreeFunc Prims () ())) => (FreeFunc Prims () () → IO BSL.ByteString) -> IO ()
+codec decoder encoder = readToWrite ((pure . encoder) <=< decoder)
+
+
+run :: (BSL.ByteString → IO (FreeFunc Prims () ())) -> (FreeFunc Prims () () → IO (Kleisli IO () ())) -> IO ()
+run decoder interpreter = readToOp ((flip runKleisli () . pure interpreter) <=< decoder)
+
+transpile ∷ Category cat =>
+    (cat () () -> BSL.ByteString) -> (BSL.ByteString → IO (FreeFunc Prims () ())) -> (FreeFunc Prims () () → IO (cat () ())) -> IO ()
+transpile renderer decoder interpreter = readToWrite (
+    \bs -> renderer . (interpreter <$> decoder bs)
+    )
+-}
