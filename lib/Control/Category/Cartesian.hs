@@ -16,7 +16,7 @@ instance Cartesian (->) where
     fst' = fst
     snd' = snd
 
-instance Monad m ⇒ Cartesian (Kleisli m) where
+instance Applicative m ⇒ Cartesian (Kleisli m) where
     copy = Kleisli $ pure . copy
     consume = Kleisli $ pure . consume
     fst' = Kleisli $ pure . fst'

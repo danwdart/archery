@@ -23,7 +23,7 @@ instance Numeric (->) where
     div' = uncurry div
     mod' = uncurry mod
 
-instance Monad m ⇒ Numeric (Kleisli m) where
+instance Applicative m ⇒ Numeric (Kleisli m) where
     negate' = Kleisli $ pure . negate
     add = Kleisli $ pure . uncurry (+)
     mult = Kleisli $ pure . uncurry (*)

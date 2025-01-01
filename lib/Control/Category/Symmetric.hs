@@ -18,7 +18,7 @@ instance Symmetric (->) where
     reassocEither (Right (Left b))  = Left (Right b)
     reassocEither (Right (Right c)) = Right c
 
-instance Monad m ⇒ Symmetric (Kleisli m) where
+instance Applicative m ⇒ Symmetric (Kleisli m) where
     swap = Kleisli (pure . swap)
     swapEither = Kleisli (pure . swapEither)
     reassoc = Kleisli (pure . reassoc)

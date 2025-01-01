@@ -19,8 +19,8 @@ instance Cocartesian (->) where
     tag (False, a) = Left a
     tag (True, a)  = Right a
 
-instance Monad m ⇒ Cocartesian (Kleisli m) where
-    injectL = Kleisli $ pure . injectL
-    injectR = Kleisli $ pure . injectR
+instance Applicative m ⇒ Cocartesian (Kleisli m) where
+    injectL = Kleisli $ pure . Left
+    injectR = Kleisli $ pure . Right
     unify = Kleisli $ pure . unify
     tag = Kleisli $ pure . tag

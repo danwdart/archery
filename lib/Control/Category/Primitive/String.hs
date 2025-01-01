@@ -10,5 +10,5 @@ class PrimitiveString cat where
 instance PrimitiveString (->) where
     reverseString = reverse
 
-instance Monad m ⇒ PrimitiveString (Kleisli m) where
-    reverseString = Kleisli (pure . reverseString)
+instance Applicative m ⇒ PrimitiveString (Kleisli m) where
+    reverseString = Kleisli (pure . reverse)

@@ -10,5 +10,5 @@ class PrimitiveBool cat where
 instance PrimitiveBool (->) where
     eq = uncurry (==)
 
-instance Monad m ⇒ PrimitiveBool (Kleisli m) where
+instance Applicative m ⇒ PrimitiveBool (Kleisli m) where
     eq = Kleisli (pure . eq)

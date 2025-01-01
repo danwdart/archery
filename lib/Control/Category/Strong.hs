@@ -12,6 +12,6 @@ instance Strong (->) where
     first' f (a, b) = (f a, b)
     second' f (a, b) = (a, f b)
 
-instance Monad m ⇒ Strong (Kleisli m) where
+instance Functor m ⇒ Strong (Kleisli m) where
     first' (Kleisli f) = Kleisli (\(a, c) -> (,c) <$> f a)
     second' (Kleisli f) = Kleisli (\(a, b) -> (a,) <$> f b)
