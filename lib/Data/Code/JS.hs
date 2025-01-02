@@ -40,9 +40,12 @@ import Data.Code.Generic
 import Data.Map                                   qualified as M
 import Data.MapSet
 -- import Data.Maybe
-import Data.Render.File.Imports
-import Data.Render.File.Longhand
-import Data.Render.File.Shorthand
+import Data.Render.Library.Imports
+import Data.Render.Library.Longhand
+import Data.Render.Library.Shorthand
+import Data.Render.Program.Imports
+import Data.Render.Program.Longhand
+import Data.Render.Program.Shorthand
 import Data.Render.Statement.Longhand
 import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
@@ -107,33 +110,39 @@ instance RenderStatementLonghand (JS a b) where
 instance RenderStatementShorthand (JS a b) where
     renderStatementShorthand = shorthand
 
+instance RenderLibraryShorthand (JS a b) where
+    renderLibraryShorthand _ = []
+
+instance RenderLibraryLonghand (JS a b) where
+    renderLibraryLonghand _ = []
+
+instance RenderLibraryImports (JS a b) where
+    renderLibraryImports _ = []
+
 -- TODO runKleisli
-instance {- (Typeable a, Typeable b) ⇒ -} RenderFileShorthand (JS a b) where
-    renderFileShorthand _newModule' newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+instance {- (Typeable a, Typeable b) ⇒ -} RenderProgramShorthand (JS a b) where
+    renderProgramShorthand cat =
         -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
         BSL.unlines (toExternalFileImports cat) <>
         BSL.unlines (toShorthandFileDefinitions cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "/**\n * @param {" <> newFunctionTypeFrom <> "} param\n * @returns {" <> newFunctionTypeTo <> "}\n */\n" <>
         -- "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
-        "\nexport const " <> newFunctionName <> " = " <> renderStatementShorthand cat
+        "\n" <> renderStatementShorthand cat
 
 -- TODO runKleisli
-instance {- (Typeable a, Typeable b) ⇒ -} RenderFileLonghand (JS a b) where
-    renderFileLonghand _newModule' newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+instance {- (Typeable a, Typeable b) ⇒ -} RenderProgramLonghand (JS a b) where
+    renderProgramLonghand cat =
         BSL.unlines (toExternalFileImports cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "/**\n * @param {" <> newFunctionTypeFrom <> "} param\n * @returns {" <> newFunctionTypeTo <> "}\n */\n" <>
         -- "\n" <> functionName cat <> " = " <> renderStatementLonghand cat
-        "\nexport const " <> newFunctionName <> " = " <> renderStatementLonghand cat
+        "\n" <> renderStatementLonghand cat
 
 -- TODO runKleisli
-instance {- (Typeable a, Typeable b) ⇒ -}  RenderFileImports (JS a b) where
-    renderFileImports _newModule' newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+instance {- (Typeable a, Typeable b) ⇒ -}  RenderProgramImports (JS a b) where
+    renderProgramImports cat =
        BSL.unlines (toExternalFileImports cat) <>
        BSL.unlines (toInternalFileImports cat) <>
-       "/**\n * @param {" <> newFunctionTypeFrom <> "} param\n * @returns {" <> newFunctionTypeTo <> "}\n */\n" <>
-        "\nexport const " <> newFunctionName <> " = " <> renderStatementShorthand cat
+       "\n" <> renderStatementShorthand cat
 
 {-}
 instance Bracket JS where

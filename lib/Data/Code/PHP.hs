@@ -40,9 +40,9 @@ import Data.Code.Generic
 import Data.Map                                   qualified as M
 import Data.MapSet
 -- import Data.Maybe
-import Data.Render.File.Imports
-import Data.Render.File.Longhand
-import Data.Render.File.Shorthand
+import Data.Render.Program.Imports
+import Data.Render.Program.Longhand
+import Data.Render.Program.Shorthand
 import Data.Render.Statement.Longhand
 import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
@@ -111,27 +111,27 @@ instance RenderStatementShorthand (PHP a b) where
     renderStatementShorthand = shorthand
 
 -- TODO runKleisli
-instance {- (Typeable a, Typeable b) ⇒ -} RenderFileShorthand (PHP a b) where
-    renderFileShorthand _newModule' newFunctionName _newFunctionTypeFrom _newFunctionTypeTo cat =
+instance {- (Typeable a, Typeable b) ⇒ -} RenderProgramShorthand (PHP a b) where
+    renderProgramShorthand cat =
         -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
         BSL.unlines (toExternalFileImports cat) <>
         BSL.unlines (toShorthandFileDefinitions cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\n" <> newFunctionName <> " = " <> renderStatementShorthand cat
+        "\n" <> renderStatementShorthand cat
 
 -- TODO runKleisli
-instance {- (Typeable a, Typeable b) ⇒ -} RenderFileLonghand (PHP a b) where
-    renderFileLonghand _newModule' newFunctionName _newFunctionTypeFrom _newFunctionTypeTo cat =
+instance {- (Typeable a, Typeable b) ⇒ -} RenderProgramLonghand (PHP a b) where
+    renderProgramLonghand cat =
         BSL.unlines (toExternalFileImports cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        newFunctionName <> " = " <> renderStatementLonghand cat
+        "\n" <> renderStatementLonghand cat
 
 -- TODO runKleisli
-instance {- (Typeable a, Typeable b) ⇒ -}  RenderFileImports (PHP a b) where
-    renderFileImports _newModule' newFunctionName _newFunctionTypeFrom _newFunctionTypeTo cat =
+instance {- (Typeable a, Typeable b) ⇒ -}  RenderProgramImports (PHP a b) where
+    renderProgramImports cat =
        BSL.unlines (toExternalFileImports cat) <>
        BSL.unlines (toInternalFileImports cat) <>
-       newFunctionName <> " = " <> renderStatementShorthand cat
+       "\n" <> renderStatementShorthand cat
 
 {-}
 instance Bracket PHP where

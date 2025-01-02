@@ -146,9 +146,12 @@ library
     Data.Function.Utilities
     Data.MapSet
     Data.Prims
-    Data.Render.File.Longhand
-    Data.Render.File.Imports
-    Data.Render.File.Shorthand
+    Data.Render.Library.Longhand
+    Data.Render.Library.Imports
+    Data.Render.Library.Shorthand
+    Data.Render.Program.Longhand
+    Data.Render.Program.Imports
+    Data.Render.Program.Shorthand
     Data.Render.Statement.Longhand
     Data.Render.Statement.Shorthand
     System.Executable
@@ -174,6 +177,7 @@ executable write-examples
     , base        >=4.20.0.0 && <5
     , bytestring
     , directory
+    , filepath
     , yaml
 
 executable write-examples-dev
@@ -235,9 +239,12 @@ executable write-examples-dev
     Data.Function.Utilities
     Data.MapSet
     Data.Prims
-    Data.Render.File.Longhand
-    Data.Render.File.Imports
-    Data.Render.File.Shorthand
+    Data.Render.Library.Longhand
+    Data.Render.Library.Imports
+    Data.Render.Library.Shorthand
+    Data.Render.Program.Longhand
+    Data.Render.Program.Imports
+    Data.Render.Program.Shorthand
     Data.Render.Statement.Longhand
     Data.Render.Statement.Shorthand
     System.Executable
@@ -248,6 +255,7 @@ executable write-examples-dev
     , bytestring
     , containers
     , directory
+    , filepath
     , process
     , text
     , yaml
