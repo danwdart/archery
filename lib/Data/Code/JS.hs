@@ -40,9 +40,12 @@ import Data.Code.Generic
 import Data.Map                                   qualified as M
 import Data.MapSet
 -- import Data.Maybe
-import Data.Render.Library.Imports
-import Data.Render.Library.Longhand
-import Data.Render.Library.Shorthand
+import Data.Render.Library.External.Imports
+import Data.Render.Library.External.Longhand
+import Data.Render.Library.External.Shorthand
+import Data.Render.Library.Internal.Imports
+import Data.Render.Library.Internal.Longhand
+import Data.Render.Library.Internal.Shorthand
 import Data.Render.Program.Imports
 import Data.Render.Program.Longhand
 import Data.Render.Program.Shorthand
@@ -110,14 +113,40 @@ instance RenderStatementLonghand (JS a b) where
 instance RenderStatementShorthand (JS a b) where
     renderStatementShorthand = shorthand
 
-instance RenderLibraryShorthand (JS a b) where
-    renderLibraryShorthand _ = []
+instance RenderLibraryInternalShorthand (JS a b) where
+    renderLibraryInternalShorthand _ = []
 
-instance RenderLibraryLonghand (JS a b) where
-    renderLibraryLonghand _ = []
+instance RenderLibraryInternalLonghand (JS a b) where
+    renderLibraryInternalLonghand _ = []
 
-instance RenderLibraryImports (JS a b) where
-    renderLibraryImports _ = []
+instance RenderLibraryInternalImports (JS a b) where
+    renderLibraryInternalImports _ = []
+
+-- TODO runKleisli
+instance {- (Typeable a, Typeable b) ⇒ -} RenderLibraryExternalShorthand (JS a b) where
+    renderLibraryExternalShorthand newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+       --"module " <> "module " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
+        BSL.unlines (toExternalFileImports cat) <>
+        BSL.unlines (toShorthandFileDefinitions cat) <>
+        "/**\n * @param {" <> newFunctionTypeFrom <> "} param\n * @returns {" <> newFunctionTypeTo <> "}\n */\n" <>
+        "export const " <> newFunctionName <> " = " <> renderStatementShorthand cat
+
+-- TODO runKleisli
+instance {- (Typeable a, Typeable b) ⇒ -} RenderLibraryExternalLonghand (JS a b) where
+    renderLibraryExternalLonghand newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+        BSL.unlines (toExternalFileImports cat) <>
+        -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        -- "\n" <> functionName cat <> " = " <> renderStatementLonghand cat
+        "/**\n * @param {" <> newFunctionTypeFrom <> "} param\n * @returns {" <> newFunctionTypeTo <> "}\n */\n" <>
+        "export const " <> newFunctionName <> " = " <> renderStatementLonghand cat
+
+-- TODO runKleisli
+instance {- (Typeable a, Typeable b) ⇒ -}  RenderLibraryExternalImports (JS a b) where
+    renderLibraryExternalImports newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+       BSL.unlines (toExternalFileImports cat) <>
+       BSL.unlines (toInternalFileImports cat) <>
+       "/**\n * @param {" <> newFunctionTypeFrom <> "} param\n * @returns {" <> newFunctionTypeTo <> "}\n */\n" <>
+        "export const " <> newFunctionName <> " = " <> renderStatementShorthand cat
 
 -- TODO runKleisli
 instance {- (Typeable a, Typeable b) ⇒ -} RenderProgramShorthand (JS a b) where

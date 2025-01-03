@@ -27,9 +27,12 @@ import Data.Function.ReverseInput
 -- import Data.Person
 import Data.Prims
 
--- import Data.Render.Library.Longhand
--- import Data.Render.Library.Imports
--- import Data.Render.Library.Shorthand
+import Data.Render.Library.External.Longhand
+import Data.Render.Library.External.Imports
+import Data.Render.Library.External.Shorthand
+import Data.Render.Library.Internal.Longhand
+import Data.Render.Library.Internal.Imports
+import Data.Render.Library.Internal.Shorthand
 import Data.Render.Program.Longhand
 import Data.Render.Program.Imports
 import Data.Render.Program.Shorthand
@@ -39,7 +42,7 @@ import Data.Render.Statement.Shorthand
 import Data.Yaml                             qualified as Y
 import System.Directory
 import System.FilePath
-import Data.Render.Library.Imports (RenderLibraryImports(renderLibraryImports))
+import Data.Render.Library.Internal.Imports (RenderLibraryImports(renderLibraryImports))
 
 writeToPrefix :: FilePath -> [(FilePath, BSL.ByteString)] -> IO ()
 writeToPrefix prefix = traverse_ ((\(file, contents) -> createDirectoryIfMissing True (dropFileName file) >> BSL.writeFile file contents) . first (prefix <>))
@@ -85,8 +88,6 @@ main = do
                 do -- lib
                     createDirectoryIfMissing True "data/examples/statements/longhand/haskell/lib"
                     
-                    writeToPrefix "data/examples/libraries/imports/haskell/collatzStep/" $ renderLibraryImports (collatzStep :: HS Int Int)
-
                     -- BSL.writeFile "data/examples/statements/longhand/haskell/lib/CollatzStep.hs" $ renderStatementLonghand (collatzStep :: HS Int Int)
                     -- BSL.writeFile "data/examples/statements/longhand/haskell/lib/IsPalindrome.hs" $ renderStatementLonghand (isPalindrome :: HS String Bool)
                     -- BSL.writeFile "data/examples/statements/longhand/haskell/lib/GreetTuple.hs" $ renderStatementLonghand (greetTuple :: HS (String, Int) String)
@@ -113,7 +114,9 @@ main = do
             do -- Im
                 do -- lib
                     createDirectoryIfMissing True "data/examples/libraries/imports/haskell"
-
+                    
+                    writeToPrefix "data/examples/libraries/imports/haskell/collatzStep/" $ renderLibraryImports (collatzStep :: HS Int Int)
+                    writeToPrefix "data/examples/libraries/imports/haskell/isPalindrome/" $ renderLibraryImports (isPalindrome :: HS String Bool)
                     -- BSL.writeFile "data/examples/libraries/imports/haskell/CollatzStep.hs" $ renderLibraryImports (collatzStep :: HS Int Int)
                     -- BSL.writeFile "data/examples/libraries/imports/haskell/IsPalindrome.hs" $ renderLibraryImports (isPalindrome :: HS String Bool)
                     -- BSL.writeFile "data/examples/libraries/imports/haskell/GreetTuple.hs" $ renderLibraryImports (greetTuple :: HS (String, Int) String)

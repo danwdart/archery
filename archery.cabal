@@ -146,9 +146,12 @@ library
     Data.Function.Utilities
     Data.MapSet
     Data.Prims
-    Data.Render.Library.Longhand
-    Data.Render.Library.Imports
-    Data.Render.Library.Shorthand
+    Data.Render.Library.External.Longhand
+    Data.Render.Library.External.Imports
+    Data.Render.Library.External.Shorthand
+    Data.Render.Library.Internal.Longhand
+    Data.Render.Library.Internal.Imports
+    Data.Render.Library.Internal.Shorthand
     Data.Render.Program.Longhand
     Data.Render.Program.Imports
     Data.Render.Program.Shorthand
@@ -239,9 +242,12 @@ executable write-examples-dev
     Data.Function.Utilities
     Data.MapSet
     Data.Prims
-    Data.Render.Library.Longhand
-    Data.Render.Library.Imports
-    Data.Render.Library.Shorthand
+    Data.Render.Library.External.Longhand
+    Data.Render.Library.External.Imports
+    Data.Render.Library.External.Shorthand
+    Data.Render.Library.Internal.Longhand
+    Data.Render.Library.Internal.Imports
+    Data.Render.Library.Internal.Shorthand
     Data.Render.Program.Longhand
     Data.Render.Program.Imports
     Data.Render.Program.Shorthand

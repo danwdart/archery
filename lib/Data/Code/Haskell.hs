@@ -43,9 +43,12 @@ import Data.Code.Generic
 import Data.Map                                   qualified as M
 import Data.MapSet
 -- import Data.Maybe
-import Data.Render.Library.Imports
-import Data.Render.Library.Longhand
-import Data.Render.Library.Shorthand
+import Data.Render.Library.External.Imports
+import Data.Render.Library.External.Longhand
+import Data.Render.Library.External.Shorthand
+import Data.Render.Library.Internal.Imports
+import Data.Render.Library.Internal.Longhand
+import Data.Render.Library.Internal.Shorthand
 import Data.Render.Program.Imports
 import Data.Render.Program.Longhand
 import Data.Render.Program.Shorthand
@@ -115,8 +118,8 @@ instance RenderStatementShorthand (HS a b) where
 moduleNameToFilename :: BSL.ByteString -> FilePath
 moduleNameToFilename = BSL.unpack . (<> ".hs") . BSL.map (\c -> if c == '.' then '/' else c)
 
-instance RenderLibraryShorthand (HS a b) where
-    renderLibraryShorthand hs = GHC.IsList.toList (internalImports hs) >>=
+instance RenderInternalLibraryShorthand (HS a b) where
+    renderLibraryInternalShorthand hs = GHC.IsList.toList (internalImports hs) >>=
         \(module'', functions) -> [(
             moduleNameToFilename module'',
             "module " <> module'' <> " (" <> BSL.intercalate ", " (functionName <$> S.toList functions) <> ") where\n" <>
@@ -127,8 +130,8 @@ instance RenderLibraryShorthand (HS a b) where
                     "\n" <> functionName function' <> " = " <> functionShorthand function') <$> GHC.IsList.toList functions)
         )]
 
-instance RenderLibraryLonghand (HS a b) where
-    renderLibraryLonghand hs = GHC.IsList.toList (internalImports hs) >>=
+instance RenderInternalLibraryLonghand (HS a b) where
+    renderLibraryInternalLonghand hs = GHC.IsList.toList (internalImports hs) >>=
         \(module'', functions) -> [(
             moduleNameToFilename module'',
             "module " <> module'' <> " (" <> BSL.intercalate ", " (functionName <$> S.toList functions) <> ") where\n" <>
@@ -140,8 +143,10 @@ instance RenderLibraryLonghand (HS a b) where
         )]
 
 -- TODO do we really need this?
-instance RenderLibraryImports (HS a b) where
-    renderLibraryImports hs = GHC.IsList.toList (internalImports hs) >>=
+-- This is just dependencies of a library
+-- We also need the actual library
+instance RenderInternalLibraryImports (HS a b) where
+    renderLibraryInternalImports hs = GHC.IsList.toList (internalImports hs) >>=
         \(module'', functions) -> [(
             moduleNameToFilename module'',
             "module " <> module'' <> " (" <> BSL.intercalate ", " (functionName <$> S.toList functions) <> ") where\n" <> 
@@ -151,6 +156,38 @@ instance RenderLibraryImports (HS a b) where
                     "\n" <> functionName function' <> " :: " <> functionTypeFrom function' <> " -> " <> functionTypeTo function' <>
                     "\n" <> functionName function' <> " = " <> functionShorthand function') <$> GHC.IsList.toList functions)
         )]
+
+
+-- TODO runKleisli
+instance {- (Typeable a, Typeable b) ⇒ -} RenderLibraryExternalShorthand (HS a b) where
+    renderLibraryExternalShorthand newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+        -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
+        "\nmodule " <> newModule <> " (" <> newFunctionName <> ") where\n\n" <>
+        BSL.unlines (toExternalFileImports cat) <>
+        BSL.unlines (toShorthandFileDefinitions cat) <>
+        -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\n" <> newFunctionName <> " :: " <> newFunctionTypeFrom <> " -> " <> newFunctionTypeTo <>
+        "\n" <> newFunctionName <> " = " <> renderStatementShorthand cat
+
+-- TODO runKleisli
+instance {- (Typeable a, Typeable b) ⇒ -} RenderLibraryExternalLonghand (HS a b) where
+    renderLibraryExternalLonghand newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+        -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
+        "\nmodule " <> newModule <> " (" <> newFunctionName <> ") where\n\n" <>
+        BSL.unlines (toExternalFileImports cat) <>
+        "\n" <> newFunctionName <> " :: " <> newFunctionTypeFrom <> " -> " <> newFunctionTypeTo <>
+        "\n" <> newFunctionName <> " = " <> renderStatementLonghand cat
+
+-- TODO runKleisli
+instance {- (Typeable a, Typeable b) ⇒ -}  RenderLibraryExternalImports (HS a b) where
+    renderLibraryExternalImports newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+        -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ") where\n\n" <>
+        "\nmodule " <> newModule <> " (" <> newFunctionName <> ") where\n\n" <>
+        BSL.unlines (toExternalFileImports cat) <>
+        BSL.unlines (toInternalFileImports cat) <>
+        -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
+        "\n" <> newFunctionName <> " :: " <> newFunctionTypeFrom <> " -> " <> newFunctionTypeTo <>
+        "\n" <> newFunctionName <> " = " <> renderStatementShorthand cat
 
 
 -- TODO runKleisli
