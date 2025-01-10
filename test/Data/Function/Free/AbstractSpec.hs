@@ -1,4 +1,4 @@
-module Data.Function.Free.AbstractSpec where
+module Data.Function.Free.AbstractSpec (spec) where
 
 import Control.Category.Interpret
 import Data.Aeson

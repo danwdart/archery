@@ -1,11 +1,12 @@
 {-# LANGUAGE Safe #-}
 
-module System.Executable where
+module System.Executable () where
 
-import Data.ByteString.Lazy.Char8 qualified as BSL
-import System.Console.GetOpt
-import System.Environment
+-- import Data.ByteString.Lazy.Char8 qualified as BSL
+-- import System.Console.GetOpt
+-- import System.Environment
 
+{-}
 data CLIOptionsWithOutput = CLIOptionsWithOutput {
     input  :: Maybe String,
     output :: Maybe String
@@ -92,7 +93,7 @@ readToOp transformer = do
     parsed <- parseAllNotProducingOutput
 
     getFileOrContents (singleInput parsed) >>= transformer
-
+-}
 {-}
 codec :: Category cat => (BSL.ByteString → IO (FreeFunc Prims () ())) => (FreeFunc Prims () () → IO BSL.ByteString) -> IO ()
 codec decoder encoder = readToWrite ((pure . encoder) <=< decoder)

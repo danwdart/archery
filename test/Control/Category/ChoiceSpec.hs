@@ -1,4 +1,4 @@
-module Control.Category.ChoiceSpec where
+module Control.Category.ChoiceSpec (spec) where
 
 import Control.Category.Choice
 import Test.Hspec

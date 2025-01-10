@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Cocartesian where
+module Control.Category.Cocartesian (Cocartesian(..)) where
 
 import Control.Arrow (Kleisli (..))
 

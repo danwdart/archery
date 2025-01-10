@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Primitive.File where
+module Control.Category.Primitive.File (PrimitiveFile(..)) where
 
 import Control.Arrow          (Kleisli (..))
 import Control.Monad.IO.Class

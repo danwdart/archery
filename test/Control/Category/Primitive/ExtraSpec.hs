@@ -1,4 +1,4 @@
-module Control.Category.Primitive.ExtraSpec where
+module Control.Category.Primitive.ExtraSpec (spec) where
 
 import Control.Arrow                    (Kleisli (..))
 import Control.Category.Primitive.Extra

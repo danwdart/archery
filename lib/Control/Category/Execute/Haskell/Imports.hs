@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Execute.Haskell.Imports where
+module Control.Category.Execute.Haskell.Imports (ExecuteHaskellImports(..)) where
 
 import Control.Monad.IO.Class
 import Prelude                hiding (id, (.))

@@ -6,7 +6,7 @@
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
 -- | Program module. Like Func, but dynamically imports modules as required.
-module Data.Code.JS where
+module Data.Code.JS (JS(..)) where
 
 import Control.Category
 -- import Control.Category.Apply
@@ -124,7 +124,7 @@ instance RenderLibraryInternalImports (JS a b) where
 
 -- TODO runKleisli
 instance {- (Typeable a, Typeable b) ⇒ -} RenderLibraryExternalShorthand (JS a b) where
-    renderLibraryExternalShorthand newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+    renderLibraryExternalShorthand _newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
        --"module " <> "module " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
         BSL.unlines (toExternalFileImports cat) <>
         BSL.unlines (toShorthandFileDefinitions cat) <>
@@ -133,7 +133,7 @@ instance {- (Typeable a, Typeable b) ⇒ -} RenderLibraryExternalShorthand (JS a
 
 -- TODO runKleisli
 instance {- (Typeable a, Typeable b) ⇒ -} RenderLibraryExternalLonghand (JS a b) where
-    renderLibraryExternalLonghand newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+    renderLibraryExternalLonghand _newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
         BSL.unlines (toExternalFileImports cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
         -- "\n" <> functionName cat <> " = " <> renderStatementLonghand cat
@@ -142,7 +142,7 @@ instance {- (Typeable a, Typeable b) ⇒ -} RenderLibraryExternalLonghand (JS a 
 
 -- TODO runKleisli
 instance {- (Typeable a, Typeable b) ⇒ -}  RenderLibraryExternalImports (JS a b) where
-    renderLibraryExternalImports newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
+    renderLibraryExternalImports _newModule newFunctionName newFunctionTypeFrom newFunctionTypeTo cat =
        BSL.unlines (toExternalFileImports cat) <>
        BSL.unlines (toInternalFileImports cat) <>
        "/**\n * @param {" <> newFunctionTypeFrom <> "} param\n * @returns {" <> newFunctionTypeTo <> "}\n */\n" <>

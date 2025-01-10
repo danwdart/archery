@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Compile.Imports where
+module Control.Category.Compile.Imports (CompileImports(..)) where
 
 import Control.Monad.IO.Class
 import Prelude                hiding (id, (.))

@@ -1,7 +1,7 @@
 {-# LANGUAGE Unsafe #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
-module Control.Category.Execute.JSON.Shorthand where
+module Control.Category.Execute.JSON.Shorthand (ExecuteJSONShorthand(..)) where
 
 import Control.Monad.IO.Class
 import Data.Aeson

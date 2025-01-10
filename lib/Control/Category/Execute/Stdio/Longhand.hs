@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Execute.Stdio.Longhand where
+module Control.Category.Execute.Stdio.Longhand (ExecuteStdioLonghand(..)) where
 
 import Control.Monad.IO.Class
 

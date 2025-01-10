@@ -6,7 +6,7 @@
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
 -- | Program module. Like Func, but dynamically imports modules as required.
-module Data.Code.PHP where
+module Data.Code.PHP (PHP(..)) where
 
 import Control.Category
 -- import Control.Category.Apply
@@ -62,6 +62,7 @@ newtype PHP a b = PHP {
 instance HasCode PHP a b where
     code = _code
 
+{-}
 toExternalCLIImports ∷ PHP a b → [String]
 toExternalCLIImports php = GHC.IsList.toList (externalImports php) >>=
     \(moduleName, functions) -> GHC.IsList.toList functions >>=
@@ -81,6 +82,7 @@ toShorthandCLIDefinitions php = GHC.IsList.toList (internalImports php) >>=
             "$" <> functionName function' <> " = " <> functionLonghand function' <> ";" <>
             "function " <> functionName function' <> "($param) { return (" <> functionLonghand function' <> ")($param); } " -- spacey
         ]
+-}
 
 toInternalFileImports ∷ PHP a b → [BSL.ByteString]
 toInternalFileImports php = GHC.IsList.toList (internalImports php) >>=

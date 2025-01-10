@@ -1,4 +1,4 @@
-module Control.Category.CartesianSpec where
+module Control.Category.CartesianSpec (spec) where
 
 import Control.Arrow              (Kleisli (..))
 import Control.Category.Cartesian

@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Safe              #-}
 
-module Data.Function.Greet where
+module Data.Function.Greet (greetWith, greetTuple) where
 
 import Control.Category
 import Control.Category.Cartesian

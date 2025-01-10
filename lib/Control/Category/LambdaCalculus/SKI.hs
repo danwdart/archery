@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.LambdaCalculus.SKI where
+module Control.Category.LambdaCalculus.SKI (SKI(..)) where
 
 class SKI where
     s :: cat (cat a b) (cat b a)

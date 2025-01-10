@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Safe              #-}
 
-module Data.Function.HelloWorld where
+module Data.Function.HelloWorld (helloWorld) where
 
 import Control.Category
 import Control.Category.Primitive.Console

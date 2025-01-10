@@ -4,7 +4,21 @@
 {-# OPTIONS_GHC -Wno-safe -Wno-unsafe #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
-module Data.Code.Generic where
+module Data.Code.Generic (
+    Code(..),
+    HasCode(..),
+    HasExternalImports(..),
+    HasInternalImports(..),
+    Function(..),
+    FunctionName, HasFunctionName(..),
+    FunctionTypeFrom, HasFunctionTypeFrom(..),
+    FunctionTypeTo, HasFunctionTypeTo(..),
+    HasShorthandDefinition(..),
+    HasLonghandDefinition(..),
+    Module, HasModule(..),
+    HasShorthand(..),
+    HasLonghand(..)
+) where
 
 import Data.ByteString.Lazy.Char8 qualified as BSL
 -- import Data.Map                   (Map)

@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Compile.Longhand where
+module Control.Category.Compile.Longhand (CompileLonghand(..)) where
 
 import Control.Monad.IO.Class
 import Prelude                hiding (id, (.))

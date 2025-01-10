@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Function.IsPalindrome where
+module Data.Function.IsPalindrome (isPalindrome) where
 
 import Control.Category
 import Control.Category.Cartesian

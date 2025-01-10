@@ -1,4 +1,4 @@
-module Control.Category.Primitive.StringSpec where
+module Control.Category.Primitive.StringSpec (spec) where
 
 import Control.Arrow                     (Kleisli (..))
 import Control.Category.Primitive.String

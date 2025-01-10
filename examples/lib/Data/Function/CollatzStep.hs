@@ -1,7 +1,7 @@
 {-# LANGUAGE Unsafe #-}
 {-# OPTIONS -Wno-unsafe -Wno-safe #-}
 
-module Data.Function.CollatzStep where
+module Data.Function.CollatzStep (collatzStep) where
 
 import Control.Category
 import Control.Category.Cartesian

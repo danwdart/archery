@@ -6,7 +6,7 @@
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
 -- | Program module. Like Func, but dynamically imports modules as required.
-module Data.Code.Haskell where
+module Data.Code.Haskell (HS(..)) where
 
 import Control.Category
 -- import Control.Category.Apply
@@ -118,7 +118,7 @@ instance RenderStatementShorthand (HS a b) where
 moduleNameToFilename :: BSL.ByteString -> FilePath
 moduleNameToFilename = BSL.unpack . (<> ".hs") . BSL.map (\c -> if c == '.' then '/' else c)
 
-instance RenderInternalLibraryShorthand (HS a b) where
+instance RenderLibraryInternalShorthand (HS a b) where
     renderLibraryInternalShorthand hs = GHC.IsList.toList (internalImports hs) >>=
         \(module'', functions) -> [(
             moduleNameToFilename module'',
@@ -130,7 +130,7 @@ instance RenderInternalLibraryShorthand (HS a b) where
                     "\n" <> functionName function' <> " = " <> functionShorthand function') <$> GHC.IsList.toList functions)
         )]
 
-instance RenderInternalLibraryLonghand (HS a b) where
+instance RenderLibraryInternalLonghand (HS a b) where
     renderLibraryInternalLonghand hs = GHC.IsList.toList (internalImports hs) >>=
         \(module'', functions) -> [(
             moduleNameToFilename module'',
@@ -145,7 +145,7 @@ instance RenderInternalLibraryLonghand (HS a b) where
 -- TODO do we really need this?
 -- This is just dependencies of a library
 -- We also need the actual library
-instance RenderInternalLibraryImports (HS a b) where
+instance RenderLibraryInternalImports (HS a b) where
     renderLibraryInternalImports hs = GHC.IsList.toList (internalImports hs) >>=
         \(module'', functions) -> [(
             moduleNameToFilename module'',

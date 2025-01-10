@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Curry where
+module Control.Category.Curry (Curry(..)) where
 
 import Control.Arrow (Kleisli(..))
 

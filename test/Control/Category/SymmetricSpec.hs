@@ -1,4 +1,4 @@
-module Control.Category.SymmetricSpec where
+module Control.Category.SymmetricSpec (spec) where
 
 import Control.Category.Symmetric
 import Test.Hspec

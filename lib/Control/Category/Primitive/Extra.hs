@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Primitive.Extra where
+module Control.Category.Primitive.Extra (PrimitiveExtra(..)) where
 
 import Control.Arrow (Kleisli (..))
 

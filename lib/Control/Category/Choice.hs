@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Choice where
+module Control.Category.Choice (Choice(..)) where
 
 import Control.Arrow (Kleisli (..))
 

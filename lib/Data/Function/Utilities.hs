@@ -1,6 +1,12 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Function.Utilities where
+module Data.Function.Utilities (
+    catpow,
+    (***),
+    (&&&),
+    (+++),
+    strong
+) where
 
 import Control.Category
 import Control.Category.Cartesian

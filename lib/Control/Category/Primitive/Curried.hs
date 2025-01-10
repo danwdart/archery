@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Primitive.Curried where
+module Control.Category.Primitive.Curried (PrimitiveCurried(..)) where
 import Control.Arrow (Kleisli(..))
 
 class PrimitiveCurried cat where

@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Safe              #-}
 
-module Control.Category.Generic where
+module Control.Category.Generic (Generic(..)) where
 
 import Control.Category
 import Control.Category.Apply

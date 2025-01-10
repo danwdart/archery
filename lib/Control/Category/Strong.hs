@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Strong where
+module Control.Category.Strong (Strong(..)) where
 
 import Control.Arrow (Kleisli (..))
 

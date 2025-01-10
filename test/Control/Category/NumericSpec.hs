@@ -1,4 +1,4 @@
-module Control.Category.NumericSpec where
+module Control.Category.NumericSpec (spec) where
 
 import Control.Category.Numeric
 import Test.Hspec

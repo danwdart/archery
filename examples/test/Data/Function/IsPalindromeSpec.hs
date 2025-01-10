@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module Data.Function.IsPalindromeSpec where
+module Data.Function.IsPalindromeSpec (spec) where
 
 import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Imports

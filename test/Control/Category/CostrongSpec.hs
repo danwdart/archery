@@ -1,4 +1,4 @@
-module Control.Category.CostrongSpec where
+module Control.Category.CostrongSpec (spec) where
 
 import Control.Category.Costrong
 import Test.Hspec

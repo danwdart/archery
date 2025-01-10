@@ -1,4 +1,4 @@
-module Data.Code.PHPSpec where
+module Data.Code.PHPSpec (spec) where
 {-}
 import Control.Category
 import Control.Category.Bracket

@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Render.Statement.Longhand where
+module Data.Render.Statement.Longhand (RenderStatementLonghand(..)) where
 
 import Data.ByteString.Lazy.Char8 qualified as BSL
 

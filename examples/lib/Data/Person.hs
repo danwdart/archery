@@ -2,7 +2,7 @@
 {-# LANGUAGE Unsafe         #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
-module Data.Person where
+module Data.Person (Person(..)) where
 
 import Data.Aeson
 import GHC.Generics

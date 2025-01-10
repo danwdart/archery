@@ -1,4 +1,4 @@
-module Data.PrimsSpec where
+module Data.PrimsSpec (spec) where
 
 import Control.Category.Interpret
 import Data.Prims

@@ -3,7 +3,7 @@
 {-# LANGUAGE Unsafe            #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
-module Data.Prims where
+module Data.Prims (Prims(..)) where
 
 import Control.Category.Interpret
 import Control.Category.Primitive.Bool

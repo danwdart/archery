@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Safe              #-}
 
-module Data.Function.AskName where
+module Data.Function.AskName (askName) where
 
 import Control.Category
 import Control.Category.Cartesian

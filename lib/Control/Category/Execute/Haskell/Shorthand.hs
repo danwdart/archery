@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Execute.Haskell.Shorthand where
+module Control.Category.Execute.Haskell.Shorthand (ExecuteHaskellShorthand(..)) where
 
 import Control.Monad.IO.Class
 import Prelude                hiding (id, (.))

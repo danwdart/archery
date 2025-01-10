@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module Data.Function.CollatzStepSpec where
+module Data.Function.CollatzStepSpec (spec) where
 
 import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Imports

@@ -1,4 +1,4 @@
-module Data.Function.GreetSpec where
+module Data.Function.GreetSpec (spec) where
 
 import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Imports

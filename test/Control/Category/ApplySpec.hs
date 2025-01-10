@@ -1,4 +1,4 @@
-module Control.Category.ApplySpec where
+module Control.Category.ApplySpec (spec) where
 
 import Control.Category.Apply
 import Test.Hspec

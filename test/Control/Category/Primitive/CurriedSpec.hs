@@ -1,4 +1,4 @@
-module Control.Category.Primitive.CurriedSpec where
+module Control.Category.Primitive.CurriedSpec (spec) where
 
 import Control.Arrow                      (Kleisli (..))
 import Control.Category.Primitive.Curried

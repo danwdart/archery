@@ -1,7 +1,7 @@
 {-# LANGUAGE Unsafe #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
-module Control.Category.Primitive.FileSpec where
+module Control.Category.Primitive.FileSpec (spec) where
 
 import Control.Arrow                   (Kleisli (..))
 import Control.Category.Primitive.File

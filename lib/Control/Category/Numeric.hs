@@ -1,7 +1,7 @@
 {-# LANGUAGE Unsafe #-}
 {-# OPTIONS_GHC -Wno-unsafe -Wno-safe #-}
 
-module Control.Category.Numeric where
+module Control.Category.Numeric (Numeric(..)) where
 
 import Control.Arrow (Kleisli (..))
 import Data.Aeson -- I know it doesn't really belong here

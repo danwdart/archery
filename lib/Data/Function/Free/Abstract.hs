@@ -5,7 +5,7 @@
 {-# LANGUAGE Unsafe                #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
-module Data.Function.Free.Abstract where
+module Data.Function.Free.Abstract (FreeFunc(..)) where
 
 import Control.Category
 import Control.Category.Cartesian

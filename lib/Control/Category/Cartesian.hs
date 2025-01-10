@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Cartesian where
+module Control.Category.Cartesian (Cartesian(..)) where
 
 import Control.Arrow
 

@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Apply where
+module Control.Category.Apply (Apply(..)) where
 
 import Control.Arrow (Kleisli (..))
 

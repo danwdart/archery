@@ -1,4 +1,4 @@
-module Control.Category.CocartesianSpec where
+module Control.Category.CocartesianSpec (spec) where
 
 import Control.Category.Cocartesian
 import Test.Hspec

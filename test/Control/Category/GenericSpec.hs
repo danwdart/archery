@@ -1,4 +1,4 @@
-module Control.Category.GenericSpec where
+module Control.Category.GenericSpec (spec) where
 
 -- import Control.Category.Generic
 import Test.Hspec

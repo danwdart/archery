@@ -1,4 +1,4 @@
-module Control.Category.Primitive.BoolSpec where
+module Control.Category.Primitive.BoolSpec (spec) where
 
 import Control.Arrow                   (Kleisli (..))
 import Control.Category.Primitive.Bool

@@ -1,6 +1,7 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Symmetric where
+module Control.Category.Symmetric (Symmetric(..)) where
+
 import Control.Arrow (Kleisli (..))
 
 class Symmetric cat where

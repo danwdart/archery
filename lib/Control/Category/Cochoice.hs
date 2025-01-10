@@ -1,7 +1,7 @@
 {-# LANGUAGE Safe #-}
 
 
-module Control.Category.Cochoice where
+module Control.Category.Cochoice (Cochoice(..)) where
 
 class Cochoice cat where
     unleft :: cat (Either a c) (Either b c) → cat a b

@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Primitive.Console where
+module Control.Category.Primitive.Console (PrimitiveConsole(..)) where
 
 import Control.Arrow (Kleisli (..))
 import Control.Monad.IO.Class

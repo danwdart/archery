@@ -1,7 +1,7 @@
 {-# LANGUAGE Unsafe #-}
 {-# OPTIONS_GHC -Wno-unsafe -Wno-safe #-}
 
-module Data.Render.Program.Shorthand where
+module Data.Render.Program.Shorthand (RenderProgramShorthand(..)) where
 
 import Data.ByteString.Lazy.Char8 qualified as BSL
 

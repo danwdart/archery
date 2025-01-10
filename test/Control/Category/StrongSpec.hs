@@ -1,4 +1,4 @@
-module Control.Category.StrongSpec where
+module Control.Category.StrongSpec (spec) where
 
 import Control.Category.Strong
 import Test.Hspec

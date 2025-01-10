@@ -1,4 +1,4 @@
-module Data.Code.HaskellSpec where
+module Data.Code.HaskellSpec (spec) where
 
 import Control.Category
 import Control.Category.Bracket

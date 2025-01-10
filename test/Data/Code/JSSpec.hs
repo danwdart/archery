@@ -1,4 +1,4 @@
-module Data.Code.JSSpec where
+module Data.Code.JSSpec (spec) where
 import Control.Category
 import Control.Category.Bracket
 import Control.Category.Cartesian

@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Control.Category.Costrong where
+module Control.Category.Costrong (Costrong(..)) where
 
 import Control.Arrow (Kleisli(..))
 -- import Control.Monad

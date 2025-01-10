@@ -1,4 +1,4 @@
-module Data.PersonSpec where
+module Data.PersonSpec (spec) where
 
 import Test.Hspec
 

@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE TypeFamilies #-}
 
-module Data.MapSet where
+module Data.MapSet (MapSet(..)) where
 
 import Data.Map   (Map)
 import Data.Map   qualified as M

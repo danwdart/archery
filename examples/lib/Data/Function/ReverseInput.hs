@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-module Data.Function.ReverseInput where
+module Data.Function.ReverseInput (revInputProgram) where
 
 import Control.Category
 import Control.Category.Primitive.Console
