@@ -9,10 +9,10 @@ import Control.Category.Bracket
 import Control.Category.Cartesian
 import Control.Category.Choice
 import Control.Category.Cocartesian
-import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Imports
-import Control.Category.Execute.Stdio.Longhand
+import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Stdio.Imports
+import Control.Category.Execute.Stdio.Longhand
 import Control.Category.Numeric
 import Control.Category.Primitive.Bool
 import Control.Category.Primitive.Console
@@ -23,13 +23,13 @@ import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Control.Monad.IO.Class
-import Data.ByteString.Lazy.Char8                       qualified as BSL
+import Data.ByteString.Lazy.Char8                qualified as BSL
 import Data.Kind
 import Data.Render.Statement.Longhand
 import Data.Render.Statement.Shorthand
 import Data.String
 -- import Data.Tuple.Triple
-import Prelude                                          hiding (id, (.))
+import Prelude                                   hiding (id, (.))
 import System.Process
 import Text.Read
 

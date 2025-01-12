@@ -17,7 +17,7 @@ import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
 import Data.Code.JS
-import Prelude                            hiding (id, (.))
+import Prelude                                 hiding (id, (.))
 import Test.Hspec
 {-}
 import Test.Hspec.QuickCheck

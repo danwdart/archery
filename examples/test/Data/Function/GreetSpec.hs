@@ -1,10 +1,10 @@
 module Data.Function.GreetSpec (spec) where
 
-import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Imports
+import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Shorthand
-import Control.Category.Execute.JSON.Longhand
 import Control.Category.Execute.JSON.Imports
+import Control.Category.Execute.JSON.Longhand
 import Control.Category.Execute.JSON.Shorthand
 import Data.Aeson
 import Data.Code.Haskell
@@ -17,7 +17,7 @@ import Data.Function.IsPalindrome
 import Data.Function.ReverseInput
 import Data.Person
 import Data.Prims
-import Test.Hspec                                       hiding (runIO)
+import Test.Hspec                                 hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic

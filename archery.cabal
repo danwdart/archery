@@ -23,8 +23,8 @@ common shared-properties-base
   default-extensions:
     NoGeneralisedNewtypeDeriving
     UnicodeSyntax
-  ghcjs-options:      -dedupe
 
+  ghcjs-options:      -dedupe
 
 common shared-properties-dev-unsafe
   import:             shared-properties-base
@@ -74,6 +74,7 @@ common shared-properties-nobase
     -Wno-missing-role-annotations -Wno-missing-kind-signatures
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
     -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
+
   default-extensions: UnicodeSyntax
 
 -- TODO: unsafe?
@@ -88,8 +89,9 @@ library
     -Wno-missing-role-annotations -Wno-missing-kind-signatures
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
     -Werror -haddock
+
   default-extensions: UnicodeSyntax
-  hs-source-dirs:  lib
+  hs-source-dirs:     lib
   build-depends:
     , aeson
     , base        >=4.20.0.0 && <5
@@ -110,17 +112,17 @@ library
     Control.Category.Compile.Shorthand
     Control.Category.Costrong
     Control.Category.Curry
-    Control.Category.Execute.Haskell.Longhand
     Control.Category.Execute.Haskell.Imports
+    Control.Category.Execute.Haskell.Longhand
     Control.Category.Execute.Haskell.Shorthand
-    Control.Category.Execute.JS.Longhand
     Control.Category.Execute.JS.Imports
+    Control.Category.Execute.JS.Longhand
     Control.Category.Execute.JS.Shorthand
-    Control.Category.Execute.JSON.Longhand
     Control.Category.Execute.JSON.Imports
+    Control.Category.Execute.JSON.Longhand
     Control.Category.Execute.JSON.Shorthand
-    Control.Category.Execute.Stdio.Longhand
     Control.Category.Execute.Stdio.Imports
+    Control.Category.Execute.Stdio.Longhand
     Control.Category.Execute.Stdio.Shorthand
     Control.Category.Interpret
     Control.Category.LambdaCalculus.BCKW
@@ -146,14 +148,14 @@ library
     Data.Function.Utilities
     Data.MapSet
     Data.Prims
-    Data.Render.Library.External.Longhand
     Data.Render.Library.External.Imports
+    Data.Render.Library.External.Longhand
     Data.Render.Library.External.Shorthand
-    Data.Render.Library.Internal.Longhand
     Data.Render.Library.Internal.Imports
+    Data.Render.Library.Internal.Longhand
     Data.Render.Library.Internal.Shorthand
-    Data.Render.Program.Longhand
     Data.Render.Program.Imports
+    Data.Render.Program.Longhand
     Data.Render.Program.Shorthand
     Data.Render.Statement.Longhand
     Data.Render.Statement.Shorthand
@@ -188,13 +190,6 @@ executable write-examples-dev
   main-is:        write-examples.hs
   hs-source-dirs: lib examples/lib
   other-modules:
-    Data.Function.AskName
-    Data.Function.CollatzStep
-    Data.Function.Greet
-    Data.Function.HelloWorld
-    Data.Function.IsPalindrome
-    Data.Function.ReverseInput
-    Data.Person
     Control.Category.Apply
     Control.Category.Bracket
     Control.Category.Cartesian
@@ -206,17 +201,17 @@ executable write-examples-dev
     Control.Category.Compile.Shorthand
     Control.Category.Costrong
     Control.Category.Curry
-    Control.Category.Execute.Haskell.Longhand
     Control.Category.Execute.Haskell.Imports
+    Control.Category.Execute.Haskell.Longhand
     Control.Category.Execute.Haskell.Shorthand
-    Control.Category.Execute.JS.Longhand
     Control.Category.Execute.JS.Imports
+    Control.Category.Execute.JS.Longhand
     Control.Category.Execute.JS.Shorthand
-    Control.Category.Execute.JSON.Longhand
     Control.Category.Execute.JSON.Imports
+    Control.Category.Execute.JSON.Longhand
     Control.Category.Execute.JSON.Shorthand
-    Control.Category.Execute.Stdio.Longhand
     Control.Category.Execute.Stdio.Imports
+    Control.Category.Execute.Stdio.Longhand
     Control.Category.Execute.Stdio.Shorthand
     Control.Category.Interpret
     Control.Category.LambdaCalculus.BCKW
@@ -236,20 +231,27 @@ executable write-examples-dev
     Data.Code.JS
     Data.Code.PHP
     Data.Code.TS
+    Data.Function.AskName
+    Data.Function.CollatzStep
     Data.Function.Free.Abstract
     Data.Function.Free.LambdaCalculus.BCKW
     Data.Function.Free.LambdaCalculus.SKI
+    Data.Function.Greet
+    Data.Function.HelloWorld
+    Data.Function.IsPalindrome
+    Data.Function.ReverseInput
     Data.Function.Utilities
     Data.MapSet
+    Data.Person
     Data.Prims
-    Data.Render.Library.External.Longhand
     Data.Render.Library.External.Imports
+    Data.Render.Library.External.Longhand
     Data.Render.Library.External.Shorthand
-    Data.Render.Library.Internal.Longhand
     Data.Render.Library.Internal.Imports
+    Data.Render.Library.Internal.Longhand
     Data.Render.Library.Internal.Shorthand
-    Data.Render.Program.Longhand
     Data.Render.Program.Imports
+    Data.Render.Program.Longhand
     Data.Render.Program.Shorthand
     Data.Render.Statement.Longhand
     Data.Render.Statement.Shorthand

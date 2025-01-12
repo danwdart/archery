@@ -34,10 +34,10 @@ import Control.Category.Symmetric
 -- import Control.Exception                          hiding (bracket)
 -- import Control.Monad.IO.Class
 -- import Data.Aeson
-import Data.ByteString.Lazy.Char8                 qualified as BSL
+import Data.ByteString.Lazy.Char8      qualified as BSL
 import Data.Code.Generic
 -- import Data.Map                                         (Map)
-import Data.Map                                   qualified as M
+import Data.Map                        qualified as M
 import Data.MapSet
 -- import Data.Maybe
 import Data.Render.Program.Imports
@@ -51,7 +51,7 @@ import Data.Render.Statement.Shorthand
 -- import Data.Typeable
 -- import GHC.IO.Exception
 import GHC.IsList
-import Prelude                                    hiding (id, (.))
+import Prelude                         hiding (id, (.))
 -- import System.Process
 -- import Text.Read
 
@@ -697,7 +697,7 @@ instance Numeric PHP where
 --         case exitCode of
 --             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
 --             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
--- 
+--
 -- instance ExecutePHPShorthand PHP where
 --     executePHPShorthand cat param = do
 --         let params ∷ [String]
@@ -711,7 +711,7 @@ instance Numeric PHP where
 --         case exitCode of
 --             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
 --             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
--- 
+--
 -- instance ExecutePHPImports PHP where
 --     executePHPImports cat param = do
 --         let params ∷ [String]

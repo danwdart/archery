@@ -31,13 +31,13 @@ import Control.Category.Primitive.Extra
 import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
-import Control.Exception                          hiding (bracket)
+import Control.Exception                        hiding (bracket)
 import Control.Monad.IO.Class
 import Data.Aeson
-import Data.ByteString.Lazy.Char8                 qualified as BSL
+import Data.ByteString.Lazy.Char8               qualified as BSL
 import Data.Code.Generic
 -- import Data.Map                                         (Map)
-import Data.Map                                   qualified as M
+import Data.Map                                 qualified as M
 import Data.MapSet
 -- import Data.Maybe
 import Data.Render.Library.External.Imports
@@ -52,12 +52,12 @@ import Data.Render.Program.Shorthand
 import Data.Render.Statement.Longhand
 import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
-import Data.Set                                   qualified as S
+import Data.Set                                 qualified as S
 -- import Data.String
 -- import Data.Typeable
 import GHC.IO.Exception
 import GHC.IsList
-import Prelude                                    hiding (id, (.))
+import Prelude                                  hiding (id, (.))
 import System.Process
 import Text.Read
 
@@ -734,7 +734,7 @@ instance Numeric JS where
 --         case exitCode of
 --             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
 --             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
--- 
+--
 -- instance ExecuteJSShorthand JS where
 --     executeJSShorthand cat param = do
 --         let params ∷ [String]
@@ -748,7 +748,7 @@ instance Numeric JS where
 --         case exitCode of
 --             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
 --             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
--- 
+--
 -- instance ExecuteJSImports JS where
 --     executeJSImports cat param = do
 --         let params ∷ [String]
@@ -820,7 +820,7 @@ instance ExecuteJSONLonghand JS where
             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
 
 instance ExecuteJSONShorthand JS where
-    executeJSONShorthand :: (ToJSON input, FromJSON output, MonadIO m) => JS input output -> input -> m output
+    executeJSONShorthand :: (ToJSON input, FromJSON output, MonadIO m) ⇒ JS input output → input → m output
     executeJSONShorthand cat param = do
         let params ∷ [String]
             params = [

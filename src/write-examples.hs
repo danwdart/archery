@@ -8,10 +8,10 @@ module Main (main) where
 -- import Control.Category.Compile.Longhand
 -- import Control.Category.Compile.Shorthand
 -- import Control.Category.Interpret
-import Data.Aeson                             qualified as A
+import Data.Aeson                           qualified as A
 import Data.Bifunctor
 -- import Data.ByteString.Char8      qualified as BS
-import Data.ByteString.Lazy.Char8             qualified as BSL
+import Data.ByteString.Lazy.Char8           qualified as BSL
 import Data.Code.Haskell
 import Data.Code.JS
 -- import Data.Code.PHP
@@ -40,7 +40,7 @@ import Data.Render.Statement.Longhand
 import Data.Render.Statement.Shorthand
 -- import Data.Person
 import Data.Render.Library.Internal.Imports
-import Data.Yaml                              qualified as Y
+import Data.Yaml                            qualified as Y
 import System.Directory
 import System.FilePath
 

@@ -115,7 +115,7 @@ instance RenderStatementLonghand (HS a b) where
 instance RenderStatementShorthand (HS a b) where
     renderStatementShorthand = shorthand
 
-moduleNameToFilename :: BSL.ByteString -> FilePath
+moduleNameToFilename ∷ BSL.ByteString → FilePath
 moduleNameToFilename = BSL.unpack . (<> ".hs") . BSL.map (\c -> if c == '.' then '/' else c)
 
 instance RenderLibraryInternalShorthand (HS a b) where
@@ -123,7 +123,7 @@ instance RenderLibraryInternalShorthand (HS a b) where
         \(module'', functions) -> [(
             moduleNameToFilename module'',
             "module " <> module'' <> " (" <> BSL.intercalate ", " (functionName <$> S.toList functions) <> ") where\n" <>
-            "\n" <> BSL.unlines (toExternalFileImports hs) <> 
+            "\n" <> BSL.unlines (toExternalFileImports hs) <>
             BSL.unlines (
                 (\function' ->
                     "\n" <> functionName function' <> " :: " <> functionTypeFrom function' <> " -> " <> functionTypeTo function' <>
@@ -135,7 +135,7 @@ instance RenderLibraryInternalLonghand (HS a b) where
         \(module'', functions) -> [(
             moduleNameToFilename module'',
             "module " <> module'' <> " (" <> BSL.intercalate ", " (functionName <$> S.toList functions) <> ") where\n" <>
-            "\n" <> BSL.unlines (toExternalFileImports hs) <> 
+            "\n" <> BSL.unlines (toExternalFileImports hs) <>
             BSL.unlines (
                 (\function' ->
                     "\n" <> functionName function' <> " :: " <> functionTypeFrom function' <> " -> " <> functionTypeTo function' <>
@@ -149,8 +149,8 @@ instance RenderLibraryInternalImports (HS a b) where
     renderLibraryInternalImports hs = GHC.IsList.toList (internalImports hs) >>=
         \(module'', functions) -> [(
             moduleNameToFilename module'',
-            "module " <> module'' <> " (" <> BSL.intercalate ", " (functionName <$> S.toList functions) <> ") where\n" <> 
-            "\n" <> BSL.unlines (toExternalFileImports hs) <> 
+            "module " <> module'' <> " (" <> BSL.intercalate ", " (functionName <$> S.toList functions) <> ") where\n" <>
+            "\n" <> BSL.unlines (toExternalFileImports hs) <>
             BSL.unlines (
                 (\function' ->
                     "\n" <> functionName function' <> " :: " <> functionTypeFrom function' <> " -> " <> functionTypeTo function' <>

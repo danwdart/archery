@@ -1,6 +1,6 @@
-{-# LANGUAGE Safe #-}
 {-# LANGUAGE OverloadedLists #-}
-{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE Safe            #-}
+{-# LANGUAGE TypeFamilies    #-}
 
 module Data.MapSet (MapSet(..)) where
 

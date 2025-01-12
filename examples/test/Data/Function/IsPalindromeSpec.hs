@@ -2,11 +2,11 @@
 
 module Data.Function.IsPalindromeSpec (spec) where
 
-import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Imports
+import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Shorthand
-import Control.Category.Execute.JSON.Longhand
 import Control.Category.Execute.JSON.Imports
+import Control.Category.Execute.JSON.Longhand
 import Control.Category.Execute.JSON.Shorthand
 import Control.Monad.IO.Class
 import Data.Aeson
@@ -19,7 +19,7 @@ import Data.Function.Greet
 import Data.Function.IsPalindrome
 import Data.Function.ReverseInput
 import Data.Prims
-import Test.Hspec                                       hiding (runIO)
+import Test.Hspec                                 hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Monadic

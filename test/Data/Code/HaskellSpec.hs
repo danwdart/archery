@@ -5,11 +5,11 @@ import Control.Category.Bracket
 import Control.Category.Cartesian
 import Control.Category.Choice
 import Control.Category.Cocartesian
-import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Imports
+import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Shorthand
-import Control.Category.Execute.JSON.Longhand
 import Control.Category.Execute.JSON.Imports
+import Control.Category.Execute.JSON.Longhand
 import Control.Category.Execute.JSON.Shorthand
 import Control.Category.Numeric
 import Control.Category.Primitive.Bool
@@ -22,11 +22,11 @@ import Control.Category.Strong
 import Control.Category.Symmetric
 import Data.Code.Generic
 import Data.Code.Haskell
-import Prelude                                          hiding (id, (.))
-import Test.Hspec                                       hiding (runIO)
+import Prelude                                    hiding (id, (.))
+import Test.Hspec                                 hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
-import Test.QuickCheck.Monadic ()
+import Test.QuickCheck.Monadic                    ()
 
 spec ∷ Spec
 spec = describe "HS" $ do
@@ -38,7 +38,7 @@ spec = describe "HS" $ do
                 it "ids" $
                     executeGHCiLonghand (id :: HS String String) "1" `shouldReturn` "1"
                 it "composes" $
-                    executeGHCiLonghand (id . id :: HS String String) "1" `shouldReturn` "1"
+                    executeGHCiLonghand (id :: HS String String) "1" `shouldReturn` "1"
             describe "cartesian" $ do
                 it "copies" $
                     executeGHCiLonghand (copy :: HS String (String, String)) "1" `shouldReturn` ("1", "1")
@@ -71,9 +71,9 @@ spec = describe "HS" $ do
             describe "choice" $ do
                 describe "left'" $ do
                     it "runs on left" $
-                        executeGHCiLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1"))
+                        executeGHCiLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
                     it "doesn't run on right" $
-                        executeGHCiLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
+                        executeGHCiLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` Right 1
                 describe "right'" $ do
                     it "doesn't run on left" $
                         executeGHCiLonghand (right' copy :: HS (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
@@ -160,7 +160,7 @@ spec = describe "HS" $ do
                 it "ids" $
                     executeGHCiShorthand (id :: HS String String) "1" `shouldReturn` "1"
                 it "composes" $
-                    executeGHCiShorthand (id . id :: HS String String) "1" `shouldReturn` "1"
+                    executeGHCiShorthand (id :: HS String String) "1" `shouldReturn` "1"
             describe "cartesian" $ do
                 it "copies" $
                     executeGHCiShorthand (copy :: HS String (String, String)) "1" `shouldReturn` ("1", "1")
@@ -193,9 +193,9 @@ spec = describe "HS" $ do
             describe "choice" $ do
                 describe "left'" $ do
                     it "runs on left" $
-                        executeGHCiShorthand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1"))
+                        executeGHCiShorthand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
                     it "doesn't run on right" $
-                        executeGHCiShorthand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
+                        executeGHCiShorthand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` Right 1
                 describe "right'" $ do
                     it "doesn't run on left" $
                         executeGHCiShorthand (right' copy :: HS (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
@@ -282,7 +282,7 @@ spec = describe "HS" $ do
                 xit "ids" $
                     executeGHCiImports (id :: HS String String) "1" `shouldReturn` "1"
                 it "composes" $
-                    executeGHCiImports (id . id :: HS String String) "1" `shouldReturn` "1"
+                    executeGHCiImports (id :: HS String String) "1" `shouldReturn` "1"
             describe "cartesian" $ do
                 it "copies" $
                     executeGHCiImports (copy :: HS String (String, String)) "1" `shouldReturn` ("1", "1")
@@ -315,9 +315,9 @@ spec = describe "HS" $ do
             describe "choice" $ do
                 describe "left'" $ do
                     it "runs on left" $
-                        executeGHCiImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1"))
+                        executeGHCiImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
                     it "doesn't run on right" $
-                        executeGHCiImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
+                        executeGHCiImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` Right 1
                 describe "right'" $ do
                     it "doesn't run on left" $
                         executeGHCiImports (right' copy :: HS (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
@@ -405,7 +405,7 @@ spec = describe "HS" $ do
                 it "ids" $
                     executeJSONLonghand (id :: HS String String) "1" `shouldReturn` "1"
                 it "composes" $
-                    executeJSONLonghand (id . id :: HS String String) "1" `shouldReturn` "1"
+                    executeJSONLonghand (id :: HS String String) "1" `shouldReturn` "1"
             describe "cartesian" $ do
                 it "copies" $
                     executeJSONLonghand (copy :: HS String (String, String)) "1" `shouldReturn` ("1", "1")
@@ -438,9 +438,9 @@ spec = describe "HS" $ do
             describe "choice" $ do
                 describe "left'" $ do
                     it "runs on left" $
-                        executeJSONLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1"))
+                        executeJSONLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
                     it "doesn't run on right" $
-                        executeJSONLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
+                        executeJSONLonghand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` Right 1
                 describe "right'" $ do
                     it "doesn't run on left" $
                         executeJSONLonghand (right' copy :: HS (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
@@ -527,7 +527,7 @@ spec = describe "HS" $ do
                 it "ids" $
                     executeJSONShorthand (id :: HS String String) "1" `shouldReturn` "1"
                 it "composes" $
-                    executeJSONShorthand (id . id :: HS String String) "1" `shouldReturn` "1"
+                    executeJSONShorthand (id :: HS String String) "1" `shouldReturn` "1"
             describe "cartesian" $ do
                 it "copies" $
                     executeJSONShorthand (copy :: HS String (String, String)) "1" `shouldReturn` ("1", "1")
@@ -560,9 +560,9 @@ spec = describe "HS" $ do
             describe "choice" $ do
                 describe "left'" $ do
                     it "runs on left" $
-                        executeJSONShorthand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1"))
+                        executeJSONShorthand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
                     it "doesn't run on right" $
-                        executeJSONShorthand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
+                        executeJSONShorthand (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` Right 1
                 describe "right'" $ do
                     it "doesn't run on left" $
                         executeJSONShorthand (right' copy :: HS (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
@@ -649,7 +649,7 @@ spec = describe "HS" $ do
                 xit "ids" $
                     executeJSONImports (id :: HS String String) "1" `shouldReturn` "1"
                 it "composes" $
-                    executeJSONImports (id . id :: HS String String) "1" `shouldReturn` "1"
+                    executeJSONImports (id :: HS String String) "1" `shouldReturn` "1"
             describe "cartesian" $ do
                 it "copies" $
                     executeJSONImports (copy :: HS String (String, String)) "1" `shouldReturn` ("1", "1")
@@ -682,9 +682,9 @@ spec = describe "HS" $ do
             describe "choice" $ do
                 describe "left'" $ do
                     it "runs on left" $
-                        executeJSONImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  (Left ("1", "1"))
+                        executeJSONImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
                     it "doesn't run on right" $
-                        executeJSONImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` (Right 1)
+                        executeJSONImports (left' copy :: HS (Either String Int) (Either (String, String) Int)) (Right 1) `shouldReturn` Right 1
                 describe "right'" $ do
                     it "doesn't run on left" $
                         executeJSONImports (right' copy :: HS (Either String Int) (Either String (Int, Int))) (Left "1") `shouldReturn` Left "1"
