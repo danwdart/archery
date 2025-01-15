@@ -36,6 +36,7 @@ import Control.Category.Symmetric
 -- import Data.Aeson
 import Data.ByteString.Lazy.Char8      qualified as BSL
 import Data.Code.Generic
+import Data.Foldable
 -- import Data.Map                                         (Map)
 import Data.Map                        qualified as M
 import Data.MapSet
@@ -90,8 +91,8 @@ toInternalFileImports php = GHC.IsList.toList (internalImports php) >>=
         \function' -> ["use function " <> moduleName <> "\\" <> functionName function' <> ";"]
 
 toShorthandFileDefinitions ∷ PHP a b → [BSL.ByteString]
-toShorthandFileDefinitions php = foldMap (\(_, functions) ->
-    foldMap (\fn ->
+toShorthandFileDefinitions php = foldMap' (\(_, functions) ->
+    foldMap' (\fn ->
         [
             -- again, why not both?
             "$" <> functionName fn <> " = " <> functionLonghand fn <> "\n" <>

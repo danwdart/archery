@@ -39,6 +39,7 @@ import Control.Monad.IO.Class
 import Data.Aeson
 import Data.ByteString.Lazy.Char8                 qualified as BSL
 import Data.Code.Generic
+import Data.Foldable
 -- import Data.Map                                         (Map)
 import Data.Map                                   qualified as M
 import Data.MapSet
@@ -95,8 +96,8 @@ toInternalFileImports hs = (
     ) <$> M.toList (getMapSet (internalImports hs))
 
 toShorthandFileDefinitions ∷ HS a b → [BSL.ByteString]
-toShorthandFileDefinitions hs = foldMap (\(_, functions) ->
-    foldMap (\fn ->
+toShorthandFileDefinitions hs = foldMap' (\(_, functions) ->
+    foldMap' (\fn ->
         [functionName fn <> " :: " <> functionTypeFrom fn <> " -> " <> functionTypeTo fn <> "\n" <>
             functionName fn <> " = " <> functionLonghand fn <> "\n"]
     )

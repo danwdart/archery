@@ -36,6 +36,7 @@ import Control.Monad.IO.Class
 import Data.Aeson
 import Data.ByteString.Lazy.Char8               qualified as BSL
 import Data.Code.Generic
+import Data.Foldable
 -- import Data.Map                                         (Map)
 import Data.Map                                 qualified as M
 import Data.MapSet
@@ -91,8 +92,8 @@ toInternalFileImports js = (
     ) <$> M.toList (getMapSet (internalImports js))
 
 toShorthandFileDefinitions ∷ JS a b → [BSL.ByteString]
-toShorthandFileDefinitions js = foldMap (\(_, functions) ->
-    foldMap (\fn ->
+toShorthandFileDefinitions js = foldMap' (\(_, functions) ->
+    foldMap' (\fn ->
         [
             "/**\n * @param {" <> functionTypeFrom fn <> "} param\n * @returns {" <> functionTypeTo fn <> "}\n */\n" <>
             "export const " <> functionName fn <> " = " <> functionLonghand fn <> "\n"
