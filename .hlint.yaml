@@ -1,7 +1,13 @@
 - warn: {name: Use explicit module export list}
+- warn: {lhs: T.pack (show x), rhs: T.show x}
 - group: {name: dollar, enabled: true}
 - group: {name: generalise, enabled: true}
+- group: {name: generalise-for-conciseness, enabled: true}
 - group: {name: future, enabled: true}
+- group: {name: partial, enabled: true}
+- group: {name: partial-strict, enabled: true}
+- group: {name: use-lens, enabled: true}
+- group: {name: use-th-quotes, enabled: true}
 # Stolen from https://github.com/NorfairKing/haskell-dangerous-functions/
 - functions:
   - {name: unsafeDupablePerformIO, within: []} # Unsafe
@@ -19,12 +25,6 @@
   - {name: undefined, within: []} # Purposely fails. Deal with errors appropriately instead.
   - {name: throw, within: []} # Don't throw from pure code, use throwIO instead.
   - {name: Prelude.error, within: []}
-
-  - {name: Data.List.head, within: []} # Partial, use `listToMaybe` instead.
-  - {name: Data.List.tail, within: []} # Partial
-  - {name: Data.List.init, within: []} # Partial
-  - {name: Data.List.last, within: []} # Partial
-  - {name: 'Data.List.!!', within: []} # Partial
   - {name: Data.List.genericIndex, within: []} # Partial
   - {name: Data.List.genericLength, within: []}
 
@@ -43,10 +43,7 @@
   - {name: Data.Text.maximum, within: []}
   - {name: Data.Text.minimum, within: []}
 
-  - {name: GHC.Enum.pred, within: []} # Partial
-  - {name: GHC.Enum.succ, within: []} # Partial
-  - {name: GHC.Enum.toEnum, within: []} # Partial
-  - {name: GHC.Enum.fromEnum, within: []} # Does not do what you think it does.
+
   - {name: GHC.Enum.enumFrom, within: []} # Does not do what you think it does, depending on the type.
   - {name: GHC.Enum.enumFromThen, within: []} # Does not do what you think it does, depending on the type.
   - {name: GHC.Enum.enumFromTo, within: []} # Does not do what you think it does, depending on the type.
@@ -61,13 +58,7 @@
   - {name: Data.Foldable.sum, within: []} # Lazy accumulator
   - {name: Data.Foldable.product, within: []} # Lazy accumulator
 
-  # Functions involving division
-  - {name: Prelude.quot, within: []} # Partial, see https://github.com/NorfairKing/haskell-WAT#num-int
-  - {name: Prelude.div, within: []}
-  - {name: Prelude.rem, within: []}
-  - {name: Prelude.mod, within: []}
-  - {name: Prelude.quotRem, within: []}
-  - {name: Prelude.divMod, within: []}
+
 
   # Does unexpected things, see
   # https://github.com/NorfairKing/haskell-WAT#real-double
@@ -100,7 +91,6 @@
 
   - {name: Data.Text.Encoding.decodeUtf8, within: []} # Throws on invalid UTF8
 
-  - {name: fromJust, within: [], message: 'Partial'} # Partial
 
   # Does silent truncation:
   # > fromIntegral (300 :: Word) :: Word8
@@ -121,5 +111,4 @@
   - { name: DuplicateRecordFields, within: [] }
 
   - { name: NamedFieldPuns, within: [] }
-  - { name: TupleSections, within: [] }
   - { name: OverloadedLabels, within: [] }

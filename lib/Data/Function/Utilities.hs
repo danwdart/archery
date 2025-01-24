@@ -15,6 +15,8 @@ import Control.Category.Strong
 import Numeric.Natural
 import Prelude                    hiding ((.))
 
+{- HLINT ignore "Avoid restricted function" -}
+
 catpow ∷ Category cat ⇒ Natural → cat a a → cat a a
 catpow 0 _   = error "can't apply a category applicator zero times"
 catpow 1 cat = cat
