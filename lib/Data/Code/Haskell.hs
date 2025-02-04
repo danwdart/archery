@@ -58,6 +58,7 @@ import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
 import Data.Set                                   qualified as S
 -- import Data.String
+import Data.Text.Encoding                         qualified as TE
 -- import Data.Typeable
 import GHC.IO.Exception
 import GHC.IsList
@@ -609,8 +610,8 @@ instance PrimitiveExtra HS where
     constString s = HS $ Code {
         _externalImports = [],
         _internalImports = [],
-        _shorthand = "const \"" <> BSL.pack s <> "\"",
-        _longhand = "const \"" <> BSL.pack s <> "\""
+        _shorthand = "const \"" <> (BSL.fromStrict $ TE.encodeUtf8 s) <> "\"",
+        _longhand = "const \"" <> (BSL.fromStrict $ TE.encodeUtf8 s) <> "\""
     }
 
 instance PrimitiveFile HS where

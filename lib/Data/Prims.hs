@@ -12,51 +12,36 @@ import Control.Category.Primitive.Extra
 import Control.Category.Primitive.File
 import Control.Category.Primitive.String
 import Data.Aeson
+import Data.ByteString.Char8              (ByteString)
 import Data.Function.Free.Abstract
-import Data.Text                          qualified as T
+import Data.Text                          (Text)
+import System.OsPath.Types                (OsPath)
 
 data Prims a b where
-    ReverseString :: Prims String String
+    ReverseString :: Prims Text Text
     Equal :: Eq a => Prims (a, a) Bool
-    OutputString :: Prims String ()
-    InputString :: Prims () String
-    IntToString :: Prims Int String
-    ConcatString :: Prims (String, String) String
-    ConstString :: String -> Prims a String
-    ReadFile :: Prims String String
-    WriteFile :: Prims (String, String) ()
+    OutputString :: Prims Text ()
+    InputString :: Prims () Text
+    IntToString :: Prims Int Text
+    ConcatString :: Prims (Text, Text) Text
+    ConstString :: Text -> Prims a Text
+    ReadFile :: Prims OsPath ByteString
+    WriteFile :: Prims (OsPath, ByteString) ()
 
 deriving instance Show (Prims a b)
 
 instance ToJSON (Prims a b) where
--- instance ToJSON (Prims Int String) where
     toJSON IntToString     = String "IntToString"
---     toJSON _ = error "Prims Int STring?"
-
--- instance ToJSON (Prims (String, String) String) where
     toJSON ConcatString    = String "ConcatString"
- --    toJSON _ = error "Prims (String, String) String?"
-
--- instance ToJSON (Prims () String) where
-    toJSON (ConstString s) = Array [ String "ConstString", String (T.pack s) ]
+    toJSON (ConstString s) = Array [ String "ConstString", String s ]
     toJSON InputString     = String "InputString"
- --    toJSON _ = error "Prims () String?"
-
--- instance ToJSON (Prims String ()) where
     toJSON OutputString    = String "OutputString"
-
--- instance ToJSON (Prims (String, String) ()) where
     toJSON WriteFile       = String "WriteFile"
-
--- instance ToJSON (Prims (String, String) Bool) where
     toJSON Equal           = String "Equal"
-
--- instance ToJSON (Prims String String) where
-    -- instance ToJSON (Prims String String) where
     toJSON ReverseString   = String "ReverseString"
     toJSON ReadFile        = String "ReadFile"
 
-instance FromJSON (Prims String String) where
+instance FromJSON (Prims Text Text) where
     parseJSON (String "ReverseString") = pure ReverseString
     parseJSON _ = fail "TypeError: expecting String -> String"
 
@@ -64,16 +49,16 @@ instance Eq a ⇒ FromJSON (Prims (a, a) Bool) where
     parseJSON (String "Equal") = pure Equal
     parseJSON _                = fail "TypeError: expecting (a, a) -> Bool"
 
-instance FromJSON (Prims Int String) where
+instance FromJSON (Prims Int Text) where
     parseJSON (String "IntToString") = pure IntToString
     parseJSON _                      = fail "TypeError: expecting Int -> String"
 
-instance FromJSON (Prims (String, String) String) where
+instance FromJSON (Prims (Text, Text) Text) where
     parseJSON (String "ConcatString") = pure ConcatString
     parseJSON _ = fail "TypeError: expecting (String, String) -> String"
 
-instance FromJSON (Prims () String) where
-    parseJSON (Array [ String "ConstString", String s ] ) = pure $ ConstString (T.unpack s)
+instance FromJSON (Prims () Text) where
+    parseJSON (Array [ String "ConstString", String s ] ) = pure $ ConstString s
     parseJSON _ = fail "TypeError: expecting ConstString"
 
 instance PrimitiveBool (FreeFunc Prims) where

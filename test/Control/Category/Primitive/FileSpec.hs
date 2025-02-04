@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Unsafe #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
@@ -12,6 +13,6 @@ spec ∷ Spec
 spec = describe "File" .
     describe "Kleisli" .
         it "writes a file and verifies it" $ do
-            runKleisli writeFile' ("/tmp/a-file", "sample-contents")
-            runKleisli readFile' "/tmp/a-file" `shouldReturn` "sample-contents"
-            removeFile "/tmp/a-file"
+            runKleisli writeFile' (_ "/tmp/a-file", "sample-contents")
+            runKleisli readFile' (_ "/tmp/a-file") `shouldReturn` "sample-contents"
+            removeFile (_ "/tmp/a-file")

@@ -55,6 +55,7 @@ import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
 import Data.Set                                 qualified as S
 -- import Data.String
+import Data.Text.Encoding qualified as TE
 -- import Data.Typeable
 import GHC.IO.Exception
 import GHC.IsList
@@ -560,8 +561,8 @@ instance PrimitiveExtra JS where
     constString s = JS $ Code {
         _externalImports = [],
         _internalImports = [],
-        _shorthand = "_x => \"" <> BSL.pack s <> "\"",
-        _longhand = "_x => \"" <> BSL.pack s <> "\""
+        _shorthand = "_x => \"" <> (BSL.fromStrict $ TE.encodeUtf8 s) <> "\"",
+        _longhand = "_x => \"" <> (BSL.fromStrict $ TE.encodeUtf8 s) <> "\""
     }
 
 {-

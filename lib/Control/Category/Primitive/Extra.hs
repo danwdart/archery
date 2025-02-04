@@ -3,19 +3,21 @@
 module Control.Category.Primitive.Extra (PrimitiveExtra(..)) where
 
 import Control.Arrow (Kleisli (..))
+import Data.Text qualified as T
+import Data.Text (Text)
 
 class PrimitiveExtra cat where
-    intToString :: cat Int String
-    concatString :: cat (String, String) String
-    constString :: String → cat a String
+    intToString :: cat Int Text
+    concatString :: cat (Text, Text) Text
+    constString :: Text → cat a Text
 
 instance PrimitiveExtra (->) where
-    intToString = show
+    intToString = T.show
     concatString = uncurry (<>)
     constString = const
 
 instance Monad m ⇒ PrimitiveExtra (Kleisli m) where
-    intToString = Kleisli $ pure . show
+    intToString = Kleisli $ pure . T.show
     concatString = Kleisli $ pure . uncurry (<>)
     constString = Kleisli . const . pure
 
