@@ -28,6 +28,7 @@ import Data.Code.Generic
 import Data.Code.Haskell
 import Data.Text                                  (Text)
 import Prelude                                    hiding (id, (.))
+import System.OsPath                              (unsafeEncodeUtf)
 import System.OsPath.Types                        (OsPath)
 import Test.Hspec                                 hiding (runIO)
 import Test.Hspec.QuickCheck
@@ -120,14 +121,14 @@ spec = describe "HS" $ do
                     executeGHCiLonghand (constString "a" :: HS () Text) () `shouldReturn` "a"
             describe "primitivefile" $ do
                 xit "reads /etc/passwd" $ do
-                    executeGHCiLonghand (readFile' :: HS OsPath ByteString) "/etc/passwd" >>= (`shouldSatisfy` ((> 5) . BS.length))
+                    executeGHCiLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
                 it "doesn't read /etc/shadow" $ do
-                    executeGHCiLonghand (readFile' :: HS OsPath ByteString) "/etc/shadow" `shouldThrow` anyIOException
+                    executeGHCiLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
                 xit "writes a file and then reads it back" $ do
-                    executeGHCiLonghand (writeFile' :: HS (OsPath, ByteString) ()) ("bob", "hello")
-                    executeGHCiLonghand (readFile' :: HS OsPath ByteString) "bob" `shouldReturn` "hello"
+                    executeGHCiLonghand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
+                    executeGHCiLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
                 it "doesn't write /etc/shadow" $ do
-                    executeGHCiLonghand (writeFile' :: HS (OsPath, ByteString) ()) ("/etc/shadow", "") `shouldThrow` anyIOException
+                    executeGHCiLonghand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "/etc/shadow", "") `shouldThrow` anyIOException
             describe "numeric" $ do
                 it "returns const int" $ do
                     executeGHCiLonghand (num 1 :: HS () Int) () `shouldReturn` 1
@@ -242,14 +243,14 @@ spec = describe "HS" $ do
                     executeGHCiShorthand (constString "a" :: HS () Text) () `shouldReturn` "a"
             describe "primitivefile" $ do
                 xit "reads /etc/passwd" $ do
-                    executeGHCiShorthand (readFile' :: HS OsPath ByteString) "/etc/passwd" >>= (`shouldSatisfy` ((> 5) . BS.length))
+                    executeGHCiShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
                 it "doesn't read /etc/shadow" $ do
-                    executeGHCiShorthand (readFile' :: HS OsPath ByteString) "/etc/shadow" `shouldThrow` anyIOException
+                    executeGHCiShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
                 xit "writes a file and then reads it back" $ do
-                    executeGHCiShorthand (writeFile' :: HS (OsPath, ByteString) ()) ("bob", "hello")
-                    executeGHCiShorthand (readFile' :: HS OsPath ByteString) "bob" `shouldReturn` "hello"
+                    executeGHCiShorthand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
+                    executeGHCiShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
                 it "doesn't write /etc/shadow" $ do
-                    executeGHCiShorthand (writeFile' :: HS (OsPath, ByteString) ()) ("/etc/shadow", "") `shouldThrow` anyIOException
+                    executeGHCiShorthand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "/etc/shadow", "") `shouldThrow` anyIOException
             describe "numeric" $ do
                 it "returns const int" $ do
                     executeGHCiShorthand (num 1 :: HS () Int) () `shouldReturn` 1
@@ -364,14 +365,14 @@ spec = describe "HS" $ do
                     executeGHCiImports (constString "a" :: HS () Text) () `shouldReturn` "a"
             describe "primitivefile" $ do
                 xit "reads /etc/passwd" $ do
-                    executeGHCiImports (readFile' :: HS OsPath ByteString) "/etc/passwd" >>= (`shouldSatisfy` ((> 5) . BS.length))
+                    executeGHCiImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
                 it "doesn't read /etc/shadow" $ do
-                    executeGHCiImports (readFile' :: HS OsPath ByteString) "/etc/shadow" `shouldThrow` anyIOException
+                    executeGHCiImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
                 xit "writes a file and then reads it back" $ do
-                    executeGHCiImports (writeFile' :: HS (OsPath, ByteString) ()) ("bob", "hello")
-                    executeGHCiImports (readFile' :: HS OsPath ByteString) "bob" `shouldReturn` "hello"
+                    executeGHCiImports (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
+                    executeGHCiImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
                 it "doesn't write /etc/shadow" $ do
-                    executeGHCiImports (writeFile' :: HS (OsPath, ByteString) ()) ("/etc/shadow", "") `shouldThrow` anyIOException
+                    executeGHCiImports (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "/etc/shadow", "") `shouldThrow` anyIOException
             describe "numeric" $ do
                 it "returns const int" $ do
                     executeGHCiImports (num 1 :: HS () Int) () `shouldReturn` 1
@@ -487,14 +488,14 @@ spec = describe "HS" $ do
                     executeJSONLonghand (constString "a" :: HS () Text) () `shouldReturn` "a"
             describe "primitivefile" $ do
                 xit "reads /etc/passwd" $ do
-                    executeJSONLonghand (readFile' :: HS OsPath ByteString) "/etc/passwd" >>= (`shouldSatisfy` ((> 5) . BS.length))
+                    executeJSONLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
                 it "doesn't read /etc/shadow" $ do
-                    executeJSONLonghand (readFile' :: HS OsPath ByteString) "/etc/shadow" `shouldThrow` anyIOException
+                    executeJSONLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
                 xit "writes a file and then reads it back" $ do
-                    executeJSONLonghand (writeFile' :: HS (OsPath, ByteString) ()) ("bob", "hello")
-                    executeJSONLonghand (readFile' :: HS OsPath ByteString) "bob" `shouldReturn` "hello"
+                    executeJSONLonghand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
+                    executeJSONLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
                 it "doesn't write /etc/shadow" $ do
-                    executeJSONLonghand (writeFile' :: HS (OsPath, ByteString) ()) ("/etc/shadow", "") `shouldThrow` anyIOException
+                    executeJSONLonghand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "/etc/shadow", "") `shouldThrow` anyIOException
             describe "numeric" $ do
                 it "returns const int" $ do
                     executeJSONLonghand (num 1 :: HS () Int) () `shouldReturn` 1
@@ -609,14 +610,14 @@ spec = describe "HS" $ do
                     executeJSONShorthand (constString "a" :: HS () Text) () `shouldReturn` "a"
             describe "primitivefile" $ do
                 xit "reads /etc/passwd" $ do
-                    executeJSONShorthand (readFile' :: HS OsPath ByteString) "/etc/passwd" >>= (`shouldSatisfy` ((> 5) . BS.length))
+                    executeJSONShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
                 it "doesn't read /etc/shadow" $ do
-                    executeJSONShorthand (readFile' :: HS OsPath ByteString) "/etc/shadow" `shouldThrow` anyIOException
+                    executeJSONShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
                 xit "writes a file and then reads it back" $ do
-                    executeJSONShorthand (writeFile' :: HS (OsPath, ByteString) ()) ("bob", "hello")
-                    executeJSONShorthand (readFile' :: HS OsPath ByteString) "bob" `shouldReturn` "hello"
+                    executeJSONShorthand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
+                    executeJSONShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
                 it "doesn't write /etc/shadow" $ do
-                    executeJSONShorthand (writeFile' :: HS (OsPath, ByteString) ()) ("/etc/shadow", "") `shouldThrow` anyIOException
+                    executeJSONShorthand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf"/etc/shadow", "") `shouldThrow` anyIOException
             describe "numeric" $ do
                 it "returns const int" $ do
                     executeJSONShorthand (num 1 :: HS () Int) () `shouldReturn` 1
@@ -731,14 +732,14 @@ spec = describe "HS" $ do
                     executeJSONImports (constString "a" :: HS () Text) () `shouldReturn` "a"
             describe "primitivefile" $ do
                 xit "reads /etc/passwd" $ do
-                    executeJSONImports (readFile' :: HS OsPath ByteString) "/etc/passwd" >>= (`shouldSatisfy` ((> 5) . BS.length))
+                    executeJSONImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
                 it "doesn't read /etc/shadow" $ do
-                    executeJSONImports (readFile' :: HS OsPath ByteString) "/etc/shadow" `shouldThrow` anyIOException
+                    executeJSONImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
                 xit "writes a file and then reads it back" $ do
-                    executeJSONImports (writeFile' :: HS (OsPath, ByteString) ()) ("bob", "hello")
-                    executeJSONImports (readFile' :: HS OsPath ByteString) "bob" `shouldReturn` "hello"
+                    executeJSONImports (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
+                    executeJSONImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
                 it "doesn't write /etc/shadow" $ do
-                    executeJSONImports (writeFile' :: HS (OsPath, ByteString) ()) ("/etc/shadow", "") `shouldThrow` anyIOException
+                    executeJSONImports (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "/etc/shadow", "") `shouldThrow` anyIOException
             describe "numeric" $ do
                 it "returns const int" $ do
                     executeJSONImports (num 1 :: HS () Int) () `shouldReturn` 1

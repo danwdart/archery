@@ -7,12 +7,14 @@ module Control.Category.Primitive.FileSpec (spec) where
 import Control.Arrow                   (Kleisli (..))
 import Control.Category.Primitive.File
 import System.Directory
+import System.OsPath                   (unsafeEncodeUtf)
 import Test.Hspec
 
 spec ∷ Spec
 spec = describe "File" .
     describe "Kleisli" .
         it "writes a file and verifies it" $ do
-            runKleisli writeFile' (_ "/tmp/a-file", "sample-contents")
-            runKleisli readFile' (_ "/tmp/a-file") `shouldReturn` "sample-contents"
-            removeFile (_ "/tmp/a-file")
+            runKleisli writeFile' (unsafeEncodeUtf "/tmp/a-file", "sample-contents")
+            runKleisli readFile' (unsafeEncodeUtf "/tmp/a-file") `shouldReturn` "sample-contents"
+            -- base cleanup
+            removeFile "/tmp/a-file"

@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Control.Category.Primitive.ExtraSpec (spec) where
 
 import Control.Arrow                    (Kleisli (..))
