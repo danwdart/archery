@@ -28,6 +28,8 @@ common shared-properties-base
 
 common shared-properties-dev-unsafe
   import:             shared-properties-base
+  if !os(wasi)
+    ghc-options: -threaded -rtsopts -with-rtsopts=-N 
   ghc-options:
     -Weverything -Wno-implicit-prelude
     -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
@@ -36,13 +38,15 @@ common shared-properties-dev-unsafe
     -Wno-all-missed-specialisations -Wno-missed-specialisations
     -Wno-missing-role-annotations -Wno-missing-kind-signatures
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
-    -Wwarn -haddock -threaded -rtsopts -with-rtsopts=-N
+    -Wwarn -haddock
 
   build-depends:      base ^>=4.21.0.0
   default-extensions: UnicodeSyntax
 
 common shared-properties-unsafe
   import:             shared-properties-base
+  if !os(wasi)
+    ghc-options: -threaded -rtsopts -with-rtsopts=-N 
   ghc-options:
     -Weverything -Wno-implicit-prelude
     -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
@@ -51,7 +55,7 @@ common shared-properties-unsafe
     -Wno-all-missed-specialisations -Wno-missed-specialisations
     -Wno-missing-role-annotations -Wno-missing-kind-signatures
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
-    -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
+    -Werror -haddock
 
   build-depends:      base ^>=4.21.0.0
   default-extensions: UnicodeSyntax
@@ -65,6 +69,8 @@ common shared-properties-safe
 
 common shared-properties-nobase
   import:             shared-properties-base
+  if !os(wasi)
+    ghc-options: -threaded -rtsopts -with-rtsopts=-N 
   ghc-options:
     -Weverything -Wno-implicit-prelude
     -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
@@ -73,7 +79,7 @@ common shared-properties-nobase
     -Wno-all-missed-specialisations -Wno-missed-specialisations
     -Wno-missing-role-annotations -Wno-missing-kind-signatures
     -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
-    -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
+    -Werror -haddock
 
   default-extensions: UnicodeSyntax
 
