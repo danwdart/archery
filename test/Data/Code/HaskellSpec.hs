@@ -2,6 +2,7 @@
 
 module Data.Code.HaskellSpec (spec) where
 
+import ByteString.Aeson.Orphans
 import Control.Category
 import Control.Category.Bracket
 import Control.Category.Cartesian
@@ -27,6 +28,7 @@ import Data.ByteString.Char8                      qualified as BS
 import Data.Code.Generic
 import Data.Code.Haskell
 import Data.Text                                  (Text)
+import Orphans
 import Prelude                                    hiding (id, (.))
 import System.OsPath                              (unsafeEncodeUtf)
 import System.OsPath.Types                        (OsPath)

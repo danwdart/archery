@@ -8,6 +8,10 @@ mkShell rec {
         pkg-config
         zlib.dev
         pcre.dev
+        gettext
+        nodejs
+        php84
+        tinycc
     ];
     shellHook = ''
         [[ -f ~/.local/bin/refactor ]] || cabal install apply-refact cabal-fmt doctest ghci-dap ghcid ghcide haskell-debug-adapter haskell-language-server hasktags hlint hoogle hpack implicit-hie stan stylish-haskell weeder --overwrite-policy=always --allow-newer

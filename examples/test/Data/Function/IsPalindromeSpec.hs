@@ -21,6 +21,7 @@ import Data.Function.ReverseInput
 import Data.Prims
 import Data.Text                                  (Text)
 import Data.Text                                  qualified as T
+import Data.Text.Arbitrary ()
 import Test.Hspec                                 hiding (runIO)
 import Test.Hspec.QuickCheck
 import Test.QuickCheck

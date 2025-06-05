@@ -89,9 +89,9 @@ main = do
                 do -- lib
                     createDirectoryIfMissing True "data/examples/statements/longhand/haskell/lib"
 
-                    -- BSL.writeFile "data/examples/statements/longhand/haskell/lib/CollatzStep.hs" $ renderStatementLonghand (collatzStep :: HS Int Int)
-                    -- BSL.writeFile "data/examples/statements/longhand/haskell/lib/IsPalindrome.hs" $ renderStatementLonghand (isPalindrome :: HS Text Bool)
-                    -- BSL.writeFile "data/examples/statements/longhand/haskell/lib/GreetTuple.hs" $ renderStatementLonghand (greetTuple :: HS (Text, Int) Text)
+                    BSL.writeFile "data/examples/statements/longhand/haskell/lib/CollatzStep.hs" $ renderStatementLonghand (collatzStep :: HS Int Int)
+                    BSL.writeFile "data/examples/statements/longhand/haskell/lib/IsPalindrome.hs" $ renderStatementLonghand (isPalindrome :: HS Text Bool)
+                    BSL.writeFile "data/examples/statements/longhand/haskell/lib/GreetTuple.hs" $ renderStatementLonghand (greetTuple :: HS (Text, Int) Text)
                 do -- src
                     createDirectoryIfMissing True "data/examples/statements/longhand/haskell/src"
 
@@ -102,9 +102,9 @@ main = do
                 do -- lib
                     createDirectoryIfMissing True "data/examples/statements/shorthand/haskell/lib"
 
-                    -- BSL.writeFile "data/examples/statements/shorthand/haskell/lib/collatzStep.hs" $ renderStatementShorthand (collatzStep :: HS Int Int)
-                    -- BSL.writeFile "data/examples/statements/shorthand/haskell/lib/isPalindrome.hs" $ renderStatementShorthand (isPalindrome :: HS Text Bool)
-                    -- BSL.writeFile "data/examples/statements/shorthand/haskell/lib/greetTuple.hs" $ renderStatementShorthand (greetTuple :: HS (Text, Int) Text)
+                    BSL.writeFile "data/examples/statements/shorthand/haskell/lib/collatzStep.hs" $ renderStatementShorthand (collatzStep :: HS Int Int)
+                    BSL.writeFile "data/examples/statements/shorthand/haskell/lib/isPalindrome.hs" $ renderStatementShorthand (isPalindrome :: HS Text Bool)
+                    BSL.writeFile "data/examples/statements/shorthand/haskell/lib/greetTuple.hs" $ renderStatementShorthand (greetTuple :: HS (Text, Int) Text)
                 do -- src
                     createDirectoryIfMissing True "data/examples/statements/shorthand/haskell/src"
 
@@ -159,9 +159,9 @@ main = do
                 do -- lib
                     createDirectoryIfMissing True "data/examples/statements/longhand/js/lib"
 
-                    -- BSL.writeFile "data/examples/statements/longhand/js/lib/CollatzStep.js" $ renderStatementLonghand (collatzStep :: JS Int Int)
-                    -- BSL.writeFile "data/examples/statements/longhand/js/lib/IsPalindrome.js" $ renderStatementLonghand (isPalindrome :: JS Text Bool)
-                    -- BSL.writeFile "data/examples/statements/longhand/js/lib/GreetTuple.js" $ renderStatementLonghand (greetTuple :: JS (Text, Int) Text)
+                    BSL.writeFile "data/examples/statements/longhand/js/lib/CollatzStep.js" $ renderStatementLonghand (collatzStep :: JS Int Int)
+                    BSL.writeFile "data/examples/statements/longhand/js/lib/IsPalindrome.js" $ renderStatementLonghand (isPalindrome :: JS Text Bool)
+                    BSL.writeFile "data/examples/statements/longhand/js/lib/GreetTuple.js" $ renderStatementLonghand (greetTuple :: JS (Text, Int) Text)
                 do -- src
                     createDirectoryIfMissing True "data/examples/statements/longhand/js/src"
 
@@ -172,9 +172,9 @@ main = do
                 do -- lib
                     createDirectoryIfMissing True "data/examples/statements/shorthand/js/lib"
 
-                    -- BSL.writeFile "data/examples/statements/shorthand/js/lib/collatzStep.js" $ renderStatementShorthand (collatzStep :: JS Int Int)
-                    -- BSL.writeFile "data/examples/statements/shorthand/js/lib/isPalindrome.js" $ renderStatementShorthand (isPalindrome :: JS Text Bool)
-                    -- BSL.writeFile "data/examples/statements/shorthand/js/lib/greetTuple.js" $ renderStatementShorthand (greetTuple :: JS (Text, Int) Text)
+                    BSL.writeFile "data/examples/statements/shorthand/js/lib/collatzStep.js" $ renderStatementShorthand (collatzStep :: JS Int Int)
+                    BSL.writeFile "data/examples/statements/shorthand/js/lib/isPalindrome.js" $ renderStatementShorthand (isPalindrome :: JS Text Bool)
+                    BSL.writeFile "data/examples/statements/shorthand/js/lib/greetTuple.js" $ renderStatementShorthand (greetTuple :: JS (Text, Int) Text)
                 do -- src
                     createDirectoryIfMissing True "data/examples/statements/shorthand/js/src"
 
