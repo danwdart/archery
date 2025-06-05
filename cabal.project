@@ -3,3 +3,4 @@ benchmarks: True
 tests: True
 -- for yaml -> unordered-containers -> hashable
 allow-newer: containers
+multi-repl: True

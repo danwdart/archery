@@ -1,0 +1,1 @@
+ -a -rMain.main -c "cabal repl  archery:exe:write-examples archery:lib:archery --ghc-options='-Wno-missing-local-signatures -Wno-prepositive-qualified-module'"
