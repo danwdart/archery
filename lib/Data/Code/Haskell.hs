@@ -768,7 +768,7 @@ instance Numeric HS where
     }
 
 {-}
--- I don't quite know how to call ghci or cabal repl to include the correct functions here, so the tests are skipped.
+-- I don't quite know how to call ghci or cabal new-repl to include the correct functions here, so the tests are skipped.
 
 -- @TODO escape shell - Text.ShellEscape?
 -}
