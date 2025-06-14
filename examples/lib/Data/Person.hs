@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE Unsafe         #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
@@ -12,4 +12,4 @@ data Person = Person {
     personAge  :: Int
 }
     deriving stock (Eq, Show, Generic)
-    deriving anyclass (FromJSON, ToJSON)
+    deriving (FromJSON, ToJSON) via Generically Person
