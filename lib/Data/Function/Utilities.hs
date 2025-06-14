@@ -14,10 +14,11 @@ import Control.Category.Choice
 import Control.Category.Strong
 import Numeric.Natural
 import Prelude                    hiding ((.))
+import GHC.Stack (HasCallStack)
 
 {- HLINT ignore "Avoid restricted function" -}
 
-catpow ∷ Category cat ⇒ Natural → cat a a → cat a a
+catpow ∷ HasCallStack => Category cat ⇒ Natural → cat a a → cat a a
 catpow 0 _   = error "can't apply a category applicator zero times"
 catpow 1 cat = cat
 catpow n cat = cat . catpow (n-1) cat -- go?
