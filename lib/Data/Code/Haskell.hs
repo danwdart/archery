@@ -1,4 +1,3 @@
-{- GeneralisedNewtypeDeriving -}
 {-# LANGUAGE OverloadedLists      #-}
 {-# LANGUAGE OverloadedStrings    #-}
 {-# LANGUAGE UndecidableInstances #-}
