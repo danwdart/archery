@@ -28,19 +28,20 @@ common shared-properties-base
 
 common shared-properties-unsafe
   import:             shared-properties-base
-  if !arch(wasm32)
-    ghc-options: -threaded -rtsopts -with-rtsopts=-N 
-  ghc-options:
-    -Weverything -Wno-implicit-prelude
-    -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
-    -Wno-missing-export-lists -Wno-missing-import-lists
-    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
-    -Wno-all-missed-specialisations -Wno-missed-specialisations
-    -Wno-missing-role-annotations -Wno-missing-kind-signatures
-    -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
-    -Werror -haddock
 
-  build-depends:      base ^>=4.21.0.0
+  if !arch(wasm32)
+    ghc-options: -threaded -rtsopts -with-rtsopts=-N
+
+  ghc-options:
+    -Weverything -Wno-implicit-prelude -Wno-inferred-safe-imports
+    -Wno-missing-deriving-strategies -Wno-missing-export-lists
+    -Wno-missing-import-lists -Wno-missing-kind-signatures
+    -Wno-missing-poly-kind-signatures -Wno-all-missed-specialisations
+    -Wno-missed-specialisations -Wno-missing-role-annotations
+    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
+    -Wno-unrecognised-warning-flags -Werror -haddock
+
+  build-depends:      base >=4.21.0.0 && <4.23.0.0
   default-extensions: UnicodeSyntax
 
 common shared-properties-safe
@@ -52,17 +53,18 @@ common shared-properties-safe
 
 common shared-properties-nobase
   import:             shared-properties-base
+
   if !arch(wasm32)
-    ghc-options: -threaded -rtsopts -with-rtsopts=-N 
+    ghc-options: -threaded -rtsopts -with-rtsopts=-N
+
   ghc-options:
-    -Weverything -Wno-implicit-prelude
-    -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
-    -Wno-missing-export-lists -Wno-missing-import-lists
+    -Weverything -Wno-implicit-prelude -Wno-inferred-safe-imports
+    -Wno-missing-deriving-strategies -Wno-missing-export-lists
+    -Wno-missing-import-lists -Wno-missing-kind-signatures
+    -Wno-missing-poly-kind-signatures -Wno-all-missed-specialisations
+    -Wno-missed-specialisations -Wno-missing-role-annotations
     -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
-    -Wno-all-missed-specialisations -Wno-missed-specialisations
-    -Wno-missing-role-annotations -Wno-missing-kind-signatures
-    -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
-    -Werror -haddock
+    -Wno-unrecognised-warning-flags -Werror -haddock
 
   default-extensions: UnicodeSyntax
 
@@ -70,22 +72,26 @@ common shared-properties-nobase
 library
   import:             shared-properties-base
   ghc-options:
-    -Weverything -Wno-implicit-prelude
-    -Wno-inferred-safe-imports -Wno-missing-deriving-strategies
-    -Wno-missing-export-lists -Wno-missing-import-lists
+    -Weverything -Wno-implicit-prelude -Wno-inferred-safe-imports
+    -Wno-missing-deriving-strategies -Wno-missing-export-lists
+    -Wno-missing-import-lists -Wno-missing-kind-signatures
+    -Wno-missing-poly-kind-signatures -Wno-all-missed-specialisations
+    -Wno-missed-specialisations -Wno-missing-role-annotations
     -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
-    -Wno-all-missed-specialisations -Wno-missed-specialisations
-    -Wno-missing-role-annotations -Wno-missing-kind-signatures
-    -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
-    -Werror -haddock
+    -Wno-unrecognised-warning-flags -Werror -haddock
+    -Wno-unused-packages
+    -- todo remove above
 
   default-extensions: UnicodeSyntax
   hs-source-dirs:     lib
   build-depends:
     , aeson       ^>=2.2.3.0
-    , base        ^>=4.21.0.0
+    , base        >=4.21.0.0 && <4.23.0.0
     , bytestring  ^>=0.12.2.0
+    , categories ^>=1.0.7
+    , constrained-categories ^>=0.4.2.0
     , containers  ^>=0.8
+    , data-category ^>=0.11
     , file-io     ^>=0.1.5
     , filepath    ^>=1.5.4.0
     , process     ^>=1.6.25.0
@@ -106,9 +112,6 @@ library
     Control.Category.Execute.Haskell.Imports
     Control.Category.Execute.Haskell.Longhand
     Control.Category.Execute.Haskell.Shorthand
-    Control.Category.Execute.JS.Imports
-    Control.Category.Execute.JS.Longhand
-    Control.Category.Execute.JS.Shorthand
     Control.Category.Execute.JSON.Imports
     Control.Category.Execute.JSON.Longhand
     Control.Category.Execute.JSON.Shorthand
@@ -138,6 +141,7 @@ library
     Data.Function.Utilities
     Data.MapSet
     Data.Prims
+    Data.PrimsIO
     Data.Render.Library.External.Imports
     Data.Render.Library.External.Longhand
     Data.Render.Library.External.Shorthand
@@ -159,6 +163,7 @@ executable write-examples
   main-is:        write-examples.hs
   hs-source-dirs: examples/lib
   other-modules:
+    Data.Function.Arrowy
     Data.Function.AskName
     Data.Function.CollatzStep
     Data.Function.Greet
@@ -170,7 +175,7 @@ executable write-examples
   build-depends:
     , aeson       ^>=2.2.3.0
     , archery     ^>=0.2.0.0
-    , base        ^>=4.21.0.0
+    , base        >=4.21.0.0 && <4.23.0.0
     , bytestring  ^>=0.12.2.0
     , directory   ^>=1.3.9.0
     , filepath    ^>=1.5.4.0
@@ -178,8 +183,9 @@ executable write-examples
     , yaml        ^>=0.11.11.2
 
 test-suite test
-  if arch(javascript) || arch(wasm32)
+  if (arch(javascript) || arch(wasm32))
     buildable: False
+
   type:               exitcode-stdio-1.0
   hs-source-dirs:     test
   main-is:            Spec.hs
@@ -189,19 +195,19 @@ test-suite test
     UnicodeSyntax
 
   build-depends:
-    , aeson           ^>=2.2.3.0
-    , archery         ^>=0.2.0.0
-    , base            ^>=4.21.0.0
-    , bytestring      ^>=0.12.2.0
-    , bytestring-aeson-orphans ^>=0.1.0.2
-    , directory       ^>=1.3.9.0
-    , filepath        ^>=1.5.4.0
-    , hspec           ^>=2.11.10
-    , QuickCheck      ^>=2.16.0.0
-    , quickcheck-text ^>=0.1.2.1
-    -- rather than quickcheck-instances
-    , text            ^>=2.1.2
+    , aeson                     ^>=2.2.3.0
+    , archery                   ^>=0.2.0.0
+    , base                      >=4.21.0.0 && <4.23.0.0
+    , bytestring                ^>=0.12.2.0
+    , bytestring-aeson-orphans  ^>=0.1.0.2
+    , directory                 ^>=1.3.9.0
+    , filepath                  ^>=1.5.4.0
+    , hspec                     ^>=2.11.10
+    , QuickCheck                ^>=2.17.0.0
+    , quickcheck-text           ^>=0.1.2.1
+    , text                      ^>=2.1.2
 
+  -- rather than quickcheck-instances
   other-modules:
     Control.Category.ApplySpec
     Control.Category.CartesianSpec
@@ -224,12 +230,14 @@ test-suite test
     Data.Code.PHPSpec
     Data.Function.Free.AbstractSpec
     Data.PrimsSpec
+    Data.PrimsIOSpec
 
   build-tool-depends: hspec-discover:hspec-discover
 
 test-suite test-examples
-  if arch(javascript) || arch(wasm32)
+  if (arch(javascript) || arch(wasm32))
     buildable: False
+
   type:               exitcode-stdio-1.0
   hs-source-dirs:     examples/lib examples/test
   main-is:            Spec.hs
@@ -239,16 +247,18 @@ test-suite test-examples
     UnicodeSyntax
 
   build-depends:
-    , aeson       ^>=2.2.3.0
-    , archery     ^>=0.2.0.0
-    , base        ^>=4.21.0.0
-    , hspec       ^>=2.11.10
-    , QuickCheck  ^>=2.16.0.0
-    , quickcheck-text ^>=0.1.2.1
-    -- rather than quickcheck-instances
-    , text        ^>=2.1.2
+    , aeson            ^>=2.2.3.0
+    , archery          ^>=0.2.0.0
+    , base             >=4.21.0.0 && <4.23.0.0
+    , hspec            ^>=2.11.10
+    , QuickCheck       ^>=2.17.0.0
+    , quickcheck-text  ^>=0.1.2.1
+    , text             ^>=2.1.2
 
+  -- rather than quickcheck-instances
   other-modules:
+    Data.Function.Arrowy
+    Data.Function.ArrowySpec
     Data.Function.AskName
     Data.Function.CollatzStep
     Data.Function.CollatzStepSpec

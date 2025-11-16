@@ -29,7 +29,7 @@ import Test.QuickCheck
 import Test.QuickCheck.Monadic
 -}
 spec ∷ Spec
-spec = describe "JS" $ do
+spec = parallel . describe "JS" $ do
     describe "executeJSONLonghand" $ do
         it "returns a string" $
             executeJSONLonghand (id :: JS Text Text) "1" `shouldReturn` "1"
@@ -49,9 +49,9 @@ spec = describe "JS" $ do
                 executeJSONLonghand (id :: JS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
             it "returns a Just" $
                 executeJSONLonghand (id :: JS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
-        -- describe "bracket" .
-        --     it "is idempotent" $
-        --         executeJSONLonghand (bracket id :: JS Text Text) "1" `shouldReturn` "1"
+        describe "bracket" .
+            it "is idempotent" $
+                executeJSONLonghand (bracket id :: JS Text Text) "1" `shouldReturn` "1"
         describe "category" $ do
             it "composes" $
                 executeJSONLonghand (id :: JS Text Text) "1" `shouldReturn` "1"
@@ -85,9 +85,9 @@ spec = describe "JS" $ do
             it "runs on second" $
                 executeJSONLonghand (second' copy :: JS (Text, Text) (Text, (Text, Text))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
         describe "choice" $ do
-            describe "left'" .
-                -- it "runs on left" $
-                --     executeJSON (left' copy :: JS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn` (Right (Left ("1", "1")))
+            describe "left'" $ do
+                it "runs on left" $
+                    executeJSONLonghand (left' copy :: JS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn` Left ("1", "1")
                 it "doesn't run on right" $
                     executeJSONLonghand (left' copy :: JS (Either Text Int) (Either (Text, Text) Int)) (Right 1) `shouldReturn` Right 1
             describe "right'" $ do
@@ -160,9 +160,9 @@ spec = describe "JS" $ do
                 executeJSONImports (id :: JS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
             it "returns a Just" $
                 executeJSONImports (id :: JS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
-        -- describe "bracket" .
-        --     it "is idempotent" $
-        --         executeJSONImports (bracket id :: JS Text Text) "1" `shouldReturn` "1"
+        describe "bracket" .
+            it "is idempotent" $
+                executeJSONImports (bracket id :: JS Text Text) "1" `shouldReturn` "1"
         describe "category" $ do
             it "composes" $
                 executeJSONImports (id :: JS Text Text) "1" `shouldReturn` "1"
@@ -196,9 +196,9 @@ spec = describe "JS" $ do
             it "runs on second" $
                 executeJSONImports (second' copy :: JS (Text, Text) (Text, (Text, Text))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
         describe "choice" $ do
-            describe "left'" .
-                -- it "runs on left" $
-                --     exeImports (left' copy :: JS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn` (Right (Left ("1", "1")))
+            describe "left'" $ do
+                it "runs on left" $
+                    executeJSONImports (left' copy :: JS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn` Left ("1", "1")
                 it "doesn't run on right" $
                     executeJSONImports (left' copy :: JS (Either Text Int) (Either (Text, Text) Int)) (Right 1) `shouldReturn` Right 1
             describe "right'" $ do
@@ -271,9 +271,9 @@ spec = describe "JS" $ do
                 executeJSONShorthand (id :: JS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
             it "returns a Just" $
                 executeJSONShorthand (id :: JS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
-        -- describe "bracket" .
-        --     it "is idempotent" $
-        --         executeJSONShorthand (bracket id :: JS Text Text) "1" `shouldReturn` "1"
+        describe "bracket" .
+            it "is idempotent" $
+                executeJSONShorthand (bracket id :: JS Text Text) "1" `shouldReturn` "1"
         describe "category" $ do
             it "composes" $
                 executeJSONShorthand (id :: JS Text Text) "1" `shouldReturn` "1"
@@ -307,9 +307,9 @@ spec = describe "JS" $ do
             it "runs on second" $
                 executeJSONShorthand (second' copy :: JS (Text, Text) (Text, (Text, Text))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
         describe "choice" $ do
-            describe "left'" .
-                -- it "runs on left" $
-                --     exeShorthand (left' copy :: JS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn` (Right (Left ("1", "1")))
+            describe "left'" $ do
+                it "runs on left" $
+                    executeJSONShorthand (left' copy :: JS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn` Left ("1", "1")
                 it "doesn't run on right" $
                     executeJSONShorthand (left' copy :: JS (Either Text Int) (Either (Text, Text) Int)) (Right 1) `shouldReturn` Right 1
             describe "right'" $ do

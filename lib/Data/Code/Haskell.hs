@@ -3,13 +3,15 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE Unsafe               #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
 
 -- | Program module. Like Func, but dynamically imports modules as required.
 module Data.Code.Haskell (HS(..)) where
 
+-- import Control.Arrow
 import Control.Category
--- import Control.Category.Apply
--- import Control.Category.Bracket
+import Control.Category.Apply
+import Control.Category.Bracket
 import Control.Category.Cartesian
 import Control.Category.Choice
 import Control.Category.Cocartesian
@@ -19,9 +21,9 @@ import Control.Category.Compile.Shorthand
 import Control.Category.Execute.Haskell.Imports
 import Control.Category.Execute.Haskell.Longhand
 import Control.Category.Execute.Haskell.Shorthand
-import Control.Category.Execute.JSON.Imports
-import Control.Category.Execute.JSON.Longhand
-import Control.Category.Execute.JSON.Shorthand
+-- import Control.Category.Execute.JSON.Imports
+-- import Control.Category.Execute.JSON.Longhand
+-- import Control.Category.Execute.JSON.Shorthand
 import Control.Category.Execute.Stdio.Imports
 import Control.Category.Execute.Stdio.Longhand
 import Control.Category.Execute.Stdio.Shorthand
@@ -35,7 +37,7 @@ import Control.Category.Strong
 import Control.Category.Symmetric
 import Control.Exception                          hiding (bracket)
 import Control.Monad.IO.Class
-import Data.Aeson
+-- import Data.Aeson
 import Data.ByteString.Lazy.Char8                 qualified as BSL
 import Data.Code.Generic
 import Data.Foldable
@@ -64,6 +66,9 @@ import GHC.IsList
 import Prelude                                    hiding (id, (.))
 import System.Process
 import Text.Read
+import Control.Arrow
+-- import Data.Typeable
+-- import Debug.Trace
 
 newtype HS a b = HS {
     _code :: Code a b
@@ -226,13 +231,13 @@ instance {- (Typeable a, Typeable b) ⇒ -}  RenderProgramImports (HS () ()) whe
         -- "\n" <> functionName cat <> " = " <> renderStatementShorthand cat
         "\nmain = runKleisli " <> renderStatementShorthand cat <> " ()"
 
-{-}
 instance Bracket HS where
-    bracket hs@(HS s) = HS $ s {
-        _shorthand = "(" <> renderStatementShorthand hs <> ")",
-        _longhand = "(" <> renderStatementLonghand hs <> ")"
+    bracket f = HS $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "(" <> renderStatementShorthand f <> ")",
+        _longhand = "(" <> renderStatementLonghand f <> ")"
     }
--}
 
 instance Category HS where
     id = HS $ Code {
@@ -251,6 +256,47 @@ instance Category HS where
         _shorthand = "(" <> shorthand a <> " . " <> shorthand b <> ")",
         _longhand = "(\\x y z -> x (y z))(" <> longhand a <> ")(" <> longhand b <> ")"
     }
+
+-- this will only work whenever there is no kleisli inside.
+-- Maybe we need to split on purely pure HS and monadic.
+instance Apply HS where
+    app = HS $ Code {
+        _externalImports = [
+            ("Control.Arrow", ["app"])
+        ],
+        _internalImports = [],
+        _shorthand = "app",
+        _longhand = "\\(f, x) -> f x"
+    }
+
+-- ???
+instance Arrow HS where
+    arr _ = error "Arbitrary functions cannot be injected into HS. Use Archery functions instead."
+    first f = HS $ Code {
+        _externalImports = [
+            ("Data.Bifunctor", ["first"])
+        ] <> externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "first (" <> shorthand f <> ")",
+        _longhand = "\\(a, b) -> ((" <> longhand f <> ") a, b)"
+    }
+    second f = HS $ Code {
+        _externalImports = [
+            ("Data.Bifunctor", ["second"])
+        ] <> externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "second (" <> shorthand f <> ")",
+        _longhand = "\\(a, b) -> (a, (" <> longhand f <> ") b)"
+    }
+    f *** g = HS $ Code {
+        _externalImports = [
+            ("Data.Bifunctor", ["bimap"])
+        ] <> externalImports f <> externalImports g,
+        _internalImports = internalImports f <> internalImports g,
+        _shorthand = "bimap (" <> shorthand f <> ") (" <> shorthand g <> ")",
+        _longhand = "\\(a, b) -> ((" <> longhand f <> ") a, (" <> longhand g <> ")b)"
+    }
+ -- f &&& g = dunno yet does it matter
 
 instance Cartesian HS where
     copy = HS $ Code {
@@ -401,37 +447,48 @@ instance Cocartesian HS where
 instance Strong HS where
     first' f = HS $ Code {
         _externalImports = [
-            ("Data.Bifunctor", ["first"])
+            ("Data.Bifunctor qualified as Bifunctor", ["Bifunctor.first"])
         ] <> externalImports f,
         _internalImports = internalImports f,
-        _shorthand = "first (" <> shorthand f <> ")",
+        _shorthand = "Bifunctor.first (" <> shorthand f <> ")",
         _longhand = "\\(a, b) -> ((" <> longhand f <> ") a, b)"
     }
     second' f = HS $ Code {
         _externalImports = [
-            ("Data.Bifunctor", ["second"])
+            ("Data.Bifunctor qualified as Bifunctor", ["Bifunctor.second"])
         ] <> externalImports f,
         _internalImports = internalImports f,
-        _shorthand = "second (" <> shorthand f <> ")",
+        _shorthand = "Bifunctor.second (" <> shorthand f <> ")",
         _longhand = "\\(a, b) -> (a, (" <> longhand f <> ") b)"
     }
 
 instance Choice HS where
     left' f = HS $ Code {
         _externalImports = [
-            ("Data.Bifunctor", ["first"])
+            ("Data.Bifunctor qualified as Bifunctor", ["Bifunctor.first"])
         ] <> externalImports f,
         _internalImports = internalImports f,
-        _shorthand = "first (" <> shorthand f <> ")",
+        _shorthand = "Bifunctor.first (" <> shorthand f <> ")",
         _longhand = "\\case { Left x -> Left ((" <> longhand f <> ") x); Right x -> Right x; }"
     }
     right' f = HS $ Code {
         _externalImports = [
-            ("Data.Bifunctor", ["second"])
+            ("Data.Bifunctor qualified as Bifunctor", ["Bifunctor.second"])
         ] <> externalImports f,
         _internalImports = internalImports f,
-        _shorthand = "second (" <> shorthand f <> ")",
+        _shorthand = "Bifunctor.second (" <> shorthand f <> ")",
         _longhand = "\\case { Left x -> Left x; Right x -> Right ((" <> longhand f <> ") x); }"
+    }
+
+-- todo define more functions
+instance ArrowChoice HS where
+    left f = HS $ Code {
+        _externalImports = [
+            ("Data.Bifunctor qualified as Bifunctor", ["Bifunctor.first"])
+        ] <> externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "Bifunctor.first (" <> shorthand f <> ")",
+        _longhand = "\\case { Left x -> Left ((" <> longhand f <> ") x); Right x -> Right x; }"
     }
 
 instance Symmetric HS where
@@ -609,8 +666,8 @@ instance PrimitiveExtra HS where
     constString s = HS $ Code {
         _externalImports = [],
         _internalImports = [],
-        _shorthand = "const \"" <> (BSL.fromStrict $ TE.encodeUtf8 s) <> "\"",
-        _longhand = "const \"" <> (BSL.fromStrict $ TE.encodeUtf8 s) <> "\""
+        _shorthand = "const \"" <> BSL.fromStrict (TE.encodeUtf8 s) <> "\"",
+        _longhand = "const \"" <> BSL.fromStrict (TE.encodeUtf8 s) <> "\""
     }
 
 instance PrimitiveFile HS where
@@ -766,6 +823,11 @@ instance Numeric HS where
         _longhand = "uncurry mod"
     }
 
+
+-- OTHER LIBss
+-- instance 
+
+
 {-}
 -- I don't quite know how to call ghci or cabal new-repl to include the correct functions here, so the tests are skipped.
 
@@ -879,64 +941,71 @@ instance ExecuteStdioShorthand HS where
             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
 
-instance ExecuteJSONLonghand HS where
-    executeJSONLonghand cat param = do
-        let params ∷ [String]
-            params = [
-                -- "-e", ":set -ilibrary",
-                "-e", ":set -XGHC2024",
-                "-e", "import Prelude hiding ((.), id)",
-                "-e", "import Data.Aeson",
-                "-e", "import Data.ByteString.Lazy.Char8 as BSL"
-                ] <>
-                toExternalCLIImports cat <>
-                [
-                "-e", "encode ((" <> BSL.unpack (renderStatementLonghand cat) <> ") (decode(BSL.pack(" <> show (BSL.unpack (encode param)) <> "))))"
-                ]
-        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
-        case exitCode of
-            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
-            ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
+-- we don't know what this should be encoding to necessarily...
+-- we know it's at least a free object but not sure about its properties
+-- we first need to sort out decoding.
 
-instance ExecuteJSONShorthand HS where
-    executeJSONShorthand cat param = do
-        let params ∷ [String]
-            params = [
-                "-e", ":set -ilibrary",
-                "-e", ":set -XGHC2024",
-                "-e", "import Prelude hiding ((.), id)",
-                "-e", "import Data.Aeson",
-                "-e", "import Data.ByteString.Lazy.Char8 as BSL"
-                ] <>
-                toExternalCLIImports cat <>
-                toShorthandCLIDefinitions cat <>
-                [
-                "-e", "encode ((" <> BSL.unpack (renderStatementShorthand cat) <> ") (decode(BSL.pack(" <> show(BSL.unpack (encode param)) <> "))))"
-                ]
-        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
-        case exitCode of
-            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
-            ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
-
-instance ExecuteJSONImports HS where
-    executeJSONImports cat param = do
-        let params ∷ [String]
-            params = [
-                -- "-e", ":set -ilibrary",
-                "-e", ":set -XGHC2024",
-                "-e", "import Prelude hiding ((.), id)",
-                "-e", "import Data.Aeson",
-                "-e", "import Data.ByteString.Lazy.Char8 as BSL"
-                ] <>
-                toExternalCLIImports cat <>
-                toInternalCLIImports cat <>
-                [
-                "-e", "encode ((" <> BSL.unpack (renderStatementShorthand cat) <> ") (decode(BSL.pack(" <> show (BSL.unpack (encode param)) <> "))))"
-                ]
-        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "ghci" params "")
-        case exitCode of
-            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
-            ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
+-- instance ExecuteJSONLonghand HS where
+--     executeJSONLonghand cat param = do
+--         let params ∷ [String]
+--             params = [
+--                 "-v0", "exec", "--", "ghci",
+--                 -- "-e", ":set -ilibrary",
+--                 "-e", ":set -XGHC2024",
+--                 "-e", "import Prelude hiding ((.), id)",
+--                 "-e", "import Data.Aeson",
+--                 "-e", "import Data.ByteString.Lazy.Char8 as BSL"
+--                 ] <>
+--                 toExternalCLIImports cat <>
+--                 [
+--                 "-e", "encode ((" <> BSL.unpack (renderStatementLonghand cat) <> ") (decode(BSL.pack(" <> show (BSL.unpack (encode param)) <> "))))"
+--                 ]
+--         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "cabal" params "")
+--         case exitCode of
+--             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
+--             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
+-- 
+-- instance ExecuteJSONShorthand HS where
+--     executeJSONShorthand cat param = do
+--         let params ∷ [String]
+--             params = [
+--                 "-v0", "exec", "--", "ghci",
+--                 "-e", ":set -ilibrary",
+--                 "-e", ":set -XGHC2024",
+--                 "-e", "import Prelude hiding ((.), id)",
+--                 "-e", "import Data.Aeson",
+--                 "-e", "import Data.ByteString.Lazy.Char8 as BSL"
+--                 ] <>
+--                 toExternalCLIImports cat <>
+--                 toShorthandCLIDefinitions cat <>
+--                 [
+--                 "-e", "encode ((" <> BSL.unpack (renderStatementShorthand cat) <> ") (decode(BSL.pack(" <> show (BSL.unpack (encode param)) <> "))))"
+--                 ]
+--         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "cabal" params "")
+--         case exitCode of
+--             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
+--             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
+-- 
+-- instance ExecuteJSONImports HS where
+--     executeJSONImports cat param = do
+--         let params ∷ [String]
+--             params = [
+--                 "-v0", "exec", "--", "ghci",
+--                 -- "-e", ":set -ilibrary",
+--                 "-e", ":set -XGHC2024",
+--                 "-e", "import Prelude hiding ((.), id)",
+--                 "-e", "import Data.Aeson",
+--                 "-e", "import Data.ByteString.Lazy.Char8 as BSL"
+--                 ] <>
+--                 toExternalCLIImports cat <>
+--                 toInternalCLIImports cat <>
+--                 [
+--                 "-e", "encode ((" <> BSL.unpack (renderStatementShorthand cat) <> ") (decode(BSL.pack(" <> show (BSL.unpack (encode param)) <> "))))"
+--                 ]
+--         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "cabal" params "")
+--         case exitCode of
+--             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run ghci with params: " <> unwords params <> " Output: " <> stderr
+--             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
 
 instance CompileLonghand HS where
     compileLonghand file cat = do

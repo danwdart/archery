@@ -38,11 +38,12 @@ import Test.QuickCheck
 import Test.QuickCheck.Monadic                    ()
 
 spec ∷ Spec
-spec = describe "HS" $ do
+spec = parallel . describe "HS" $ do
     describe "GHCi" $ do
         describe "with Longhand" $ do
-            -- describe "bracket" . it "is idempotent" $ (do
-            --         executeGHCiLonghand (bracket id :: HS Text Text) "1" `shouldReturn` "1")
+            describe "bracket" .
+                it "is idempotent" $ do
+                    executeGHCiLonghand (bracket id :: HS Text Text) "1" `shouldReturn` "1"
             describe "category" $ do
                 it "ids" $
                     executeGHCiLonghand (id :: HS Text Text) "1" `shouldReturn` "1"
@@ -121,12 +122,12 @@ spec = describe "HS" $ do
                     executeGHCiLonghand (concatString :: HS (Text, Text) Text) ("a", "b") `shouldReturn` "ab"
                 it "returns const string" $ do
                     executeGHCiLonghand (constString "a" :: HS () Text) () `shouldReturn` "a"
-            describe "primitivefile" $ do
-                xit "reads /etc/passwd" $ do
+            xdescribe "primitivefile" $ do
+                it "reads /etc/passwd" $ do
                     executeGHCiLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
                 it "doesn't read /etc/shadow" $ do
                     executeGHCiLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
-                xit "writes a file and then reads it back" $ do
+                it "writes a file and then reads it back" $ do
                     executeGHCiLonghand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
                     executeGHCiLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
                 it "doesn't write /etc/shadow" $ do
@@ -163,8 +164,9 @@ spec = describe "HS" $ do
                 it "returns a Just" $
                     executeGHCiLonghand (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
         describe "with Shorthand" $ do
-            -- describe "bracket" . it "is idempotent" $ (do
-            --         executeGHCiShorthand (bracket id :: HS Text Text) "1" `shouldReturn` "1")
+            describe "bracket" .
+                it "is idempotent" $ do
+                    executeGHCiShorthand (bracket id :: HS Text Text) "1" `shouldReturn` "1"
             describe "category" $ do
                 it "ids" $
                     executeGHCiShorthand (id :: HS Text Text) "1" `shouldReturn` "1"
@@ -243,12 +245,12 @@ spec = describe "HS" $ do
                     executeGHCiShorthand (concatString :: HS (Text, Text) Text) ("a", "b") `shouldReturn` "ab"
                 it "returns const string" $ do
                     executeGHCiShorthand (constString "a" :: HS () Text) () `shouldReturn` "a"
-            describe "primitivefile" $ do
-                xit "reads /etc/passwd" $ do
+            xdescribe "primitivefile" $ do
+                it "reads /etc/passwd" $ do
                     executeGHCiShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
                 it "doesn't read /etc/shadow" $ do
                     executeGHCiShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
-                xit "writes a file and then reads it back" $ do
+                it "writes a file and then reads it back" $ do
                     executeGHCiShorthand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
                     executeGHCiShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
                 it "doesn't write /etc/shadow" $ do
@@ -285,10 +287,11 @@ spec = describe "HS" $ do
                 it "returns a Just" $
                     executeGHCiShorthand (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
         xdescribe "with imports" $ do
-            -- describe "bracket" . it "is idempotent" $ (do
-            --         executeGHCiImports (bracket id :: HS Text Text) "1" `shouldReturn` "1")
+            describe "bracket" .
+                it "is idempotent" $ do
+                    executeGHCiImports (bracket id :: HS Text Text) "1" `shouldReturn` "1"
             describe "category" $ do
-                xit "ids" $
+                it "ids" $
                     executeGHCiImports (id :: HS Text Text) "1" `shouldReturn` "1"
                 it "composes" $
                     executeGHCiImports (id :: HS Text Text) "1" `shouldReturn` "1"
@@ -365,12 +368,12 @@ spec = describe "HS" $ do
                     executeGHCiImports (concatString :: HS (Text, Text) Text) ("a", "b") `shouldReturn` "ab"
                 it "returns const string" $ do
                     executeGHCiImports (constString "a" :: HS () Text) () `shouldReturn` "a"
-            describe "primitivefile" $ do
-                xit "reads /etc/passwd" $ do
+            xdescribe "primitivefile" $ do
+                it "reads /etc/passwd" $ do
                     executeGHCiImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
                 it "doesn't read /etc/shadow" $ do
                     executeGHCiImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
-                xit "writes a file and then reads it back" $ do
+                it "writes a file and then reads it back" $ do
                     executeGHCiImports (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
                     executeGHCiImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
                 it "doesn't write /etc/shadow" $ do
@@ -406,370 +409,373 @@ spec = describe "HS" $ do
                     executeGHCiImports (id :: HS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
                 it "returns a Just" $
                     executeGHCiImports (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
-    xdescribe "JSON" $ do
-        describe "with Longhand" $ do
-            -- describe "bracket" . it "is idempotent" $ (do
-            --         executeJSONLonghand (bracket id :: HS Text Text) "1" `shouldReturn` "1")
-            describe "category" $ do
-                it "ids" $
-                    executeJSONLonghand (id :: HS Text Text) "1" `shouldReturn` "1"
-                it "composes" $
-                    executeJSONLonghand (id :: HS Text Text) "1" `shouldReturn` "1"
-            describe "cartesian" $ do
-                it "copies" $
-                    executeJSONLonghand (copy :: HS Text (Text, Text)) "1" `shouldReturn` ("1", "1")
-                it "consumes" $
-                    executeJSONLonghand (consume :: HS Text ()) "1" `shouldReturn` ()
-                it "returns fst" $
-                    executeJSONLonghand (fst' :: HS (Text, Int) Text) ("1", 1) `shouldReturn` "1"
-                it "returns snd" $
-                    executeJSONLonghand (snd' :: HS (Int, Text) Text) (1, "1") `shouldReturn` "1"
-            describe "cocartesian" $ do
-                it "injects Left" $ do
-                    executeJSONLonghand (injectL :: HS Text (Either Text ())) "1" `shouldReturn` Left "1"
-                it "injects Right" $ do
-                    executeJSONLonghand (injectR :: HS Text (Either () Text)) "1" `shouldReturn` Right "1"
-                describe "unify" $ do
-                    it "unifies Left" $
-                        executeJSONLonghand (unify :: HS (Either Text Text) Text) (Left "1") `shouldReturn` "1"
-                    it "unifies Right" $
-                        executeJSONLonghand (unify :: HS (Either Text Text) Text) (Right "1") `shouldReturn` "1"
-                describe "tag" $ do
-                    it "tags Left" $
-                        executeJSONLonghand (tag :: HS (Bool, Text) (Either Text Text)) (False, "1") `shouldReturn` Left "1"
-                    it "tags Right" $
-                        executeJSONLonghand (tag :: HS (Bool, Text) (Either Text Text)) (True, "1") `shouldReturn` Right "1"
-            describe "strong" $ do
-                it "runs on first" $
-                    executeJSONLonghand (first' copy :: HS (Text, Text) ((Text, Text), Text)) ("1", "2") `shouldReturn` (("1", "1"), "2")
-                it "runs on second" $
-                    executeJSONLonghand (second' copy :: HS (Text, Text) (Text, (Text, Text))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
-            describe "choice" $ do
-                describe "left'" $ do
-                    it "runs on left" $
-                        executeJSONLonghand (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
-                    it "doesn't run on right" $
-                        executeJSONLonghand (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Right 1) `shouldReturn` Right 1
-                describe "right'" $ do
-                    it "doesn't run on left" $
-                        executeJSONLonghand (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Left "1") `shouldReturn` Left "1"
-                    it "runs on right" $
-                        executeJSONLonghand (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Right 1) `shouldReturn` Right (1, 1)
-            describe "symmetric" $ do
-                it "swaps" $
-                    executeJSONLonghand (swap :: HS (Text, Int) (Int, Text)) ("1", 1) `shouldReturn` (1, "1")
-                describe "swapEither" $ do
-                    it "swaps left" $
-                        executeJSONLonghand (swapEither :: HS (Either Text Text) (Either Text Text)) (Left "1") `shouldReturn` Right "1"
-                    it "swaps right" $
-                        executeJSONLonghand (swapEither :: HS (Either Text Text) (Either Text Text)) (Right "1") `shouldReturn` Left "1"
-                it "reassocs" $
-                    executeJSONLonghand (reassoc :: HS (Text, (Int, Bool)) ((Text, Int), Bool)) ("1", (1, True)) `shouldReturn` (("1", 1), True)
-                describe "reassocEither" $ do
-                    it "reassocs Left" $
-                        executeJSONLonghand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Left "1") `shouldReturn` Left (Left "1")
-                    it "reassocs Right (Left)" $
-                        executeJSONLonghand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Left 1)) `shouldReturn` Left (Right 1)
-                    it "reassoc Right (Right)" $
-                        executeJSONLonghand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Right True)) `shouldReturn` Right True
-            describe "primitive" $ do
-                describe "eq" $ do
-                    it "equal" $
-                        executeJSONLonghand (eq :: HS (Text, Text) Bool) ("a", "a") `shouldReturn` True
-                    it "not equal" $
-                        executeJSONLonghand (eq :: HS (Text, Text) Bool) ("a", "b") `shouldReturn` False
-                it "reverses string" $
-                    executeJSONLonghand (reverseString :: HS Text Text) "abc" `shouldReturn` "cba"
-            describe "primitiveconsole" $ pure ()
-            describe "primitive extra" $ do
-                it "converts int to string" $
-                    executeJSONLonghand (intToString :: HS Int Text) 1 `shouldReturn` "1"
-                it "concats string" $
-                    executeJSONLonghand (concatString :: HS (Text, Text) Text) ("a", "b") `shouldReturn` "ab"
-                it "returns const string" $ do
-                    executeJSONLonghand (constString "a" :: HS () Text) () `shouldReturn` "a"
-            describe "primitivefile" $ do
-                xit "reads /etc/passwd" $ do
-                    executeJSONLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
-                it "doesn't read /etc/shadow" $ do
-                    executeJSONLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
-                xit "writes a file and then reads it back" $ do
-                    executeJSONLonghand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
-                    executeJSONLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
-                it "doesn't write /etc/shadow" $ do
-                    executeJSONLonghand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "/etc/shadow", "") `shouldThrow` anyIOException
-            describe "numeric" $ do
-                it "returns const int" $ do
-                    executeJSONLonghand (num 1 :: HS () Int) () `shouldReturn` 1
-                it "negates" $ do
-                    executeJSONLonghand (negate' :: HS Int Int) 1 `shouldReturn` (-1)
-                it "adds" $ do
-                    executeJSONLonghand (add :: HS (Int, Int) Int) (1, 2) `shouldReturn` 3
-                it "mults" $ do
-                    executeJSONLonghand (mult :: HS (Int, Int) Int) (2, 3) `shouldReturn` 6
-                it "divs" $ do
-                    executeJSONLonghand (div' :: HS (Int, Int) Int) (4, 2) `shouldReturn` 2
-                it "mods" $ do
-                    executeJSONLonghand (mod' :: HS (Int, Int) Int) (5, 2) `shouldReturn` 1
-            it "returns a string" $
-                executeJSONLonghand (id :: HS Text Text) "1" `shouldReturn` "1"
-            it "returns an int" $
-                executeJSONLonghand (id :: HS Int Int) 1 `shouldReturn` 1
-            it "returns a bool" $
-                executeJSONLonghand (id :: HS Bool Bool) True `shouldReturn` True
-            it "returns a tuple" $
-                executeJSONLonghand (id :: HS (Text, Int) (Text, Int)) ("1", 1) `shouldReturn` ("1", 1)
-            describe "Either" $ do
-                it "returns a Left" $
-                    executeJSONLonghand (id :: HS (Either Text Int) (Either Text Int)) (Left "1") `shouldReturn` Left "1"
-                it "returns a Right" $
-                    executeJSONLonghand (id :: HS (Either Text Int) (Either Text Int)) (Right 1) `shouldReturn` Right 1
-            describe "Maybe" $ do
-                it "returns a Nothing" $
-                    executeJSONLonghand (id :: HS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
-                it "returns a Just" $
-                    executeJSONLonghand (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
-        describe "with Shorthand" $ do
-            -- describe "bracket" . it "is idempotent" $ (do
-            --         executeJSONShorthand (bracket id :: HS Text Text) "1" `shouldReturn` "1")
-            describe "category" $ do
-                it "ids" $
-                    executeJSONShorthand (id :: HS Text Text) "1" `shouldReturn` "1"
-                it "composes" $
-                    executeJSONShorthand (id :: HS Text Text) "1" `shouldReturn` "1"
-            describe "cartesian" $ do
-                it "copies" $
-                    executeJSONShorthand (copy :: HS Text (Text, Text)) "1" `shouldReturn` ("1", "1")
-                it "consumes" $
-                    executeJSONShorthand (consume :: HS Text ()) "1" `shouldReturn` ()
-                it "returns fst" $
-                    executeJSONShorthand (fst' :: HS (Text, Int) Text) ("1", 1) `shouldReturn` "1"
-                it "returns snd" $
-                    executeJSONShorthand (snd' :: HS (Int, Text) Text) (1, "1") `shouldReturn` "1"
-            describe "cocartesian" $ do
-                it "injects Left" $ do
-                    executeJSONShorthand (injectL :: HS Text (Either Text ())) "1" `shouldReturn` Left "1"
-                it "injects Right" $ do
-                    executeJSONShorthand (injectR :: HS Text (Either () Text)) "1" `shouldReturn` Right "1"
-                describe "unify" $ do
-                    it "unifies Left" $
-                        executeJSONShorthand (unify :: HS (Either Text Text) Text) (Left "1") `shouldReturn` "1"
-                    it "unifies Right" $
-                        executeJSONShorthand (unify :: HS (Either Text Text) Text) (Right "1") `shouldReturn` "1"
-                describe "tag" $ do
-                    it "tags Left" $
-                        executeJSONShorthand (tag :: HS (Bool, Text) (Either Text Text)) (False, "1") `shouldReturn` Left "1"
-                    it "tags Right" $
-                        executeJSONShorthand (tag :: HS (Bool, Text) (Either Text Text)) (True, "1") `shouldReturn` Right "1"
-            describe "strong" $ do
-                it "runs on first" $
-                    executeJSONShorthand (first' copy :: HS (Text, Text) ((Text, Text), Text)) ("1", "2") `shouldReturn` (("1", "1"), "2")
-                it "runs on second" $
-                    executeJSONShorthand (second' copy :: HS (Text, Text) (Text, (Text, Text))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
-            describe "choice" $ do
-                describe "left'" $ do
-                    it "runs on left" $
-                        executeJSONShorthand (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
-                    it "doesn't run on right" $
-                        executeJSONShorthand (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Right 1) `shouldReturn` Right 1
-                describe "right'" $ do
-                    it "doesn't run on left" $
-                        executeJSONShorthand (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Left "1") `shouldReturn` Left "1"
-                    it "runs on right" $
-                        executeJSONShorthand (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Right 1) `shouldReturn` Right (1, 1)
-            describe "symmetric" $ do
-                it "swaps" $
-                    executeJSONShorthand (swap :: HS (Text, Int) (Int, Text)) ("1", 1) `shouldReturn` (1, "1")
-                describe "swapEither" $ do
-                    it "swaps left" $
-                        executeJSONShorthand (swapEither :: HS (Either Text Text) (Either Text Text)) (Left "1") `shouldReturn` Right "1"
-                    it "swaps right" $
-                        executeJSONShorthand (swapEither :: HS (Either Text Text) (Either Text Text)) (Right "1") `shouldReturn` Left "1"
-                it "reassocs" $
-                    executeJSONShorthand (reassoc :: HS (Text, (Int, Bool)) ((Text, Int), Bool)) ("1", (1, True)) `shouldReturn` (("1", 1), True)
-                describe "reassocEither" $ do
-                    it "reassocs Left" $
-                        executeJSONShorthand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Left "1") `shouldReturn` Left (Left "1")
-                    it "reassocs Right (Left)" $
-                        executeJSONShorthand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Left 1)) `shouldReturn` Left (Right 1)
-                    it "reassoc Right (Right)" $
-                        executeJSONShorthand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Right True)) `shouldReturn` Right True
-            describe "primitive" $ do
-                describe "eq" $ do
-                    it "equal" $
-                        executeJSONShorthand (eq :: HS (Text, Text) Bool) ("a", "a") `shouldReturn` True
-                    it "not equal" $
-                        executeJSONShorthand (eq :: HS (Text, Text) Bool) ("a", "b") `shouldReturn` False
-                it "reverses string" $
-                    executeJSONShorthand (reverseString :: HS Text Text) "abc" `shouldReturn` "cba"
-            describe "primitiveconsole" $ pure ()
-            describe "primitive extra" $ do
-                it "converts int to string" $
-                    executeJSONShorthand (intToString :: HS Int Text) 1 `shouldReturn` "1"
-                it "concats string" $
-                    executeJSONShorthand (concatString :: HS (Text, Text) Text) ("a", "b") `shouldReturn` "ab"
-                it "returns const string" $ do
-                    executeJSONShorthand (constString "a" :: HS () Text) () `shouldReturn` "a"
-            describe "primitivefile" $ do
-                xit "reads /etc/passwd" $ do
-                    executeJSONShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
-                it "doesn't read /etc/shadow" $ do
-                    executeJSONShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
-                xit "writes a file and then reads it back" $ do
-                    executeJSONShorthand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
-                    executeJSONShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
-                it "doesn't write /etc/shadow" $ do
-                    executeJSONShorthand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf"/etc/shadow", "") `shouldThrow` anyIOException
-            describe "numeric" $ do
-                it "returns const int" $ do
-                    executeJSONShorthand (num 1 :: HS () Int) () `shouldReturn` 1
-                it "negates" $ do
-                    executeJSONShorthand (negate' :: HS Int Int) 1 `shouldReturn` (-1)
-                it "adds" $ do
-                    executeJSONShorthand (add :: HS (Int, Int) Int) (1, 2) `shouldReturn` 3
-                it "mults" $ do
-                    executeJSONShorthand (mult :: HS (Int, Int) Int) (2, 3) `shouldReturn` 6
-                it "divs" $ do
-                    executeJSONShorthand (div' :: HS (Int, Int) Int) (4, 2) `shouldReturn` 2
-                it "mods" $ do
-                    executeJSONShorthand (mod' :: HS (Int, Int) Int) (5, 2) `shouldReturn` 1
-            it "returns a string" $
-                executeJSONShorthand (id :: HS Text Text) "1" `shouldReturn` "1"
-            it "returns an int" $
-                executeJSONShorthand (id :: HS Int Int) 1 `shouldReturn` 1
-            it "returns a bool" $
-                executeJSONShorthand (id :: HS Bool Bool) True `shouldReturn` True
-            it "returns a tuple" $
-                executeJSONShorthand (id :: HS (Text, Int) (Text, Int)) ("1", 1) `shouldReturn` ("1", 1)
-            describe "Either" $ do
-                it "returns a Left" $
-                    executeJSONShorthand (id :: HS (Either Text Int) (Either Text Int)) (Left "1") `shouldReturn` Left "1"
-                it "returns a Right" $
-                    executeJSONShorthand (id :: HS (Either Text Int) (Either Text Int)) (Right 1) `shouldReturn` Right 1
-            describe "Maybe" $ do
-                it "returns a Nothing" $
-                    executeJSONShorthand (id :: HS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
-                it "returns a Just" $
-                    executeJSONShorthand (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
-        xdescribe "with imports" $ do
-            -- describe "bracket" . it "is idempotent" $ (do
-            --         executeJSONImports (bracket id :: HS Text Text) "1" `shouldReturn` "1")
-            describe "category" $ do
-                xit "ids" $
-                    executeJSONImports (id :: HS Text Text) "1" `shouldReturn` "1"
-                it "composes" $
-                    executeJSONImports (id :: HS Text Text) "1" `shouldReturn` "1"
-            describe "cartesian" $ do
-                it "copies" $
-                    executeJSONImports (copy :: HS Text (Text, Text)) "1" `shouldReturn` ("1", "1")
-                it "consumes" $
-                    executeJSONImports (consume :: HS Text ()) "1" `shouldReturn` ()
-                it "returns fst" $
-                    executeJSONImports (fst' :: HS (Text, Int) Text) ("1", 1) `shouldReturn` "1"
-                it "returns snd" $
-                    executeJSONImports (snd' :: HS (Int, Text) Text) (1, "1") `shouldReturn` "1"
-            describe "cocartesian" $ do
-                it "injects Left" $ do
-                    executeJSONImports (injectL :: HS Text (Either Text ())) "1" `shouldReturn` Left "1"
-                it "injects Right" $ do
-                    executeJSONImports (injectR :: HS Text (Either () Text)) "1" `shouldReturn` Right "1"
-                describe "unify" $ do
-                    it "unifies Left" $
-                        executeJSONImports (unify :: HS (Either Text Text) Text) (Left "1") `shouldReturn` "1"
-                    it "unifies Right" $
-                        executeJSONImports (unify :: HS (Either Text Text) Text) (Right "1") `shouldReturn` "1"
-                describe "tag" $ do
-                    it "tags Left" $
-                        executeJSONImports (tag :: HS (Bool, Text) (Either Text Text)) (False, "1") `shouldReturn` Left "1"
-                    it "tags Right" $
-                        executeJSONImports (tag :: HS (Bool, Text) (Either Text Text)) (True, "1") `shouldReturn` Right "1"
-            describe "strong" $ do
-                it "runs on first" $
-                    executeJSONImports (first' copy :: HS (Text, Text) ((Text, Text), Text)) ("1", "2") `shouldReturn` (("1", "1"), "2")
-                it "runs on second" $
-                    executeJSONImports (second' copy :: HS (Text, Text) (Text, (Text, Text))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
-            describe "choice" $ do
-                describe "left'" $ do
-                    it "runs on left" $
-                        executeJSONImports (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
-                    it "doesn't run on right" $
-                        executeJSONImports (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Right 1) `shouldReturn` Right 1
-                describe "right'" $ do
-                    it "doesn't run on left" $
-                        executeJSONImports (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Left "1") `shouldReturn` Left "1"
-                    it "runs on right" $
-                        executeJSONImports (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Right 1) `shouldReturn` Right (1, 1)
-            describe "symmetric" $ do
-                it "swaps" $
-                    executeJSONImports (swap :: HS (Text, Int) (Int, Text)) ("1", 1) `shouldReturn` (1, "1")
-                describe "swapEither" $ do
-                    it "swaps left" $
-                        executeJSONImports (swapEither :: HS (Either Text Text) (Either Text Text)) (Left "1") `shouldReturn` Right "1"
-                    it "swaps right" $
-                        executeJSONImports (swapEither :: HS (Either Text Text) (Either Text Text)) (Right "1") `shouldReturn` Left "1"
-                it "reassocs" $
-                    executeJSONImports (reassoc :: HS (Text, (Int, Bool)) ((Text, Int), Bool)) ("1", (1, True)) `shouldReturn` (("1", 1), True)
-                describe "reassocEither" $ do
-                    it "reassocs Left" $
-                        executeJSONImports (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Left "1") `shouldReturn` Left (Left "1")
-                    it "reassocs Right (Left)" $
-                        executeJSONImports (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Left 1)) `shouldReturn` Left (Right 1)
-                    it "reassoc Right (Right)" $
-                        executeJSONImports (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Right True)) `shouldReturn` Right True
-            describe "primitive" $ do
-                describe "eq" $ do
-                    it "equal" $
-                        executeJSONImports (eq :: HS (Text, Text) Bool) ("a", "a") `shouldReturn` True
-                    it "not equal" $
-                        executeJSONImports (eq :: HS (Text, Text) Bool) ("a", "b") `shouldReturn` False
-                it "reverses string" $
-                    executeJSONImports (reverseString :: HS Text Text) "abc" `shouldReturn` "cba"
-            describe "primitiveconsole" $ pure ()
-            describe "primitive extra" $ do
-                it "converts int to string" $
-                    executeJSONImports (intToString :: HS Int Text) 1 `shouldReturn` "1"
-                it "concats string" $
-                    executeJSONImports (concatString :: HS (Text, Text) Text) ("a", "b") `shouldReturn` "ab"
-                it "returns const string" $ do
-                    executeJSONImports (constString "a" :: HS () Text) () `shouldReturn` "a"
-            describe "primitivefile" $ do
-                xit "reads /etc/passwd" $ do
-                    executeJSONImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
-                it "doesn't read /etc/shadow" $ do
-                    executeJSONImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
-                xit "writes a file and then reads it back" $ do
-                    executeJSONImports (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
-                    executeJSONImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
-                it "doesn't write /etc/shadow" $ do
-                    executeJSONImports (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "/etc/shadow", "") `shouldThrow` anyIOException
-            describe "numeric" $ do
-                it "returns const int" $ do
-                    executeJSONImports (num 1 :: HS () Int) () `shouldReturn` 1
-                it "negates" $ do
-                    executeJSONImports (negate' :: HS Int Int) 1 `shouldReturn` (-1)
-                it "adds" $ do
-                    executeJSONImports (add :: HS (Int, Int) Int) (1, 2) `shouldReturn` 3
-                it "mults" $ do
-                    executeJSONImports (mult :: HS (Int, Int) Int) (2, 3) `shouldReturn` 6
-                it "divs" $ do
-                    executeJSONImports (div' :: HS (Int, Int) Int) (4, 2) `shouldReturn` 2
-                it "mods" $ do
-                    executeJSONImports (mod' :: HS (Int, Int) Int) (5, 2) `shouldReturn` 1
-            it "returns a string" $
-                executeJSONImports (id :: HS Text Text) "1" `shouldReturn` "1"
-            it "returns an int" $
-                executeJSONImports (id :: HS Int Int) 1 `shouldReturn` 1
-            it "returns a bool" $
-                executeJSONImports (id :: HS Bool Bool) True `shouldReturn` True
-            it "returns a tuple" $
-                executeJSONImports (id :: HS (Text, Int) (Text, Int)) ("1", 1) `shouldReturn` ("1", 1)
-            describe "Either" $ do
-                it "returns a Left" $
-                    executeJSONImports (id :: HS (Either Text Int) (Either Text Int)) (Left "1") `shouldReturn` Left "1"
-                it "returns a Right" $
-                    executeJSONImports (id :: HS (Either Text Int) (Either Text Int)) (Right 1) `shouldReturn` Right 1
-            describe "Maybe" $ do
-                it "returns a Nothing" $
-                    executeJSONImports (id :: HS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
-                it "returns a Just" $
-                    executeJSONImports (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
+    -- xdescribe "JSON" $ do
+    --     describe "with Longhand" $ do
+    --         describe "bracket" .
+    --             it "is idempotent" $ do
+    --                 executeJSONLonghand (bracket id :: HS Text Text) "1" `shouldReturn` "1"
+    --         describe "category" $ do
+    --             it "ids" $
+    --                 executeJSONLonghand (id :: HS Text Text) "1" `shouldReturn` "1"
+    --             it "composes" $
+    --                 executeJSONLonghand (id :: HS Text Text) "1" `shouldReturn` "1"
+    --         describe "cartesian" $ do
+    --             it "copies" $
+    --                 executeJSONLonghand (copy :: HS Text (Text, Text)) "1" `shouldReturn` ("1", "1")
+    --             it "consumes" $
+    --                 executeJSONLonghand (consume :: HS Text ()) "1" `shouldReturn` ()
+    --             it "returns fst" $
+    --                 executeJSONLonghand (fst' :: HS (Text, Int) Text) ("1", 1) `shouldReturn` "1"
+    --             it "returns snd" $
+    --                 executeJSONLonghand (snd' :: HS (Int, Text) Text) (1, "1") `shouldReturn` "1"
+    --         describe "cocartesian" $ do
+    --             it "injects Left" $ do
+    --                 executeJSONLonghand (injectL :: HS Text (Either Text ())) "1" `shouldReturn` Left "1"
+    --             it "injects Right" $ do
+    --                 executeJSONLonghand (injectR :: HS Text (Either () Text)) "1" `shouldReturn` Right "1"
+    --             describe "unify" $ do
+    --                 it "unifies Left" $
+    --                     executeJSONLonghand (unify :: HS (Either Text Text) Text) (Left "1") `shouldReturn` "1"
+    --                 it "unifies Right" $
+    --                     executeJSONLonghand (unify :: HS (Either Text Text) Text) (Right "1") `shouldReturn` "1"
+    --             describe "tag" $ do
+    --                 it "tags Left" $
+    --                     executeJSONLonghand (tag :: HS (Bool, Text) (Either Text Text)) (False, "1") `shouldReturn` Left "1"
+    --                 it "tags Right" $
+    --                     executeJSONLonghand (tag :: HS (Bool, Text) (Either Text Text)) (True, "1") `shouldReturn` Right "1"
+    --         describe "strong" $ do
+    --             it "runs on first" $
+    --                 executeJSONLonghand (first' copy :: HS (Text, Text) ((Text, Text), Text)) ("1", "2") `shouldReturn` (("1", "1"), "2")
+    --             it "runs on second" $
+    --                 executeJSONLonghand (second' copy :: HS (Text, Text) (Text, (Text, Text))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
+    --         describe "choice" $ do
+    --             describe "left'" $ do
+    --                 it "runs on left" $
+    --                     executeJSONLonghand (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
+    --                 it "doesn't run on right" $
+    --                     executeJSONLonghand (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Right 1) `shouldReturn` Right 1
+    --             describe "right'" $ do
+    --                 it "doesn't run on left" $
+    --                     executeJSONLonghand (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Left "1") `shouldReturn` Left "1"
+    --                 it "runs on right" $
+    --                     executeJSONLonghand (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Right 1) `shouldReturn` Right (1, 1)
+    --         describe "symmetric" $ do
+    --             it "swaps" $
+    --                 executeJSONLonghand (swap :: HS (Text, Int) (Int, Text)) ("1", 1) `shouldReturn` (1, "1")
+    --             describe "swapEither" $ do
+    --                 it "swaps left" $
+    --                     executeJSONLonghand (swapEither :: HS (Either Text Text) (Either Text Text)) (Left "1") `shouldReturn` Right "1"
+    --                 it "swaps right" $
+    --                     executeJSONLonghand (swapEither :: HS (Either Text Text) (Either Text Text)) (Right "1") `shouldReturn` Left "1"
+    --             it "reassocs" $
+    --                 executeJSONLonghand (reassoc :: HS (Text, (Int, Bool)) ((Text, Int), Bool)) ("1", (1, True)) `shouldReturn` (("1", 1), True)
+    --             describe "reassocEither" $ do
+    --                 it "reassocs Left" $
+    --                     executeJSONLonghand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Left "1") `shouldReturn` Left (Left "1")
+    --                 it "reassocs Right (Left)" $
+    --                     executeJSONLonghand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Left 1)) `shouldReturn` Left (Right 1)
+    --                 it "reassoc Right (Right)" $
+    --                     executeJSONLonghand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Right True)) `shouldReturn` Right True
+    --         describe "primitive" $ do
+    --             describe "eq" $ do
+    --                 it "equal" $
+    --                     executeJSONLonghand (eq :: HS (Text, Text) Bool) ("a", "a") `shouldReturn` True
+    --                 it "not equal" $
+    --                     executeJSONLonghand (eq :: HS (Text, Text) Bool) ("a", "b") `shouldReturn` False
+    --             it "reverses string" $
+    --                 executeJSONLonghand (reverseString :: HS Text Text) "abc" `shouldReturn` "cba"
+    --         describe "primitiveconsole" $ pure ()
+    --         describe "primitive extra" $ do
+    --             it "converts int to string" $
+    --                 executeJSONLonghand (intToString :: HS Int Text) 1 `shouldReturn` "1"
+    --             it "concats string" $
+    --                 executeJSONLonghand (concatString :: HS (Text, Text) Text) ("a", "b") `shouldReturn` "ab"
+    --             it "returns const string" $ do
+    --                 executeJSONLonghand (constString "a" :: HS () Text) () `shouldReturn` "a"
+    --         describe "primitivefile" $ do
+    --             it "reads /etc/passwd" $ do
+    --                 executeJSONLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
+    --             it "doesn't read /etc/shadow" $ do
+    --                 executeJSONLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
+    --             it "writes a file and then reads it back" $ do
+    --                 executeJSONLonghand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
+    --                 executeJSONLonghand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
+    --             it "doesn't write /etc/shadow" $ do
+    --                 executeJSONLonghand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "/etc/shadow", "") `shouldThrow` anyIOException
+    --         describe "numeric" $ do
+    --             it "returns const int" $ do
+    --                 executeJSONLonghand (num 1 :: HS () Int) () `shouldReturn` 1
+    --             it "negates" $ do
+    --                 executeJSONLonghand (negate' :: HS Int Int) 1 `shouldReturn` (-1)
+    --             it "adds" $ do
+    --                 executeJSONLonghand (add :: HS (Int, Int) Int) (1, 2) `shouldReturn` 3
+    --             it "mults" $ do
+    --                 executeJSONLonghand (mult :: HS (Int, Int) Int) (2, 3) `shouldReturn` 6
+    --             it "divs" $ do
+    --                 executeJSONLonghand (div' :: HS (Int, Int) Int) (4, 2) `shouldReturn` 2
+    --             it "mods" $ do
+    --                 executeJSONLonghand (mod' :: HS (Int, Int) Int) (5, 2) `shouldReturn` 1
+    --         it "returns a string" $
+    --             executeJSONLonghand (id :: HS Text Text) "1" `shouldReturn` "1"
+    --         it "returns an int" $
+    --             executeJSONLonghand (id :: HS Int Int) 1 `shouldReturn` 1
+    --         it "returns a bool" $
+    --             executeJSONLonghand (id :: HS Bool Bool) True `shouldReturn` True
+    --         it "returns a tuple" $
+    --             executeJSONLonghand (id :: HS (Text, Int) (Text, Int)) ("1", 1) `shouldReturn` ("1", 1)
+    --         describe "Either" $ do
+    --             it "returns a Left" $
+    --                 executeJSONLonghand (id :: HS (Either Text Int) (Either Text Int)) (Left "1") `shouldReturn` Left "1"
+    --             it "returns a Right" $
+    --                 executeJSONLonghand (id :: HS (Either Text Int) (Either Text Int)) (Right 1) `shouldReturn` Right 1
+    --         describe "Maybe" $ do
+    --             it "returns a Nothing" $
+    --                 executeJSONLonghand (id :: HS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
+    --             it "returns a Just" $
+    --                 executeJSONLonghand (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
+    --     describe "with Shorthand" $ do
+    --         describe "bracket" .
+    --             it "is idempotent" $ do
+    --                 executeJSONShorthand (bracket id :: HS Text Text) "1" `shouldReturn` "1"
+    --         describe "category" $ do
+    --             it "ids" $
+    --                 executeJSONShorthand (id :: HS Text Text) "1" `shouldReturn` "1"
+    --             it "composes" $
+    --                 executeJSONShorthand (id :: HS Text Text) "1" `shouldReturn` "1"
+    --         describe "cartesian" $ do
+    --             it "copies" $
+    --                 executeJSONShorthand (copy :: HS Text (Text, Text)) "1" `shouldReturn` ("1", "1")
+    --             it "consumes" $
+    --                 executeJSONShorthand (consume :: HS Text ()) "1" `shouldReturn` ()
+    --             it "returns fst" $
+    --                 executeJSONShorthand (fst' :: HS (Text, Int) Text) ("1", 1) `shouldReturn` "1"
+    --             it "returns snd" $
+    --                 executeJSONShorthand (snd' :: HS (Int, Text) Text) (1, "1") `shouldReturn` "1"
+    --         describe "cocartesian" $ do
+    --             it "injects Left" $ do
+    --                 executeJSONShorthand (injectL :: HS Text (Either Text ())) "1" `shouldReturn` Left "1"
+    --             it "injects Right" $ do
+    --                 executeJSONShorthand (injectR :: HS Text (Either () Text)) "1" `shouldReturn` Right "1"
+    --             describe "unify" $ do
+    --                 it "unifies Left" $
+    --                     executeJSONShorthand (unify :: HS (Either Text Text) Text) (Left "1") `shouldReturn` "1"
+    --                 it "unifies Right" $
+    --                     executeJSONShorthand (unify :: HS (Either Text Text) Text) (Right "1") `shouldReturn` "1"
+    --             describe "tag" $ do
+    --                 it "tags Left" $
+    --                     executeJSONShorthand (tag :: HS (Bool, Text) (Either Text Text)) (False, "1") `shouldReturn` Left "1"
+    --                 it "tags Right" $
+    --                     executeJSONShorthand (tag :: HS (Bool, Text) (Either Text Text)) (True, "1") `shouldReturn` Right "1"
+    --         describe "strong" $ do
+    --             it "runs on first" $
+    --                 executeJSONShorthand (first' copy :: HS (Text, Text) ((Text, Text), Text)) ("1", "2") `shouldReturn` (("1", "1"), "2")
+    --             it "runs on second" $
+    --                 executeJSONShorthand (second' copy :: HS (Text, Text) (Text, (Text, Text))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
+    --         describe "choice" $ do
+    --             describe "left'" $ do
+    --                 it "runs on left" $
+    --                     executeJSONShorthand (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
+    --                 it "doesn't run on right" $
+    --                     executeJSONShorthand (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Right 1) `shouldReturn` Right 1
+    --             describe "right'" $ do
+    --                 it "doesn't run on left" $
+    --                     executeJSONShorthand (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Left "1") `shouldReturn` Left "1"
+    --                 it "runs on right" $
+    --                     executeJSONShorthand (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Right 1) `shouldReturn` Right (1, 1)
+    --         describe "symmetric" $ do
+    --             it "swaps" $
+    --                 executeJSONShorthand (swap :: HS (Text, Int) (Int, Text)) ("1", 1) `shouldReturn` (1, "1")
+    --             describe "swapEither" $ do
+    --                 it "swaps left" $
+    --                     executeJSONShorthand (swapEither :: HS (Either Text Text) (Either Text Text)) (Left "1") `shouldReturn` Right "1"
+    --                 it "swaps right" $
+    --                     executeJSONShorthand (swapEither :: HS (Either Text Text) (Either Text Text)) (Right "1") `shouldReturn` Left "1"
+    --             it "reassocs" $
+    --                 executeJSONShorthand (reassoc :: HS (Text, (Int, Bool)) ((Text, Int), Bool)) ("1", (1, True)) `shouldReturn` (("1", 1), True)
+    --             describe "reassocEither" $ do
+    --                 it "reassocs Left" $
+    --                     executeJSONShorthand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Left "1") `shouldReturn` Left (Left "1")
+    --                 it "reassocs Right (Left)" $
+    --                     executeJSONShorthand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Left 1)) `shouldReturn` Left (Right 1)
+    --                 it "reassoc Right (Right)" $
+    --                     executeJSONShorthand (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Right True)) `shouldReturn` Right True
+    --         describe "primitive" $ do
+    --             describe "eq" $ do
+    --                 it "equal" $
+    --                     executeJSONShorthand (eq :: HS (Text, Text) Bool) ("a", "a") `shouldReturn` True
+    --                 it "not equal" $
+    --                     executeJSONShorthand (eq :: HS (Text, Text) Bool) ("a", "b") `shouldReturn` False
+    --             it "reverses string" $
+    --                 executeJSONShorthand (reverseString :: HS Text Text) "abc" `shouldReturn` "cba"
+    --         describe "primitiveconsole" $ pure ()
+    --         describe "primitive extra" $ do
+    --             it "converts int to string" $
+    --                 executeJSONShorthand (intToString :: HS Int Text) 1 `shouldReturn` "1"
+    --             it "concats string" $
+    --                 executeJSONShorthand (concatString :: HS (Text, Text) Text) ("a", "b") `shouldReturn` "ab"
+    --             it "returns const string" $ do
+    --                 executeJSONShorthand (constString "a" :: HS () Text) () `shouldReturn` "a"
+    --         describe "primitivefile" $ do
+    --             it "reads /etc/passwd" $ do
+    --                 executeJSONShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
+    --             it "doesn't read /etc/shadow" $ do
+    --                 executeJSONShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
+    --             it "writes a file and then reads it back" $ do
+    --                 executeJSONShorthand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
+    --                 executeJSONShorthand (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
+    --             it "doesn't write /etc/shadow" $ do
+    --                 executeJSONShorthand (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "/etc/shadow", "") `shouldThrow` anyIOException
+    --         describe "numeric" $ do
+    --             it "returns const int" $ do
+    --                 executeJSONShorthand (num 1 :: HS () Int) () `shouldReturn` 1
+    --             it "negates" $ do
+    --                 executeJSONShorthand (negate' :: HS Int Int) 1 `shouldReturn` (-1)
+    --             it "adds" $ do
+    --                 executeJSONShorthand (add :: HS (Int, Int) Int) (1, 2) `shouldReturn` 3
+    --             it "mults" $ do
+    --                 executeJSONShorthand (mult :: HS (Int, Int) Int) (2, 3) `shouldReturn` 6
+    --             it "divs" $ do
+    --                 executeJSONShorthand (div' :: HS (Int, Int) Int) (4, 2) `shouldReturn` 2
+    --             it "mods" $ do
+    --                 executeJSONShorthand (mod' :: HS (Int, Int) Int) (5, 2) `shouldReturn` 1
+    --         it "returns a string" $
+    --             executeJSONShorthand (id :: HS Text Text) "1" `shouldReturn` "1"
+    --         it "returns an int" $
+    --             executeJSONShorthand (id :: HS Int Int) 1 `shouldReturn` 1
+    --         it "returns a bool" $
+    --             executeJSONShorthand (id :: HS Bool Bool) True `shouldReturn` True
+    --         it "returns a tuple" $
+    --             executeJSONShorthand (id :: HS (Text, Int) (Text, Int)) ("1", 1) `shouldReturn` ("1", 1)
+    --         describe "Either" $ do
+    --             it "returns a Left" $
+    --                 executeJSONShorthand (id :: HS (Either Text Int) (Either Text Int)) (Left "1") `shouldReturn` Left "1"
+    --             it "returns a Right" $
+    --                 executeJSONShorthand (id :: HS (Either Text Int) (Either Text Int)) (Right 1) `shouldReturn` Right 1
+    --         describe "Maybe" $ do
+    --             it "returns a Nothing" $
+    --                 executeJSONShorthand (id :: HS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
+    --             it "returns a Just" $
+    --                 executeJSONShorthand (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1
+    --     -- xdescribe "with imports" $ do
+    --     --     describe "bracket" .
+    --     --         it "is idempotent" $ do
+    --     --             executeJSONImports (bracket id :: HS Text Text) "1" `shouldReturn` "1"
+    --     --     describe "category" $ do
+    --     --         it "ids" $
+    --     --             executeJSONImports (id :: HS Text Text) "1" `shouldReturn` "1"
+    --     --         it "composes" $
+    --     --             executeJSONImports (id :: HS Text Text) "1" `shouldReturn` "1"
+    --     --     describe "cartesian" $ do
+    --     --         it "copies" $
+    --     --             executeJSONImports (copy :: HS Text (Text, Text)) "1" `shouldReturn` ("1", "1")
+    --     --         it "consumes" $
+    --     --             executeJSONImports (consume :: HS Text ()) "1" `shouldReturn` ()
+    --     --         it "returns fst" $
+    --     --             executeJSONImports (fst' :: HS (Text, Int) Text) ("1", 1) `shouldReturn` "1"
+    --     --         it "returns snd" $
+    --     --             executeJSONImports (snd' :: HS (Int, Text) Text) (1, "1") `shouldReturn` "1"
+    --     --     describe "cocartesian" $ do
+    --     --         it "injects Left" $ do
+    --     --             executeJSONImports (injectL :: HS Text (Either Text ())) "1" `shouldReturn` Left "1"
+    --     --         it "injects Right" $ do
+    --     --             executeJSONImports (injectR :: HS Text (Either () Text)) "1" `shouldReturn` Right "1"
+    --     --         describe "unify" $ do
+    --     --             it "unifies Left" $
+    --     --                 executeJSONImports (unify :: HS (Either Text Text) Text) (Left "1") `shouldReturn` "1"
+    --     --             it "unifies Right" $
+    --     --                 executeJSONImports (unify :: HS (Either Text Text) Text) (Right "1") `shouldReturn` "1"
+    --     --         describe "tag" $ do
+    --     --             it "tags Left" $
+    --     --                 executeJSONImports (tag :: HS (Bool, Text) (Either Text Text)) (False, "1") `shouldReturn` Left "1"
+    --     --             it "tags Right" $
+    --     --                 executeJSONImports (tag :: HS (Bool, Text) (Either Text Text)) (True, "1") `shouldReturn` Right "1"
+    --     --     describe "strong" $ do
+    --     --         it "runs on first" $
+    --     --             executeJSONImports (first' copy :: HS (Text, Text) ((Text, Text), Text)) ("1", "2") `shouldReturn` (("1", "1"), "2")
+    --     --         it "runs on second" $
+    --     --             executeJSONImports (second' copy :: HS (Text, Text) (Text, (Text, Text))) ("1", "2") `shouldReturn` ("1", ("2", "2"))
+    --     --     describe "choice" $ do
+    --     --         describe "left'" $ do
+    --     --             it "runs on left" $
+    --     --                 executeJSONImports (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Left "1") `shouldReturn`  Left ("1", "1")
+    --     --             it "doesn't run on right" $
+    --     --                 executeJSONImports (left' copy :: HS (Either Text Int) (Either (Text, Text) Int)) (Right 1) `shouldReturn` Right 1
+    --     --         describe "right'" $ do
+    --     --             it "doesn't run on left" $
+    --     --                 executeJSONImports (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Left "1") `shouldReturn` Left "1"
+    --     --             it "runs on right" $
+    --     --                 executeJSONImports (right' copy :: HS (Either Text Int) (Either Text (Int, Int))) (Right 1) `shouldReturn` Right (1, 1)
+    --     --     describe "symmetric" $ do
+    --     --         it "swaps" $
+    --     --             executeJSONImports (swap :: HS (Text, Int) (Int, Text)) ("1", 1) `shouldReturn` (1, "1")
+    --     --         describe "swapEither" $ do
+    --     --             it "swaps left" $
+    --     --                 executeJSONImports (swapEither :: HS (Either Text Text) (Either Text Text)) (Left "1") `shouldReturn` Right "1"
+    --     --             it "swaps right" $
+    --     --                 executeJSONImports (swapEither :: HS (Either Text Text) (Either Text Text)) (Right "1") `shouldReturn` Left "1"
+    --     --         it "reassocs" $
+    --     --             executeJSONImports (reassoc :: HS (Text, (Int, Bool)) ((Text, Int), Bool)) ("1", (1, True)) `shouldReturn` (("1", 1), True)
+    --     --         describe "reassocEither" $ do
+    --     --             it "reassocs Left" $
+    --     --                 executeJSONImports (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Left "1") `shouldReturn` Left (Left "1")
+    --     --             it "reassocs Right (Left)" $
+    --     --                 executeJSONImports (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Left 1)) `shouldReturn` Left (Right 1)
+    --     --             it "reassoc Right (Right)" $
+    --     --                 executeJSONImports (reassocEither :: HS (Either Text (Either Int Bool)) (Either (Either Text Int) Bool)) (Right (Right True)) `shouldReturn` Right True
+    --     --     describe "primitive" $ do
+    --     --         describe "eq" $ do
+    --     --             it "equal" $
+    --     --                 executeJSONImports (eq :: HS (Text, Text) Bool) ("a", "a") `shouldReturn` True
+    --     --             it "not equal" $
+    --     --                 executeJSONImports (eq :: HS (Text, Text) Bool) ("a", "b") `shouldReturn` False
+    --     --         it "reverses string" $
+    --     --             executeJSONImports (reverseString :: HS Text Text) "abc" `shouldReturn` "cba"
+    --     --     describe "primitiveconsole" $ pure ()
+    --     --     describe "primitive extra" $ do
+    --     --         it "converts int to string" $
+    --     --             executeJSONImports (intToString :: HS Int Text) 1 `shouldReturn` "1"
+    --     --         it "concats string" $
+    --     --             executeJSONImports (concatString :: HS (Text, Text) Text) ("a", "b") `shouldReturn` "ab"
+    --     --         it "returns const string" $ do
+    --     --             executeJSONImports (constString "a" :: HS () Text) () `shouldReturn` "a"
+    --     --     describe "primitivefile" $ do
+    --     --         it "reads /etc/passwd" $ do
+    --     --             executeJSONImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/passwd") >>= (`shouldSatisfy` ((> 5) . BS.length))
+    --     --         it "doesn't read /etc/shadow" $ do
+    --     --             executeJSONImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "/etc/shadow") `shouldThrow` anyIOException
+    --     --         it "writes a file and then reads it back" $ do
+    --     --             executeJSONImports (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "bob", "hello")
+    --     --             executeJSONImports (readFile' :: HS OsPath ByteString) (unsafeEncodeUtf "bob") `shouldReturn` "hello"
+    --     --         it "doesn't write /etc/shadow" $ do
+    --     --             executeJSONImports (writeFile' :: HS (OsPath, ByteString) ()) (unsafeEncodeUtf "/etc/shadow", "") `shouldThrow` anyIOException
+    --     --     describe "numeric" $ do
+    --     --         it "returns const int" $ do
+    --     --             executeJSONImports (num 1 :: HS () Int) () `shouldReturn` 1
+    --     --         it "negates" $ do
+    --     --             executeJSONImports (negate' :: HS Int Int) 1 `shouldReturn` (-1)
+    --     --         it "adds" $ do
+    --     --             executeJSONImports (add :: HS (Int, Int) Int) (1, 2) `shouldReturn` 3
+    --     --         it "mults" $ do
+    --     --             executeJSONImports (mult :: HS (Int, Int) Int) (2, 3) `shouldReturn` 6
+    --     --         it "divs" $ do
+    --     --             executeJSONImports (div' :: HS (Int, Int) Int) (4, 2) `shouldReturn` 2
+    --     --         it "mods" $ do
+    --     --             executeJSONImports (mod' :: HS (Int, Int) Int) (5, 2) `shouldReturn` 1
+    --     --     it "returns a string" $
+    --     --         executeJSONImports (id :: HS Text Text) "1" `shouldReturn` "1"
+    --     --     it "returns an int" $
+    --     --         executeJSONImports (id :: HS Int Int) 1 `shouldReturn` 1
+    --     --     it "returns a bool" $
+    --     --         executeJSONImports (id :: HS Bool Bool) True `shouldReturn` True
+    --     --     it "returns a tuple" $
+    --     --         executeJSONImports (id :: HS (Text, Int) (Text, Int)) ("1", 1) `shouldReturn` ("1", 1)
+    --     --     describe "Either" $ do
+    --     --         it "returns a Left" $
+    --     --             executeJSONImports (id :: HS (Either Text Int) (Either Text Int)) (Left "1") `shouldReturn` Left "1"
+    --     --         it "returns a Right" $
+    --     --             executeJSONImports (id :: HS (Either Text Int) (Either Text Int)) (Right 1) `shouldReturn` Right 1
+    --     --     describe "Maybe" $ do
+    --     --         it "returns a Nothing" $
+    --     --             executeJSONImports (id :: HS (Maybe Int) (Maybe Int)) Nothing `shouldReturn` Nothing
+    --     --         it "returns a Just" $
+    --     --             executeJSONImports (id :: HS (Maybe Int) (Maybe Int)) (Just 1) `shouldReturn` Just 1

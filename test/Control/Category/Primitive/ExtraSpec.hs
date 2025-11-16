@@ -7,7 +7,7 @@ import Control.Category.Primitive.Extra
 import Test.Hspec
 
 spec ∷ Spec
-spec = describe "Extra" $ do
+spec = parallel . describe "Extra" $ do
     describe "function arrow" $ do
         it "should cast int to string" $
             intToString 1 `shouldBe` "1"

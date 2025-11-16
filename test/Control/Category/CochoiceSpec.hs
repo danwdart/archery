@@ -4,4 +4,4 @@ import Control.Category.Cochoice
 import Test.Hspec
 
 spec ∷ Spec
-spec = xdescribe "todo" $ pure ()
+spec = parallel . xdescribe "todo" $ pure ()

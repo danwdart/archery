@@ -10,12 +10,13 @@ module Data.Code.Generic (
     HasExternalImports(..),
     HasInternalImports(..),
     Function(..),
+    Module,
     FunctionName, HasFunctionName(..),
     FunctionTypeFrom, HasFunctionTypeFrom(..),
     FunctionTypeTo, HasFunctionTypeTo(..),
     HasShorthandDefinition(..),
     HasLonghandDefinition(..),
-    Module, HasModule(..),
+    HasModule(..),
     HasShorthand(..),
     HasLonghand(..)
 ) where

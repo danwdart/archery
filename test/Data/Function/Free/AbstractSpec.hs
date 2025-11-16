@@ -10,4 +10,4 @@ import Test.QuickCheck
 import Test.QuickCheck.Monadic
 
 spec ∷ Spec
-spec = pure ()
+spec = parallel $ pure ()

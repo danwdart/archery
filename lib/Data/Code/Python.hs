@@ -1,10 +1,10 @@
 {-# LANGUAGE Unsafe               #-}
 {-# OPTIONS_GHC -Wno-unsafe #-}
 
-module Data.Code.C (C(..)) where
+module Data.Code.Python (Python(..)) where
 
 import Data.Code.Generic
 
-newtype C a b = C {
+newtype Python a b = Python {
     _code :: Code a b
 } deriving stock (Eq, Show)

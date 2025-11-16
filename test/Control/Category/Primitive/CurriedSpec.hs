@@ -6,7 +6,7 @@ import Test.Hspec
 
 
 spec ∷ Spec
-spec = describe "curried" $ do
+spec = parallel . describe "curried" $ do
     describe "function arrow" $ do
         it "should equal" $
             eqCurried 1 1 `shouldBe` True

@@ -11,7 +11,7 @@ import System.OsPath                   (unsafeEncodeUtf)
 import Test.Hspec
 
 spec ∷ Spec
-spec = describe "File" .
+spec = parallel . describe "File" .
     describe "Kleisli" .
         it "writes a file and verifies it" $ do
             runKleisli writeFile' (unsafeEncodeUtf "/tmp/a-file", "sample-contents")

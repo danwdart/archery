@@ -10,7 +10,7 @@ import Test.QuickCheck
 import Test.QuickCheck.Monadic
 
 spec ∷ Spec
-spec = describe "Abstract" $ do
+spec = parallel . describe "Abstract" $ do
     describe "function arrow" $ do
         describe "reverseString" .
             prop "reverses" $ \(x :: Text) -> reverseString x === T.reverse x

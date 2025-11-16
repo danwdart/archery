@@ -5,7 +5,7 @@ import Control.Category.Cartesian
 import Test.Hspec
 
 spec ∷ Spec
-spec = describe "Cartesian" $ do
+spec = parallel . describe "Cartesian" $ do
     describe "function arrow" $ do
         describe "copy" .
             it "copies" $

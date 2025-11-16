@@ -2,5 +2,5 @@ packages: *.cabal
 benchmarks: True
 tests: True
 -- for yaml -> unordered-containers -> hashable
-allow-newer: containers
+allow-newer: containers, QuickCheck
 multi-repl: True

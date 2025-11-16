@@ -19,6 +19,7 @@ import Control.Category.Strong
 import Control.Category.Symmetric
 import Data.Aeson
 import Prelude                      hiding (id, (.))
+import Control.Arrow
 
 data FreeFunc p a b where
     Id :: FreeFunc p x x
@@ -52,6 +53,8 @@ data FreeFunc p a b where
 deriving instance (forall a b. Show (p a b)) ⇒ Show (FreeFunc p x y)
 
 -- deriving instance (forall a b. Read (p a b)) => Read (FreeFunc p x y)
+
+
 
 instance (Numeric cat, Cocartesian cat, {- Cochoice cat,-} Choice cat, Cartesian cat, {- Costrong cat, -} Strong cat, Category cat, Symmetric cat, Interpret p cat) ⇒ Interpret (FreeFunc p) cat where
     {-# INLINABLE interpret #-}
@@ -131,6 +134,12 @@ instance Category (FreeFunc p) where
     id = Id
     (.) = Compose
 
+instance Arrow (FreeFunc p) where
+    arr = error "Arbitrary functions cannot be injected into FreeFunc. Use Archery functions instead."
+    first = First
+    second = Second
+
+
 instance Cartesian (FreeFunc p) where
     copy = Copy
     consume = Consume
@@ -155,6 +164,9 @@ instance Cocartesian (FreeFunc p) where
 instance Choice (FreeFunc p) where
     left' = Left'
     right' = Right'
+
+instance ArrowChoice (FreeFunc p) where
+    left = Left'
 
 {-}
 instance Cochoice (FreeFunc p) where

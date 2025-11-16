@@ -9,7 +9,7 @@ module Data.Code.JS (JS(..)) where
 
 import Control.Category
 -- import Control.Category.Apply
--- import Control.Category.Bracket
+import Control.Category.Bracket
 import Control.Category.Cartesian
 import Control.Category.Choice
 import Control.Category.Cocartesian
@@ -26,7 +26,7 @@ import Control.Category.Numeric
 import Control.Category.Primitive.Bool
 import Control.Category.Primitive.Console
 import Control.Category.Primitive.Extra
--- import Control.Category.Primitive.File
+import Control.Category.Primitive.File
 import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
@@ -61,6 +61,7 @@ import GHC.IsList
 import Prelude                                  hiding (id, (.))
 import System.Process
 import Text.Read
+import Control.Arrow
 
 newtype JS a b = JS {
     _code :: Code a b
@@ -68,6 +69,9 @@ newtype JS a b = JS {
 
 instance HasCode JS a b where
     code = _code
+
+-- moduleNameToFilename ∷ BSL.ByteString → FilePath
+-- moduleNameToFilename = BSL.unpack . (<> ".js")
 
 toExternalCLIImports ∷ JS a b → [String]
 toExternalCLIImports js = GHC.IsList.toList (externalImports js) >>=
@@ -174,13 +178,13 @@ instance {- (Typeable a, Typeable b) ⇒ -}  RenderProgramImports (JS a b) where
        BSL.unlines (toInternalFileImports cat) <>
        "\n" <> renderStatementShorthand cat
 
-{-}
 instance Bracket JS where
-    bracket js@(JS s) = JS $ s {
-        _shorthand = "(" <> renderStatementShorthand js <> ")",
-        _longhand = "(" <> renderStatementLonghand js <> ")"
+    bracket f = JS $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "(" <> renderStatementShorthand f <> ")",
+        _longhand = "(" <> renderStatementLonghand f <> ")"
     }
--}
 
 instance Category JS where
     id = JS $ Code {
@@ -364,6 +368,21 @@ instance Cocartesian JS where
 
 -- >>> renderStatementLonghand (((Control.Category..) fst' copy) :: JS String String)
 
+instance Arrow JS where
+    arr = error "Arbitrary functions cannot be injected into JS. Use Archery functions instead."
+    first f = JS $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "([a, b]) => ([(" <> shorthand f <> ")(a), b])",
+        _longhand = "([a, b]) => ([(" <> longhand f <> ")(a), b])"
+    }
+    second f = JS $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "([a, b]) => ([a, (" <> shorthand f <> ")(b)])",
+        _longhand = "([a, b]) => ([a, (" <> longhand f <> ")(b)])"
+    }
+    
 instance Strong JS where
     first' f = JS $ Code {
         _externalImports = externalImports f,
@@ -374,7 +393,7 @@ instance Strong JS where
     second' f = JS $ Code {
         _externalImports = externalImports f,
         _internalImports = internalImports f,
-        _shorthand = "([a, b]) => ([a, (" <> longhand f <> ")(b)])",
+        _shorthand = "([a, b]) => ([a, (" <> shorthand f <> ")(b)])",
         _longhand = "([a, b]) => ([a, (" <> longhand f <> ")(b)])"
     }
 
@@ -391,6 +410,21 @@ instance Choice JS where
         _shorthand = "x => x.Right && ({ Right: (" <> shorthand f <> ")(x.Right) }) || x",
         _longhand = "x => x.Right && ({ Right: (" <> longhand f <> ")(x.Right) }) || x"
     }
+
+instance ArrowChoice JS where
+    left f = JS $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "x => x.Left && ({ Left: (" <> shorthand f <> ")(x.Left) }) || x",
+        _longhand = "x => x.Left && ({ Left: (" <> longhand f <> ")(x.Left) }) || x"
+    }
+    right f = JS $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "x => x.Right && ({ Right: (" <> shorthand f <> ")(x.Right) }) || x",
+        _longhand = "x => x.Right && ({ Right: (" <> longhand f <> ")(x.Right) }) || x"
+    }
+
 instance Symmetric JS where
     swap = JS $ Code {
         _externalImports = [],
@@ -560,51 +594,49 @@ instance PrimitiveExtra JS where
     constString s = JS $ Code {
         _externalImports = [],
         _internalImports = [],
-        _shorthand = "_x => \"" <> (BSL.fromStrict $ TE.encodeUtf8 s) <> "\"",
-        _longhand = "_x => \"" <> (BSL.fromStrict $ TE.encodeUtf8 s) <> "\""
+        _shorthand = "_x => \"" <> BSL.fromStrict (TE.encodeUtf8 s) <> "\"",
+        _longhand = "_x => \"" <> BSL.fromStrict (TE.encodeUtf8 s) <> "\""
     }
 
-{-
 instance PrimitiveFile JS where
     readFile' = JS $ Code {
-        _externalImports = [],
+        _externalImports = [
+            ("fs", ["readFileSync"])
+        ],
         _internalImports = [
-            ("Control.Category.Primitive.File", [
+            ("control/category/primitive/file", [
                 Function {
                     _functionName = "readFile'",
-                    _functionTypeFrom = "String",
-                    _functionTypeTo = "IO String",
-                    _functionShorthand = "(Kleisli $ liftIO . readFile)",
-                    _functionLonghand = "(Kleisli $ liftIO . readFile)"
+                    _functionTypeFrom = "string",
+                    _functionTypeTo = "string",
+                    _functionShorthand = "readFileSync",
+                    _functionLonghand = "x => readFileSync(x)"
                 }
                 ]
             )
             ],
         _shorthand = "readFile'",
-        _longhand = "(Kleisli $ liftIO . readFile)"
+        _longhand = "x => require('fs').readFileSync(x)"
     }
     writeFile' = JS $ Code {
         _externalImports = [
-            ("Control.Arrow", ["Kleisli(..)"]),
-            ("Control.Category", ["(.)"]),
-            ("Control.Monad.IO.Class", ["liftIO"])
+            ("fs", ["writeFileSync"])
         ],
         _internalImports = [
-            ("Control.Category.Primitive.File", [
+            ("control/category/primitive/file", [
                 Function {
                     _functionName = "writeFile'",
-                    _functionTypeFrom = "(String, String)",
-                    _functionTypeTo = "IO ()",
-                    _functionShorthand = "(Kleisli $ liftIO . uncurry writeFile)",
-                    _functionLonghand = "(Kleisli $ liftIO . uncurry writeFile)"
+                    _functionTypeFrom = "[string, string]",
+                    _functionTypeTo = "void",
+                    _functionShorthand = "x => writeFileSync(x[0], x[1])",
+                    _functionLonghand = "x => writeFileSync(x[0], x[1])"
                 }
                 ]
             )
             ],
         _shorthand = "writeFile'",
-        _longhand = "(Kleisli $ liftIO . uncurry writeFile)"
+        _longhand = "x => writeFileSync(x[0], x[1])"
     }
--}
 
 instance PrimitiveString JS where
     reverseString = JS $ Code {

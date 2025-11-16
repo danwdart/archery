@@ -4,4 +4,4 @@ module Control.Category.GenericSpec (spec) where
 import Test.Hspec
 
 spec ∷ Spec
-spec = xdescribe "todo" $ pure ()
+spec = parallel . xdescribe "todo" $ pure ()

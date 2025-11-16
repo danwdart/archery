@@ -9,35 +9,32 @@ module Data.Code.PHP (PHP(..)) where
 
 import Control.Category
 -- import Control.Category.Apply
--- import Control.Category.Bracket
+import Control.Category.Bracket
 import Control.Category.Cartesian
 import Control.Category.Choice
 import Control.Category.Cocartesian
--- import Control.Category.Execute.PHP.Imports
--- import Control.Category.Execute.PHP.Longhand
--- import Control.Category.Execute.PHP.Shorthand
--- import Control.Category.Execute.JSON.Imports
--- import Control.Category.Execute.JSON.Longhand
--- import Control.Category.Execute.JSON.Shorthand
--- import Control.Category.Execute.Stdio.Imports
--- import Control.Category.Execute.Stdio.Longhand
--- import Control.Category.Execute.Stdio.Shorthand
--- import Control.Category.Numeric
+import Control.Category.Execute.JSON.Imports
+import Control.Category.Execute.JSON.Longhand
+import Control.Category.Execute.JSON.Shorthand
+import Control.Category.Execute.Stdio.Imports
+import Control.Category.Execute.Stdio.Longhand
+import Control.Category.Execute.Stdio.Shorthand
+import Control.Category.Numeric
 import Control.Category.Primitive.Bool
--- import Control.Category.Primitive.Console
--- -- import Control.Category.Primitive.Extra
--- -- import Control.Category.Primitive.File
--- -- import Control.Category.Primitive.String
+import Control.Category.Primitive.Console
+import Control.Category.Primitive.Extra
+import Control.Category.Primitive.File
+import Control.Category.Primitive.String
 import Control.Category.Strong
 import Control.Category.Symmetric
--- import Control.Exception                          hiding (bracket)
--- import Control.Monad.IO.Class
--- import Data.Aeson
-import Data.ByteString.Lazy.Char8      qualified as BSL
+import Control.Exception                          hiding (bracket)
+import Control.Monad.IO.Class
+import Data.Aeson
+import Data.ByteString.Lazy.Char8         qualified as BSL
 import Data.Code.Generic
 import Data.Foldable
 -- import Data.Map                                         (Map)
-import Data.Map                        qualified as M
+import Data.Map                           qualified as M
 import Data.MapSet
 -- import Data.Maybe
 import Data.Render.Program.Imports
@@ -48,12 +45,17 @@ import Data.Render.Statement.Shorthand
 -- import Data.Set                                         (Set)
 -- import Data.Set                                   qualified as S
 -- import Data.String
+import Data.Text                          qualified as T
+import Data.Text.Encoding                 qualified as TE
 -- import Data.Typeable
--- import GHC.IO.Exception
+import GHC.IO.Exception
 import GHC.IsList
-import Prelude                         hiding (id, (.))
--- import System.Process
--- import Text.Read
+import Prelude                            hiding (id, (.))
+import System.Process
+import Text.Read
+import Control.Arrow
+
+-- TODO declare(strict_types=1);
 
 newtype PHP a b = PHP {
     _code :: Code a b
@@ -62,16 +64,18 @@ newtype PHP a b = PHP {
 instance HasCode PHP a b where
     code = _code
 
-{-}
+-- moduleNameToFilename ∷ BSL.ByteString → FilePath
+-- moduleNameToFilename = BSL.unpack . (<> ".php") . BSL.map (\c -> if c == '\\' then '/' else c)
+
 toExternalCLIImports ∷ PHP a b → [String]
 toExternalCLIImports php = GHC.IsList.toList (externalImports php) >>=
-    \(moduleName, functions) -> GHC.IsList.toList functions >>=
-        \functionName' -> [BSL.unpack $ "use function " <> moduleName <> "\\" <> functionName' <> ";"]
+    \(_moduleName, functions) -> GHC.IsList.toList functions >>=
+        \_functionName' -> [{-BSL.unpack $ "use function " <> moduleName <> "\\" <> functionName' <> ";" -}]
 
 toInternalCLIImports ∷ PHP a b → [String]
 toInternalCLIImports php = GHC.IsList.toList (externalImports php) >>=
-    \(moduleName, functions) -> GHC.IsList.toList functions >>=
-        \functionName' -> [BSL.unpack $ "use function " <> moduleName <> "\\" <> functionName' <> ";"]
+    \(_moduleName, functions) -> GHC.IsList.toList functions >>=
+        \_functionName' -> [{-BSL.unpack $ "use function " <> moduleName <> "\\" <> functionName' <> ";" -}]
 
 toShorthandCLIDefinitions ∷ PHP a b → [String]
 toShorthandCLIDefinitions php = GHC.IsList.toList (internalImports php) >>=
@@ -79,23 +83,22 @@ toShorthandCLIDefinitions php = GHC.IsList.toList (internalImports php) >>=
     \function' -> [
         BSL.unpack $
             -- Why not both?
-            "$" <> functionName function' <> " = " <> functionLonghand function' <> ";" <>
-            "function " <> functionName function' <> "($param) { return (" <> functionLonghand function' <> ")($param); } " -- spacey
+            "$" <> functionName function' <> " = " <> functionLonghand function' <> ";"
+            -- "function " <> functionName function' <> "($param) { return (" <> functionLonghand function' <> ")($param); } " -- spacey
         ]
--}
 
 toInternalFileImports ∷ PHP a b → [BSL.ByteString]
 toInternalFileImports php = GHC.IsList.toList (internalImports php) >>=
-    \(moduleName, functions) -> GHC.IsList.toList functions >>=
-        \function' -> ["use function " <> moduleName <> "\\" <> functionName function' <> ";"]
+    \(_moduleName, functions) -> GHC.IsList.toList functions >>=
+        \_function' -> [{-}"use function " <> moduleName <> "\\" <> functionName function' <> ";" -}]
 
 toShorthandFileDefinitions ∷ PHP a b → [BSL.ByteString]
 toShorthandFileDefinitions php = foldMap' (\(_, functions) ->
     foldMap' (\fn ->
         [
             -- again, why not both?
-            "$" <> functionName fn <> " = " <> functionLonghand fn <> "\n" <>
-            "function " <> functionName fn <> "($param) { return (" <> functionLonghand fn <> ")($param); }\n" -- spacey
+            "$" <> functionName fn <> " = " <> functionLonghand fn <> ";\n" -- <>
+            -- "function " <> functionName fn <> "($param) { return (" <> functionLonghand fn <> ")($param); }\n" -- spacey
         ]
     )
     functions
@@ -103,8 +106,8 @@ toShorthandFileDefinitions php = foldMap' (\(_, functions) ->
 
 toExternalFileImports ∷ PHP a b → [BSL.ByteString]
 toExternalFileImports php = GHC.IsList.toList (externalImports php) >>=
-    \(moduleName, functions) -> GHC.IsList.toList functions >>=
-        \functionName' -> ["use function " <> moduleName <> "\\" <> functionName' <> ";"]
+    \(_moduleName, functions) -> GHC.IsList.toList functions >>=
+        \_functionName' -> [{-}"use function " <> moduleName <> "\\" <> functionName' <> ";"-}]
 
 instance RenderStatementLonghand (PHP a b) where
     renderStatementLonghand = longhand
@@ -115,33 +118,39 @@ instance RenderStatementShorthand (PHP a b) where
 -- TODO runKleisli
 instance {- (Typeable a, Typeable b) ⇒ -} RenderProgramShorthand (PHP a b) where
     renderProgramShorthand cat =
+        "<?php\n" <>
+        "define(strict_types=1);\n\n" <>
         -- "\nmodule " <> module' cat <> " (" <> functionName cat <> ")  where\n\n" <>
         BSL.unlines (toExternalFileImports cat) <>
         BSL.unlines (toShorthandFileDefinitions cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> --  <> BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\n" <> renderStatementShorthand cat
+        "\n" <> renderStatementShorthand cat <> ";"
 
 -- TODO runKleisli
 instance {- (Typeable a, Typeable b) ⇒ -} RenderProgramLonghand (PHP a b) where
     renderProgramLonghand cat =
+        "<?php\n" <>
+        "define(strict_types=1);\n\n" <>
         BSL.unlines (toExternalFileImports cat) <>
         -- "\n" <> functionName cat <> " :: " <> functionTypeFrom cat <> " -> " <> functionTypeTo cat <> -- BSL.pack (showsTypeRep (mkFunTy (typeRep (Proxy :: Proxy a)) (typeRep (Proxy :: Proxy b))) "") <>
-        "\n" <> renderStatementLonghand cat
+        "\n" <> renderStatementLonghand cat <> ";"
 
 -- TODO runKleisli
 instance {- (Typeable a, Typeable b) ⇒ -}  RenderProgramImports (PHP a b) where
     renderProgramImports cat =
-       BSL.unlines (toExternalFileImports cat) <>
-       BSL.unlines (toInternalFileImports cat) <>
-       "\n" <> renderStatementShorthand cat
+        "<?php\n" <>
+        "define(strict_types=1);\n\n" <>
+        BSL.unlines (toExternalFileImports cat) <>
+        BSL.unlines (toInternalFileImports cat) <>
+        "\n" <> renderStatementShorthand cat <> ";"
 
-{-}
 instance Bracket PHP where
-    bracket php@(PHP s) = PHP $ s {
-        _shorthand = "(" <> renderStatementShorthand php <> ")",
-        _longhand = "(" <> renderStatementLonghand php <> ")"
+    bracket f = PHP $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "(" <> renderStatementShorthand f <> ")",
+        _longhand = "(" <> renderStatementLonghand f <> ")"
     }
--}
 
 instance Category PHP where
     id = PHP $ Code {
@@ -234,7 +243,7 @@ instance Cartesian PHP where
     snd' = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("Control\\Category\\Cartesian", [
+            ("Control/Category/Cartesian.php", [
                 Function {
                     _functionName = "snd",
                     _functionTypeFrom = "",
@@ -258,14 +267,14 @@ instance Cocartesian PHP where
                     _functionName = "injectL",
                     _functionTypeFrom = "",
                     _functionTypeTo = "",
-                    _functionShorthand = "fn($x) => [\"Left\" => $a]",
-                    _functionLonghand = "fn($x) => [\"Left\" => $a]"
+                    _functionShorthand = "fn($x) => [\"Left\" => $x]",
+                    _functionLonghand = "fn($x) => [\"Left\" => $x]"
                 }
                 ]
             )
         ],
         _shorthand = "$injectL",
-        _longhand = "fn($x) => [ \"Left\" => $ a })"
+        _longhand = "fn($x) => [\"Left\" => $x]"
     }
     injectR = PHP $ Code {
         _externalImports = [],
@@ -275,14 +284,14 @@ instance Cocartesian PHP where
                     _functionName = "injectR",
                     _functionTypeFrom = "",
                     _functionTypeTo = "",
-                    _functionShorthand = "fn($x) => [\"Right\" => $a]",
-                    _functionLonghand = "fn($x) => [\"Right\" => $a]"
+                    _functionShorthand = "fn($x) => [\"Right\" => $x]",
+                    _functionLonghand = "fn($x) => [\"Right\" => $x]"
                 }
                 ]
             )
         ],
         _shorthand = "$injectR",
-        _longhand = "fn($x) => [\"Right\" => $a]"
+        _longhand = "fn($x) => [\"Right\" => $x]"
     }
     unify = PHP $ Code {
         _externalImports = [],
@@ -321,9 +330,10 @@ instance Cocartesian PHP where
 
 -- >>> import Control.Category
 -- >>> ((Control.Category..) fst' copy) :: PHP String String
--- PHP {_code = Code {_externalImports = MapSet {getMapSet = fromList []}, _internalImports = MapSet {getMapSet = fromList [("Control.Category.Cartesian",fromList [Function {_functionName = "copy", _functionTypeFrom = "a", _functionTypeTo = "(a, a)", _shorthand = "\\x -> (x, x)", _longhand = "\\x -> (x, x)"},Function {_functionName = "fst", _functionTypeFrom = "(a, b)", _functionTypeTo = "a", _shorthand = "fst", _longhand = "\\(a, b) -> a"}])]}, _module = "Control.Category.Function", _function = Function {_functionName = "(.)", _functionTypeFrom = "(a -> (a, a)) -> ((a, b) -> a)", _functionTypeTo = "a -> a", _shorthand = "(fst . \\x -> (x, x))", _longhand = "(\\(a, b) -> a . \\x -> (x, x))"}}}
+-- PHP {_code = Code {_externalImports = MapSet {getMapSet = fromList []}, _internalImports = MapSet {getMapSet = fromList [("Control\\Category",fromList [Function {_functionName = "compose", _functionTypeFrom = "", _functionTypeTo = "", _functionShorthand = "fn($f) => fn($g) => fn($x) => $f($g($x))", _functionLonghand = "fn($f) => fn($g) => fn($x) => $f($g($x))"}]),("Control\\Category\\Cartesian",fromList [Function {_functionName = "copy", _functionTypeFrom = "", _functionTypeTo = "", _functionShorthand = "fn ($x) => ([$x, $x])", _functionLonghand = "fn ($x) => ([$x, $x])"},Function {_functionName = "fst", _functionTypeFrom = "", _functionTypeTo = "", _functionShorthand = "fn ($x) => $x[0]", _functionLonghand = "fn ($x) => $x[0]"}])]}, _shorthand = "$compose($fst)($copy)", _longhand = "(fn ($f) => fn ($g) => fn($x) => $f($g($x)))(fn ($x) => $x[0])(fn ($x) => ([$x, $x]))"}}
 
 -- >>> renderStatementLonghand (((Control.Category..) fst' copy) :: PHP String String)
+-- "(fn ($f) => fn ($g) => fn($x) => $f($g($x)))(fn ($x) => $x[0])(fn ($x) => ([$x, $x]))"
 
 instance Strong PHP where
     first' f = PHP $ Code {
@@ -336,22 +346,52 @@ instance Strong PHP where
         _externalImports = externalImports f,
         _internalImports = internalImports f,
         _shorthand = "fn ($x) => [$x[0], (" <> shorthand f <> ")($x[1])]",
-        _longhand = "fn ($x) => [$x[0], (" <> shorthand f <> ")($x[1])]"
+        _longhand = "fn ($x) => [$x[0], (" <> longhand f <> ")($x[1])]"
+    }
+
+instance Arrow PHP where
+    arr = error "Arbitrary functions cannot be injected into PHP. Use Archery functions instead."
+    first f = PHP $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "fn ($x) => [(" <> shorthand f <> ")($x[0]), $x[1]]",
+        _longhand = "fn ($x) => [(" <> longhand f <> ")($x[0]), $x[1]]"
+    }
+    second f = PHP $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "fn ($x) => [$x[0], (" <> shorthand f <> ")($x[1])]",
+        _longhand = "fn ($x) => [$x[0], (" <> longhand f <> ")($x[1])]"
     }
 
 instance Choice PHP where
     left' f = PHP $ Code {
         _externalImports = externalImports f,
         _internalImports = internalImports f,
-        _shorthand = "fn($x) => isset($x[\"Left\"] ? [ \"Left\" => (" <> shorthand f <> ")($x[\"Left\"]) ] : $x",
-        _longhand = "fn($x) => isset($x[\"Left\"] ? [ \"Left\" => (" <> shorthand f <> ")($x[\"Left\"]) ] : $x"
+        _shorthand = "fn($x) => isset($x[\"Left\"]) ? [ \"Left\" => (" <> shorthand f <> ")($x[\"Left\"]) ] : $x",
+        _longhand = "fn($x) => isset($x[\"Left\"]) ? [ \"Left\" => (" <> longhand f <> ")($x[\"Left\"]) ] : $x"
     }
     right' f = PHP $ Code {
         _externalImports = externalImports f,
         _internalImports = internalImports f,
-        _shorthand = "fn($x) => isset($x[\"Right\"] ? [ \"Right\" => (" <> shorthand f <> ")($x[\"Right\"]) ] : $x",
-        _longhand = "fn($x) => isset($x[\"Right\"] ? [ \"Right\" => (" <> shorthand f <> ")($x[\"Right\"]) ] : $x"
+        _shorthand = "fn($x) => isset($x[\"Right\"]) ? [ \"Right\" => (" <> shorthand f <> ")($x[\"Right\"]) ] : $x",
+        _longhand = "fn($x) => isset($x[\"Right\"]) ? [ \"Right\" => (" <> longhand f <> ")($x[\"Right\"]) ] : $x"
     }
+
+instance ArrowChoice PHP where
+    left f = PHP $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "fn($x) => isset($x[\"Left\"]) ? [ \"Left\" => (" <> shorthand f <> ")($x[\"Left\"]) ] : $x",
+        _longhand = "fn($x) => isset($x[\"Left\"]) ? [ \"Left\" => (" <> longhand f <> ")($x[\"Left\"]) ] : $x"
+    }
+    right f = PHP $ Code {
+        _externalImports = externalImports f,
+        _internalImports = internalImports f,
+        _shorthand = "fn($x) => isset($x[\"Right\"]) ? [ \"Right\" => (" <> shorthand f <> ")($x[\"Right\"]) ] : $x",
+        _longhand = "fn($x) => isset($x[\"Right\"]) ? [ \"Right\" => (" <> longhand f <> ")($x[\"Right\"]) ] : $x"
+    }
+
 instance Symmetric PHP where
     swap = PHP $ Code {
         _externalImports = [],
@@ -445,286 +485,235 @@ instance PrimitiveBool PHP where
                 }
             ])
         ],
-        _shorthand = "eq",
-        _longhand = "fn ($x) => $x[0] == $x[1]"
+        _shorthand = "$eq",
+        _longhand = "fn ($x) => $x[0] === $x[1]"
     }
 
-{-}
+
 instance PrimitiveConsole PHP where
     outputString = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("control/category/primitive/console", [
+            ("Control\\Category\\Primitive\\Console", [
                 Function {
                     _functionName = "outputString",
                     _functionTypeFrom = "string",
                     _functionTypeTo = "void",
-                    _functionShorthand = "console.log",
-                    _functionLonghand = "console.log"
+                    _functionShorthand = "echo",
+                    _functionLonghand = "fn($x) => echo $x"
                 }
             ])
         ],
-        _shorthand = "outputString",
-        _longhand = "console.log"
+        _shorthand = "$outputString",
+        _longhand = "fn($x) => echo $x"
     }
     inputString = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("control/category/primitive/console", [
+            ("Control\\Category\\Primitive\\Console", [
                 Function {
                     _functionName = "inputString",
                     _functionTypeFrom = "void",
                     _functionTypeTo = "string",
-                    _functionShorthand = "x => { throw new Error(\"TODO Node or browser?\"); }",
-                    _functionLonghand = "x => { throw new Error(\"TODO Node or browser?\"); }"
+                    _functionShorthand = "fn($x) => { throw new Exception(\"TODO how do you get it?\"); }",
+                    _functionLonghand = "fn($x) => { throw new Exception(\"TODO how do you get it?\"); }"
                 }
             ])
         ],
-        _shorthand = "inputString",
-        _longhand = "TODO Node or browser?"
+        _shorthand = "$inputString",
+        _longhand = "fn($x) => { throw new Exception(\"TODO how do you get it?\"); }"
     }
+
 
 instance PrimitiveExtra PHP where
     intToString = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("control/category/primitive/extra", [
+            ("Control\\Category\\Primitive\\Extra", [
                 Function {
                     _functionName = "intToString",
-                    _functionTypeFrom = "number",
+                    _functionTypeFrom = "int",
                     _functionTypeTo = "string",
-                    _functionShorthand = "String",
-                    _functionLonghand = "String"
+                    _functionShorthand = "(string)",
+                    _functionLonghand = "fn($x) => (string)$x"
                 }
                 ]
             )
             ],
-        _shorthand = "intToString",
-        _longhand = "String"
+        _shorthand = "$intToString",
+        _longhand = "fn($x) => (string)$x"
     }
     concatString = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("control/category/primitive/extra", [
+            ("Control\\Category\\Primitive\\Extra", [
                 Function {
                     _functionName = "concatString",
                     _functionTypeFrom = "[string, string]",
                     _functionTypeTo = "string",
-                    _functionShorthand = "([a, b]) => a + b",
-                    _functionLonghand = "([a, b]) => a + b"
+                    _functionShorthand = "fn($x) => $x[0] . $x[1]",
+                    _functionLonghand = "fn($x) => $x[0] . $x[1]"
                 }
                 ]
             )
             ],
-        _shorthand = "concatString",
-        _longhand = "([a, b]) => a + b"
+        _shorthand = "$concatString",
+        _longhand = "fn($x) => $x[0] . $x[1]"
     }
-    constString s = PHP $ Code {
+    constString t = PHP $ Code {
         _externalImports = [],
         _internalImports = [],
-        _shorthand = "_x => \"" <> BSL.pack s <> "\"",
-        _longhand = "_x => \"" <> BSL.pack s <> "\""
+        _shorthand = "fn($x) => \"" <> BSL.fromStrict (TE.encodeUtf8 t) <> "\"",
+        _longhand = "fn($x) => \"" <> BSL.fromStrict (TE.encodeUtf8 t) <> "\""
     }
 
-{-
 instance PrimitiveFile PHP where
     readFile' = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("Control.Category.Primitive.File", [
+            ("Control\\Category\\Primitive\\File", [
                 Function {
                     _functionName = "readFile'",
-                    _functionTypeFrom = "String",
-                    _functionTypeTo = "IO String",
-                    _functionShorthand = "(Kleisli $ liftIO . readFile)",
-                    _functionLonghand = "(Kleisli $ liftIO . readFile)"
+                    _functionTypeFrom = "string",
+                    _functionTypeTo = "string",
+                    _functionShorthand = "file_get_contents",
+                    _functionLonghand = "fn($fn) => file_get_contents($fn)"
                 }
                 ]
             )
             ],
-        _shorthand = "readFile'",
-        _longhand = "(Kleisli $ liftIO . readFile)"
+        _shorthand = "$readFile'",
+        _longhand = "fn($x) => file_get_contents($x)"
     }
     writeFile' = PHP $ Code {
-        _externalImports = [
-            ("Control.Arrow", ["Kleisli(..)"]),
-            ("Control.Category", ["(.)"]),
-            ("Control.Monad.IO.Class", ["liftIO"])
-        ],
+        _externalImports = [],
         _internalImports = [
-            ("Control.Category.Primitive.File", [
+            ("Control\\Category\\Primitive\\File", [
                 Function {
                     _functionName = "writeFile'",
-                    _functionTypeFrom = "(String, String)",
-                    _functionTypeTo = "IO ()",
-                    _functionShorthand = "(Kleisli $ liftIO . uncurry writeFile)",
-                    _functionLonghand = "(Kleisli $ liftIO . uncurry writeFile)"
+                    _functionTypeFrom = "[string, string]",
+                    _functionTypeTo = "void",
+                    _functionShorthand = "fn($x) => file_put_contents($x[0], $x[1])",
+                    _functionLonghand = "fn($x) => file_put_contents($x[0], $x[1])"
                 }
                 ]
             )
             ],
-        _shorthand = "writeFile'",
-        _longhand = "(Kleisli $ liftIO . uncurry writeFile)"
+        _shorthand = "$writeFile'",
+        _longhand = "fn($x) => file_put_contents($x[0], $x[1])"
     }
--}
 
 instance PrimitiveString PHP where
     reverseString = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("control/category/primitive/string", [
+            ("Control\\Category\\Primitive\\String", [
                 Function {
                     _functionName = "reverseString",
                     _functionTypeFrom = "string",
                     _functionTypeTo = "string",
-                    _functionShorthand = "x => x.split('').reverse().join('')",
-                    _functionLonghand = "x => x.split('').reverse().join('')"
+                    _functionShorthand = "strrev",
+                    _functionLonghand = "fn($x) => strrev($x)"
                 }
                 ]
             )
             ],
-        _shorthand = "reverseString",
-        _longhand = "x => x.split('').reverse().join('')"
+        _shorthand = "$reverseString",
+        _longhand = "fn($x) => strrev($x)"
     }
 
 instance Numeric PHP where
     num n = PHP $ Code {
         _externalImports = [],
         _internalImports = [],
-        _shorthand = "_x => " <> BSL.pack (show n),
-        _longhand = "_x => " <> BSL.pack (show n)
+        _shorthand = "fn($x) => " <> BSL.fromStrict (TE.encodeUtf8 (T.show n)),
+        _longhand = "fn($x) => " <> BSL.fromStrict (TE.encodeUtf8 (T.show n))
     }
     negate' = PHP $ Code {
         _externalImports = [],
         _internalImports = [(
-            "control/category/numeric", [
+            "Control\\Category\\Numeric", [
                 Function {
                     _functionName = "negate",
-                    _functionTypeFrom = "number",
-                    _functionTypeTo = "number",
-                    _functionShorthand = "x => -x",
-                    _functionLonghand = "x => -x"
+                    _functionTypeFrom = "int|float|double",
+                    _functionTypeTo = "int|float|double",
+                    _functionShorthand = "fn($x) => -$x",
+                    _functionLonghand = "fn($x) => -$x"
                 }
             ]
         )],
-        _shorthand = "negate",
-        _longhand = "x => -x"
+        _shorthand = "$negate",
+        _longhand = "fn($x) => -$x"
     }
     add = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("control/category/numeric",  [
+            ("Control\\Category\\Numeric",  [
                 Function {
                     _functionName = "add",
-                    _functionTypeFrom = "[number, number]",
-                    _functionTypeTo = "number",
-                    _functionShorthand = "([x, y]) => x + y",
-                    _functionLonghand = "([x, y]) => x + y"
+                    _functionTypeFrom = "[int|float|double, int|float|double]",
+                    _functionTypeTo = "int|float|double",
+                    _functionShorthand = "fn($x) => $x[0] + $x[1]",
+                    _functionLonghand = "fn($x) => $x[0] + $x[1]"
                 }
                 ]
             )
             ],
-        _shorthand = "add",
-        _longhand = "([x, y]) => x + y"
+        _shorthand = "$add",
+        _longhand = "fn($x) => $x[0] + $x[1]"
     }
     mult = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("control/category/numeric",  [
+            ("Control\\Category\\Numeric",  [
                 Function {
                     _functionName = "mult",
                     _functionTypeFrom = "[number, number]",
                     _functionTypeTo = "number",
-                    _functionShorthand = "([x, y]) => x * y",
-                    _functionLonghand = "([x, y]) => x * y"
+                    _functionShorthand = "fn($x) => $x[0] * $x[1]",
+                    _functionLonghand = "fn($x) => $x[0] * $x[1]"
                 }
                 ]
             )
             ],
-        _shorthand = "mult",
-        _longhand = "([x, y]) => x * y"
+        _shorthand = "$mult",
+        _longhand = "fn($x) => $x[0] * $x[1]"
     }
     div' = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("control/category/numeric",  [
+            ("Control\\Category\\Numeric",  [
                 Function {
                     _functionName = "div",
-                    _functionTypeFrom = "[number, number]",
-                    _functionTypeTo = "number",
-                    _functionShorthand = "([x, y]) => Math.floor(x / y)",
-                    _functionLonghand = "([x, y]) => Math.floor(x / y)"
+                    _functionTypeFrom = "[int|float|double, int|float|double]",
+                    _functionTypeTo = "int|float|double",
+                    _functionShorthand = "fn($x) => $x[0] / $x[1]",
+                    _functionLonghand = "fn($x) => $x[0] / $x[1]"
                 }
                 ]
             )
             ],
-        _shorthand = "div",
-        _longhand = "([x, y]) => Math.floor(x / y)"
+        _shorthand = "$div",
+        _longhand = "fn($x) => $x[0] / $x[1]"
     }
     mod' = PHP $ Code {
         _externalImports = [],
         _internalImports = [
-            ("control/category/numeric",  [
+            ("Control\\Category\\Numeric",  [
                 Function {
                     _functionName = "mod",
                     _functionTypeFrom = "[number, number]",
                     _functionTypeTo = "number",
-                    _functionShorthand = "([x, y]) => x % y",
-                    _functionLonghand = "([x, y]) => x % y"
+                    _functionShorthand = "fn($x) => $x[0] % $x[1]",
+                    _functionLonghand = "fn($x) => $x[0] % $x[1]"
                 }
                 ]
             )
             ],
-        _shorthand = "mod",
-        _longhand = "([x, y]) => x % y"
+        _shorthand = "$mod",
+        _longhand = "fn($x) => $x[0] % $x[1]"
     }
 
-{-}
--- I don't quite know how to call node or cabal new-repl to include the correct functions here, so the tests are skipped.
-
--- @TODO escape shell - Text.ShellEscape?
--}
-
--- instance ExecutePHPLonghand PHP where
---     executePHPLonghand cat param = do
---         let params ∷ [String]
---             params = [
---                 "-e",
---                 unwords (toExternalCLIImports cat) <>
---                     "(" <> BSL.unpack (renderStatementLonghand cat) <> ") (" <> param <> ")"
---                 ]
---         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params "")
---         case exitCode of
---             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
---             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
---
--- instance ExecutePHPShorthand PHP where
---     executePHPShorthand cat param = do
---         let params ∷ [String]
---             params = [
---                 "-e",
---                 unwords (toExternalCLIImports cat) <>
---                     unwords (toShorthandCLIDefinitions cat) <>
---                     "'(" <> BSL.unpack (renderStatementShorthand cat) <> ") (" <> show param <> ")"
---                 ]
---         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params "")
---         case exitCode of
---             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
---             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
---
--- instance ExecutePHPImports PHP where
---     executePHPImports cat param = do
---         let params ∷ [String]
---             params = [
---                 "-e",
---                 unwords (toExternalCLIImports cat) <>
---                     unwords (toInternalCLIImports cat) <>
---                     "'(" <> BSL.unpack (renderStatementShorthand cat) <> ") (" <> show param <> ")"
---                 ]
---         (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params "")
---         case exitCode of
---             ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
---             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
 
 -- @TODO this passes too many arguments apparently...
 -- This is because of the id and (.) using the (->) instance whereas I am running Kleisli below.
@@ -733,53 +722,53 @@ instance ExecuteStdioLonghand PHP where
     executeStdioLonghand cat stdin = do
         let params ∷ [String]
             params = [
-                "-e",
+                "-r",
                 unwords (toExternalCLIImports cat) <>
-                    "(" <> BSL.unpack (renderStatementLonghand cat) <> ")(null)"
+                    "(" <> BSL.unpack (renderStatementLonghand cat) <> ")(null);"
                 ]
-        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params (show stdin))
+        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "php" params (show stdin))
         case exitCode of
-            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
+            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run php with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
 
 instance ExecuteStdioImports PHP where
     executeStdioImports cat stdin = do
         let params ∷ [String]
             params = [
-                "-e",
+                "-r",
                 -- toCLIImports cat <>
                 -- [
-                    "(" <> BSL.unpack (renderStatementShorthand cat) <> ")(null)"
+                    "(" <> BSL.unpack (renderStatementShorthand cat) <> ")(null);"
                 ]
-        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params (show stdin))
+        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "php" params (show stdin))
         case exitCode of
-            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
+            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run php with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
 
 instance ExecuteStdioShorthand PHP where
     executeStdioShorthand cat stdin = do
         let params ∷ [String]
             params = [
-                "-e",
+                "-r",
                 unwords (toExternalCLIImports cat) <>
-                    "(" <> BSL.unpack (renderStatementShorthand cat) <> ")(null)"
+                    "(" <> BSL.unpack (renderStatementShorthand cat) <> ")(null);"
                 ]
-        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params (show stdin))
+        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "php" params (show stdin))
         case exitCode of
-            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
+            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run php with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (readEither stdout)
 
 instance ExecuteJSONLonghand PHP where
     executeJSONLonghand cat param = do
         let params ∷ [String]
             params = [
-                "-e",
+                "-r",
                 unwords (toExternalCLIImports cat) <>
-                    "console.log(JSON.stringify((" <> BSL.unpack (renderStatementLonghand cat) <> ")(JSON.parse(" <> show (BSL.unpack (encode param)) <> "))))"
+                    "echo(json_encode((" <> BSL.unpack (renderStatementLonghand cat) <> ")(json_decode(" <> show (BSL.unpack (encode param)) <> ", true))));"
                 ]
-        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params "")
+        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "php" params "")
         case exitCode of
-            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
+            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run php with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
 
 instance ExecuteJSONShorthand PHP where
@@ -787,27 +776,27 @@ instance ExecuteJSONShorthand PHP where
     executeJSONShorthand cat param = do
         let params ∷ [String]
             params = [
-                "-e",
+                "-r",
                 unwords (toExternalCLIImports cat) <>
                     unwords (toShorthandCLIDefinitions cat) <>
-                    "console.log(JSON.stringify((" <> BSL.unpack (renderStatementShorthand cat) <> ")(JSON.parse(" <> show (BSL.unpack (encode param)) <> "))))"
+                    "echo(json_encode((" <> BSL.unpack (renderStatementShorthand cat) <> ")(json_decode(" <> show (BSL.unpack (encode param)) <> ", true))));"
                 ]
-        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params "")
+        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "php" params "")
         case exitCode of
-            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
+            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run php with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
 
 instance ExecuteJSONImports PHP where
     executeJSONImports cat param = do
         let params ∷ [String]
             params = [
-                    "-e",
+                    "-r",
                     unwords (toExternalCLIImports cat) <>
                         unwords (toInternalCLIImports cat) <>
-                        "console.log(JSON.stringify((" <> BSL.unpack (renderStatementShorthand cat) <> ")(JSON.parse(" <> show (BSL.unpack (encode param)) <> "))))"
+                        "echo(json_encode((" <> BSL.unpack (renderStatementShorthand cat) <> ")(json_decode(" <> show (BSL.unpack (encode param)) <> ", true))));"
                 ]
-        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "node" params "")
+        (exitCode, stdout, stderr) <- liftIO (readProcessWithExitCode "php" params "")
         case exitCode of
-            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run node with params: " <> unwords params <> " Output: " <> stderr
+            ExitFailure code' -> liftIO . throwIO . userError $ "Exit code " <> show code' <> " when attempting to run php with params: " <> unwords params <> " Output: " <> stderr
             ExitSuccess -> either (liftIO . throwIO . userError . (\ex -> "Can't parse response: " <> ex <> ", params = " <> unwords params <> ", stdout = " <> stdout <> ", stderr = " <> stderr)) pure (eitherDecode (BSL.pack stdout))
--}
+
