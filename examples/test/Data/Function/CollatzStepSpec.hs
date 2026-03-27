@@ -31,77 +31,77 @@ import Test.QuickCheck.Monadic
 -- @TODO random functions
 
 prop_HSGHCiIsCorrectLonghand ∷ Natural → Property
-prop_HSGHCiIsCorrectLonghand i = i >= 0 ==> i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+prop_HSGHCiIsCorrectLonghand i = i >= 0 ==> i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeGHCiLonghand (collatzStep :: HS Natural Natural) i
     pure $ answer === collatzStep i
 
 xprop_HSGHCiIsCorrectImports ∷ Natural → Property
-xprop_HSGHCiIsCorrectImports i = i >= 0 ==> i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+xprop_HSGHCiIsCorrectImports i = i >= 0 ==> i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeGHCiImports (collatzStep :: HS Natural Natural) i
     pure $ answer === collatzStep i
 
 prop_HSGHCiIsCorrectShorthand ∷ Natural → Property
-prop_HSGHCiIsCorrectShorthand i = i >= 0 ==> i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+prop_HSGHCiIsCorrectShorthand i = i >= 0 ==> i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeGHCiShorthand (collatzStep :: HS Natural Natural) i
     pure $ answer === collatzStep i
 
 -- xprop_HSJSONIsCorrectLonghand ∷ Natural → Property
--- xprop_HSJSONIsCorrectLonghand i = i >= 0 ==> i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+-- xprop_HSJSONIsCorrectLonghand i = i >= 0 ==> i >= 1 ==> withNumTests 50 . monadicIO $ do
 --     answer <- executeJSONLonghand (collatzStep :: HS Natural Natural) i
 --     pure $ answer === collatzStep i
 -- 
 -- xprop_HSJSONIsCorrectImports ∷ Natural → Property
--- xprop_HSJSONIsCorrectImports i = i >= 0 ==> i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+-- xprop_HSJSONIsCorrectImports i = i >= 0 ==> i >= 1 ==> withNumTests 50 . monadicIO $ do
 --     answer <- executeJSONImports (collatzStep :: HS Natural Natural) i
 --     pure $ answer === collatzStep i
 -- 
 -- xprop_HSJSONIsCorrectShorthand ∷ Natural → Property
--- xprop_HSJSONIsCorrectShorthand i = i >= 0 ==> i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+-- xprop_HSJSONIsCorrectShorthand i = i >= 0 ==> i >= 1 ==> withNumTests 50 . monadicIO $ do
 --     answer <- executeJSONShorthand (collatzStep :: HS Natural Natural) i
 --     pure $ answer === collatzStep i
 
 prop_JSIsCorrectLonghand ∷ Natural → Property
-prop_JSIsCorrectLonghand i = i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+prop_JSIsCorrectLonghand i = i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeJSONLonghand (collatzStep :: JS Natural Natural) i
     pure $ answer === collatzStep i
 
 xprop_JSIsCorrectImports ∷ Natural → Property
-xprop_JSIsCorrectImports i = i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+xprop_JSIsCorrectImports i = i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeJSONImports (collatzStep :: JS Natural Natural) i
     pure $ answer === collatzStep i
 
 prop_JSIsCorrectShorthand ∷ Natural → Property
-prop_JSIsCorrectShorthand i = i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+prop_JSIsCorrectShorthand i = i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeJSONShorthand (collatzStep :: JS Natural Natural) i
     pure $ answer === collatzStep i
 
 prop_TSIsCorrectLonghand ∷ Natural → Property
-prop_TSIsCorrectLonghand i = i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+prop_TSIsCorrectLonghand i = i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeJSONLonghand (collatzStep :: TS Natural Natural) i
     pure $ answer === collatzStep i
 
 xprop_TSIsCorrectImports ∷ Natural → Property
-xprop_TSIsCorrectImports i = i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+xprop_TSIsCorrectImports i = i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeJSONImports (collatzStep :: TS Natural Natural) i
     pure $ answer === collatzStep i
 
 prop_TSIsCorrectShorthand ∷ Natural → Property
-prop_TSIsCorrectShorthand i = i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+prop_TSIsCorrectShorthand i = i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeJSONShorthand (collatzStep :: TS Natural Natural) i
     pure $ answer === collatzStep i
 
 prop_PHPIsCorrectLonghand ∷ Natural → Property
-prop_PHPIsCorrectLonghand i = i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+prop_PHPIsCorrectLonghand i = i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeJSONLonghand (collatzStep :: PHP Natural Natural) i
     pure $ answer === collatzStep i
 
 xprop_PHPIsCorrectImports ∷ Natural → Property
-xprop_PHPIsCorrectImports i = i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+xprop_PHPIsCorrectImports i = i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeJSONImports (collatzStep :: PHP Natural Natural) i
     pure $ answer === collatzStep i
 
 prop_PHPIsCorrectShorthand ∷ Natural → Property
-prop_PHPIsCorrectShorthand i = i >= 1 ==> withMaxSuccess 50 . monadicIO $ do
+prop_PHPIsCorrectShorthand i = i >= 1 ==> withNumTests 50 . monadicIO $ do
     answer <- executeJSONShorthand (collatzStep :: PHP Natural Natural) i
     pure $ answer === collatzStep i
 
@@ -110,7 +110,7 @@ myNaturalerpret :: a
 myNaturalerpret = _
 
 prop_ViaJSONIsCorrect :: Natural -> Property
-prop_ViaJSONIsCorrect i = i >= 1 ==> withMaxSuccess 50 $
+prop_ViaJSONIsCorrect i = i >= 1 ==> withNumTests 50 $
     (myNaturalerpret <$> decode (encode (collatzStep :: FreeFunc p Natural Natural)) <*> Just i) === Just (collatzStep i)
 -}
 

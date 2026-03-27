@@ -21,11 +21,11 @@ import Data.Function.Free.Abstract
 -- @TODO proper name of this equality function - isomorphic?
 
 prop_ReverseStringIsCorrectViaEncodeDecodeInterpret ∷ Text → Property
-prop_ReverseStringIsCorrectViaEncodeDecodeInterpret t = T.length t > 1 && T.all (\c -> notElem c "$" && isPrint c && isAscii c) t ==> withMaxSuccess 200 $
+prop_ReverseStringIsCorrectViaEncodeDecodeInterpret t = T.length t > 1 && T.all (\c -> notElem c "$" && isPrint c && isAscii c) t ==> withNumTests 200 $
     interpret ((fromJust (decode (encode (ReverseString :: Prims Text Text)))) :: Prims Text Text) t === reverseString t
 
 prop_EqualIsCorrectViaEncodeDecodeInterpret ∷ (Int, Int) → Property
-prop_EqualIsCorrectViaEncodeDecodeInterpret is = withMaxSuccess 200 $
+prop_EqualIsCorrectViaEncodeDecodeInterpret is = withNumTests 200 $
     interpret (fromJust (decode (encode (Equal :: Prims (Int, Int) Bool))) :: Prims (Int, Int) Bool) is === eq is
 
 spec ∷ Spec

@@ -24,14 +24,14 @@ import Control.Arrow
 -- runkleisli
 
 prop_ReverseStringIsCorrectViaEncodeDecodeInterpret ∷ Text → Property
-prop_ReverseStringIsCorrectViaEncodeDecodeInterpret t = T.length t > 1 && T.all (\c -> notElem c "$" && isPrint c && isAscii c) t ==> withMaxSuccess 200 $ do
+prop_ReverseStringIsCorrectViaEncodeDecodeInterpret t = T.length t > 1 && T.all (\c -> notElem c "$" && isPrint c && isAscii c) t ==> withNumTests 200 $ do
     expected <- runKleisli reverseString t
     let Just fn = decode (encode (ReverseString :: PrimsIO Text Text)) :: Maybe (PrimsIO Text Text)
     result <- runKleisli (interpret fn) t
     result `shouldBe` expected
 
 prop_EqualIsCorrectViaEncodeDecodeInterpret ∷ (Int, Int) → Property
-prop_EqualIsCorrectViaEncodeDecodeInterpret is = withMaxSuccess 200 $ do
+prop_EqualIsCorrectViaEncodeDecodeInterpret is = withNumTests 200 $ do
     expected <- runKleisli eq is
     let Just fn = decode (encode (Equal :: PrimsIO (Int, Int) Bool)) :: Maybe (PrimsIO (Int, Int) Bool)
     result <- runKleisli (interpret fn) is
